@@ -1,7 +1,7 @@
 #!/bin/sh
-docker service create -e BOT_TOKEN=$BOT_TOKEN --name acsos23-telegram-bot danysk/acsos23-telegram-bot:latest
+docker service create -e BOT_TOKEN=$BOT_TOKEN --name acsos26-telegram-bot angelacorte/acsos26-telegram-bot:latest
 while true; do
-    docker pull danysk/acsos23-telegram-bot:latest
-    docker service update --image danysk/acsos23-telegram-bot:latest acsos23-telegram-bot
+    docker pull angelacorte/acsos26-telegram-bot:latest
+    docker service update --image angelacorte/acsos26-telegram-bot:latest acsos26-telegram-bot
     sleep 1m
 done
