@@ -1,3 +1,6 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.file.DuplicatesStrategy
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     application
@@ -9,7 +12,7 @@ plugins {
     alias(libs.plugins.taskTree)
 }
 
-group = "org.danilopianini"
+group = "org.angelacorte"
 
 repositories {
     mavenCentral()
@@ -17,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.jackson.databind)
     implementation(libs.konf)
     implementation(libs.kotlin.stdlib)
     implementation(libs.telegram)
@@ -24,18 +28,14 @@ dependencies {
 }
 
 kotlin {
-    target {
-        compilations.all {
-            kotlinOptions {
-                allWarningsAsErrors = true
-                freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
-            }
-        }
+    compilerOptions {
+        allWarningsAsErrors.set(true)
+        freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
     }
 }
 
 application {
-    mainClass.set("org.danilopianini.acsos23.Bot")
+    mainClass.set("org.angelacorte.acsos26.Bot")
 }
 
 tasks.test {
@@ -44,7 +44,14 @@ tasks.test {
         showStandardStreams = true
         showCauses = true
         showStackTraces = true
-        events(*org.gradle.api.tasks.testing.logging.TestLogEvent.values())
+        events(
+            *org.gradle.api.tasks.testing.logging.TestLogEvent
+                .values(),
+        )
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
+}
+
+tasks.withType<ShadowJar>().configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
