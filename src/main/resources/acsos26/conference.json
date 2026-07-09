@@ -1,0 +1,642 @@
+{
+  "conference": {
+    "name": "7th IEEE International Conference on Autonomic Computing and Self-Organizing Systems - ACSOS 2026",
+    "shortName": "ACSOS 2026",
+    "dates": "Mon 7 - Fri 11 September 2026",
+    "location": "Cesena, Italy",
+    "timezone": "Europe/Rome",
+    "website": "https://2026.acsos.org/",
+    "botUsername": "acsos_26_bot",
+    "programStatus": "The conference data includes 27 accepted papers. Timed sessions, rooms, and paper-to-session assignments are not available in this data file yet.",
+    "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
+    "commands": [
+      {
+        "command": "/help",
+        "description": "Show available commands."
+      },
+      {
+        "command": "/about",
+        "description": "Show conference overview, dates, and website."
+      },
+      {
+        "command": "/tracks",
+        "description": "List all conference tracks."
+      },
+      {
+        "command": "/program",
+        "description": "Show program status, or use /program main for one track."
+      },
+      {
+        "command": "/sessions",
+        "description": "Show timed sessions when the schedule is available."
+      },
+      {
+        "command": "/maintrack",
+        "description": "Show Main Track status and accepted papers."
+      },
+      {
+        "command": "/artifacts",
+        "description": "Show Artifact track information."
+      },
+      {
+        "command": "/doctoral",
+        "description": "Show Doctoral Symposium information."
+      },
+      {
+        "command": "/posters",
+        "description": "Show Posters and Demos information."
+      },
+      {
+        "command": "/tutorials",
+        "description": "Show Tutorials information."
+      },
+      {
+        "command": "/workshops",
+        "description": "Show Workshops information."
+      },
+      {
+        "command": "/venue",
+        "description": "Show venue and room information."
+      },
+      {
+        "command": "/registration",
+        "description": "Show registration link."
+      },
+      {
+        "command": "/social",
+        "description": "Show social event details when available."
+      },
+      {
+        "command": "/ask",
+        "description": "Ask the optional LLM conference assistant."
+      }
+    ],
+    "tracks": [
+      {
+        "id": "artifacts",
+        "command": "artifacts",
+        "name": "Artifacts",
+        "url": "https://2026.acsos.org/track/acsos-2026-artifacts",
+        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "summary": "Artifact evaluation information for ACSOS 2026.",
+        "acceptedPapers": []
+      },
+      {
+        "id": "doctoral",
+        "command": "doctoral",
+        "name": "Doctoral Symposium",
+        "url": "https://2026.acsos.org/track/acsos-2026-doctoral-symposium",
+        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "summary": "Doctoral Symposium information for ACSOS 2026.",
+        "acceptedPapers": []
+      },
+      {
+        "id": "main",
+        "command": "maintrack",
+        "name": "Main Track",
+        "url": "https://2026.acsos.org/track/acsos-2026-papers",
+        "status": "27 accepted papers are published for Main Track. Timed sessions and rooms are not published in this data file yet.",
+        "summary": "Research, experience, short, and vision papers for ACSOS 2026.",
+        "acceptedPapers": [
+          {
+            "title": "A Multi-Agent LLM Architecture for Robust Self-Explainability in Autonomous Ferry Navigation",
+            "authors": [
+              "Tom Beyer",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Approved Too Late: Verdict Staleness in LLM-Guarded Self-Adaptive Systems",
+            "authors": [
+              "Ilai Shraga",
+              "Lior Goldberg"
+            ]
+          },
+          {
+            "title": "Automated Orchestration in a Real-World Self-Organizing Manufacturing Cell",
+            "authors": [
+              "Oliver Kosak",
+              "Christian Lehner",
+              "Hella Ponsar",
+              "Wolfgang Reif"
+            ]
+          },
+          {
+            "title": "Autonomic GNN-Based Shortest-Path Routing in LEO Networks via Imitation and Transfer Learning",
+            "authors": [
+              "Federica Filippini",
+              "Michele Ciavotta",
+              "Marco Savi"
+            ]
+          },
+          {
+            "title": "A Vision for Semantic Resource Elasticity in Autonomic Cyber-Physical Edge Systems",
+            "authors": [
+              "Timothy Wood"
+            ]
+          },
+          {
+            "title": "Calibrating Quadruped Startup Variance for Reliable Anomaly Detection and Self-Adaptation",
+            "authors": [
+              "Logan Quirk",
+              "Rose Gamble"
+            ]
+          },
+          {
+            "title": "C\u00b2FL: Clustered Continual Federated Learning under Spatial and Temporal Drift",
+            "authors": [
+              "Davide Domini",
+              "Gianluca Aguzzi",
+              "Lorenzo Bettini",
+              "Mirko Viroli",
+              "Lukas Esterle"
+            ]
+          },
+          {
+            "title": "CoAdapt: An LLM-based Framework for Adaptive Collaborative Perception in IIoT Robotic Swarms",
+            "authors": [
+              "Houssam Hajj Hassan"
+            ]
+          },
+          {
+            "title": "Collaborative Perception for Decentralised Navigation in Heterogeneous Maritime Fleets",
+            "authors": [
+              "Ghassan Al-Falouji",
+              "Martina Baiardi",
+              "Elsy Kaddoum",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Conditional Autoencoder-based Meta-Agents for Trajectory Prediction of Boid Systems",
+            "authors": [
+              "Tobias Buhl"
+            ]
+          },
+          {
+            "title": "Decentralized Multi-agent Reinforcement Learning for Resilient Critical Infrastructures",
+            "authors": [
+              "Evangelos Pournaras"
+            ]
+          },
+          {
+            "title": "Dynamic, Distributed, and Optimized: Orchestrating Live Migrating Computations in the Continuum",
+            "authors": [
+              "Edoardo Tinto",
+              "Alessandro Vittorio Papadopoulos",
+              "Tullio Vardanega"
+            ]
+          },
+          {
+            "title": "Elliptical patterns in swarmalator systems",
+            "authors": [
+              "Udo Schilcher",
+              "Christian Bettstetter"
+            ]
+          },
+          {
+            "title": "Extending Decision Maps for Sustainable Safety and Security in Self-Adaptive Systems",
+            "authors": [
+              "Marco Stadler",
+              "Wesley K.G. Assun\u00e7\u00e3o",
+              "Michael Vierhauser",
+              "Iris Groher",
+              "Michael Riegler",
+              "Johannes Sametinger"
+            ]
+          },
+          {
+            "title": "HASKI: Hallucination-Aware Agentic Self-Adaptive Knowledge Injection via Reinforcement Learning in Large Language Models",
+            "authors": [
+              "Farhoud Jafari Kaleibar",
+              "Marin Litoiu"
+            ]
+          },
+          {
+            "title": "Information-Driven Adaptation and Entropy-Regularised Planning under Non-Stationarity",
+            "authors": [
+              "Joshua Thompson",
+              "Dylan Walton",
+              "Nelly Bencomo"
+            ]
+          },
+          {
+            "title": "Large Language Models for Self-Adaptive Systems: Feedback-Loop Integration and Agentic Adaptation",
+            "authors": [
+              "Vincenzo Scotti",
+              "Diego P\u00e9rez",
+              "Raffaela Mirandola"
+            ]
+          },
+          {
+            "title": "LoftNN: Distributed Training of Deep Learning Models in the Edge-Cloud-Space Continuum",
+            "authors": [
+              "Stefan Nastic"
+            ]
+          },
+          {
+            "title": "Mitigating Uncertainty Interactions in GenAI-based Adaptive Systems: Vision, Challenges and Preliminary Guidelines",
+            "authors": [
+              "Karthik Vaidhyanathan",
+              "Norha M. Villegas",
+              "Raffaela Mirandola",
+              "Nicol\u00e1s Cardozo",
+              "Ivana Dusparic",
+              "Ralf Reussner",
+              "Gabriel Tamura"
+            ]
+          },
+          {
+            "title": "Multi-Target Tracking via Field-Based Distributed Particle Filtering",
+            "authors": [
+              "Angela Cortecchia",
+              "Davide Domini",
+              "Giovanni Ciatto",
+              "Roberto Casadei",
+              "Mirko Viroli"
+            ]
+          },
+          {
+            "title": "OPA - Observe, Preprocess, and Act: A Multi-Agent Framework for Data Preprocessing and Predictive Intelligence",
+            "authors": [
+              "Frederico Gadelha Guimar\u00e3es"
+            ]
+          },
+          {
+            "title": "Runtime Stability-Aware Adaptation for Self-Adaptive Systems using Symbiotic Simulation: A Cloud Architecture Evaluation",
+            "authors": [
+              "Maria Salama",
+              "Rami Bahsoon"
+            ]
+          },
+          {
+            "title": "Self-Aware Scientific Workflow Orchestration based on a Blackboard Architecture",
+            "authors": [
+              "Samuel Kounev",
+              "Nikolas Herbst",
+              "Kyle Chard",
+              "Ian Foster"
+            ]
+          },
+          {
+            "title": "The Many Facets of Uncertainty Reduction",
+            "authors": [
+              "Raquel S\u00e1nchez Salas",
+              "Radu Calinescu",
+              "Javier Troya",
+              "Javier Camara"
+            ]
+          },
+          {
+            "title": "What the Sheep Can Teach the Shepherd: A Vision for Self-Organizing Drone Swarms Informed by Collective Animal Behavior",
+            "authors": [
+              "Jenna Kline",
+              "Samuel Stevens",
+              "Daniel I. Rubenstein",
+              "Tanya Berger-Wolf",
+              "Christopher Stewart"
+            ]
+          },
+          {
+            "title": "When Should a Robot Stop Learning and Start Reasoning?",
+            "authors": [
+              "Patrizio Pelliccione"
+            ]
+          },
+          {
+            "title": "Who Is Responsible? Self-Adaptation Under Multiple Concurrent Failures With Unknown Faults in Complex Robotic Systems",
+            "authors": [
+              "Alwin Hoffmann"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "posters",
+        "command": "posters",
+        "name": "Posters and Demos",
+        "url": "https://2026.acsos.org/track/acsos-2026-posters-and-demos",
+        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "summary": "Posters and demos information for ACSOS 2026.",
+        "acceptedPapers": []
+      },
+      {
+        "id": "tutorials",
+        "command": "tutorials",
+        "name": "Tutorials",
+        "url": "https://2026.acsos.org/track/acsos-2026-tutorials",
+        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "summary": "Tutorial information for ACSOS 2026.",
+        "acceptedPapers": []
+      },
+      {
+        "id": "workshops",
+        "command": "workshops",
+        "name": "Workshops",
+        "url": "https://2026.acsos.org/track/acsos-2026-workshops",
+        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "summary": "Workshop information for ACSOS 2026.",
+        "acceptedPapers": []
+      }
+    ],
+    "infoPages": [
+      {
+        "id": "venue",
+        "title": "Venue: University of Bologna, Cesena Campus",
+        "url": "https://2026.acsos.org/venue/acsos-2026-venue",
+        "body": "The Cesena Campus is part of the University of Bologna (UniBo), the oldest continuously operating university in the Western world. Founded in 1088, UniBo now ranks among the top 200 universities globally and serves approximately 85,000 students across five campuses in Emilia-Romagna. The Cesena Campus was established in the 1980s as part of the university's territorial expansion strategy. Since then, it has evolved into a specialized hub for engineering, computer science, and technological disciplines, hosting around 5,000 students. Conference Rooms: Aula Magna The Aula Magna \"Carmen Tura\" (Room 3.4) is located on the first floor of the university building (level 3). Upon entering the building, you can find it to the left of the main entrance. Finally, to reach the campus, please take a look to the map below Location Via dell'Universit\u00e0, 50 47521 Cesena Italy"
+      },
+      {
+        "id": "registration",
+        "title": "Registration",
+        "url": "https://2026.acsos.org/attending/Registration",
+        "body": "Registration for the 7th IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS 2026) is open. Please read the registration information carefully before beginning the online registration. You can register for ACSOS 2026 via the following link: https://cvent.me/RyXPon All fees are quoted in US dollars ($USD) and include all taxes. Please email ieeecs-reg+ACSOS@computer.org if you need any registration assistance. For questions regarding author submissions, please contact Danilo Pianini at danilo.pianini@unibo.it and Ivana Dusparic at ivana.dusparic@tcd.ie . For questions regarding visas , please contact Mirko D'Angelo at"
+      }
+    ],
+    "socialEvents": [
+      {
+        "title": "Wine, Views, and Dinner on Romagna\u2019s Balcony",
+        "whenText": "Tuesday, September 8",
+        "whereText": "Bertinoro",
+        "fee": "\u20ac119",
+        "capacity": "minimum 30 participants, maximum 50 participants",
+        "includes": "transportation, wine tasting, dinner",
+        "restaurant": "",
+        "body": "Fee: \u20ac119 Capacity: minimum 30 participants, maximum 50 participants Includes: transportation, wine tasting, dinner Join us for a special ACSOS evening in Bertinoro , the renowned \u201cTerrazza della Romagna\u201d \u2014 Romagna\u2019s balcony \u2014 combining local wine, traditional cuisine, panoramic views, and informal conversation with the conference community. The evening begins with a wine tasting at Tenuta La Viola :"
+      },
+      {
+        "title": "ACSOS GP on the Riviera: Racing & Dinner",
+        "whenText": "Thursday, September 10",
+        "whereText": "Riccione and Rimini",
+        "fee": "\u20ac129 kart race + dinner / \u20ac99 dinner only",
+        "capacity": "minimum 30 participants, maximum 50 participants",
+        "includes": "transportation, karting option, Riccione walk option, dinner",
+        "restaurant": "",
+        "body": "Fee: \u20ac129 kart race + dinner / \u20ac99 dinner only Capacity: minimum 30 participants, maximum 50 participants Includes: transportation, karting option, Riccione walk option, dinner Karting capacity: minimum 14 drivers, maximum 32 drivers Join us for a special ACSOS evening on the Romagna Riviera , combining go-kart racing, seaside atmosphere, and an informal dinner with the conference community. The event begins at Riccione Circuit , a go-kart track located a short walk from the beach in Riccione:"
+      },
+      {
+        "title": "Along Leonardo\u2019s Canal: Cesenatico and Fish Dinner",
+        "whenText": "Friday September 11",
+        "whereText": "Cesenatico",
+        "fee": "\u20ac129",
+        "capacity": "",
+        "includes": "transportation, guided museum visit, guided city-centre walk, fish dinner",
+        "restaurant": "to be confirmed",
+        "body": "Fee: \u20ac129 Includes: transportation, guided museum visit, guided city-centre walk, fish dinner Restaurant: to be confirmed Join us for a special ACSOS evening in Cesenatico , combining maritime history, a guided walk through one of the most distinctive town centres on the Romagna coast, and a fish dinner with the conference community. The event begins with a guided visit to the Museo della Marineria , located along Cesenatico\u2019s Porto Canale Leonardesco :"
+      }
+    ],
+    "sessions": [],
+    "keynotes": [
+      {
+        "speaker": "Marco Dorigo",
+        "affiliation": "Universit\u00e9 Libre de Bruxelles",
+        "title": "Bridging Centralized and Decentralized Control in Robot Swarms through Self-Organizing Hierarchies",
+        "kind": "Main keynote",
+        "abstract": "Robot swarms promise scalable and resilient solutions for applications such as environmental monitoring, search and rescue, and logistics, yet their adoption remains limited by poor controllability. Fully self-organizing swarms achieve robustness and scalability through decentralized coordination and simple local interactions, but this comes at the cost of limited observability and difficulty in shaping global behavior. Conversely, centralized approaches offer ease of control but suffer from scalability issues and single points of failure. In this talk, I present the Self-Organizing Nervous System for Robot Swarms (SoNS), a middleware framework that enables robots to dynamically form adaptive hierarchical structures. SoNS bridges centralized and decentralized paradigms by supporting functionally centralized coordination of sensing, actuation, and decision-making, while preserving the scalability, flexibility, and fault tolerance of self-organizing systems.",
+        "url": "https://2026.acsos.org/info/keynotes"
+      },
+      {
+        "speaker": "Ivona Brandic",
+        "affiliation": "TU Wien",
+        "title": "Bridging Classical and Quantum Computing: Lessons, Challenges, and Opportunities",
+        "kind": "Main keynote",
+        "abstract": "Quantum computing promises computational capabilities that extend beyond the representational and computational limits of classical systems. It is widely regarded as a candidate technology for addressing scalability and tractability challenges in domains such as molecular simulation, optimization, and artificial intelligence. However, classical high-performance computing (HPC) systems continue to play a crucial role in the quantum computing ecosystem. Classical computers are essential for tasks such as quantum device calibration, quantum state preparation, error mitigation, and data pre- and post-processing. In this talk, we critically examine the role of classical computing in conjunction with quantum systems. We revisit early misconceptions about quantum advantage, discuss key lessons learned from the first generation of hybrid quantum\u2013classical systems, and highlight current research directions. Particular attention is given to state-of-the-art hybrid algorithms, including the Quantum Approximate Optimization Algorithm (QAOA) and the Variational Quantum Algorithms (VQA), as well as emerging concepts for tighter integration between classical and quantum infrastructures. We conclude by exploring novel interaction paradigms, such as digital shadows and their practical implementations, which may shape the next generation of hybrid computing systems.",
+        "url": "https://2026.acsos.org/info/keynotes"
+      },
+      {
+        "speaker": "Valeria Cardellini",
+        "affiliation": "Tor Vergata University of Rome",
+        "title": "",
+        "kind": "Main keynote",
+        "abstract": "coming soon.",
+        "url": "https://2026.acsos.org/info/keynotes"
+      },
+      {
+        "speaker": "Carlo Ghezzi",
+        "affiliation": "Politecnico di Milano",
+        "title": "Being a researcher \u2014 in turbulent times",
+        "kind": "Doctoral Symposium keynote",
+        "abstract": "In 2020 I wrote a book titled \u201c Being a Researcher\u2014 An Informatics Perspective \u201d, in which I tried to share what I learned in my long journey through research, targeting especially young scientists and telling them what I wish I knew when I embarked on the journey. This talk reflects on what happened since. After less than a decade, the research landscape is undergoing a paradigm change, in the Kuhnian sense, mainly due to the advances in our own discipline, and in particular, the AI revolution. This has generated radical changes in the way research is performed, in all fields. But technological disruption is not only a methodological challenge; it is above all an ethical and institutional one. The way society and individuals are affected by our research, and the responsibilities we have as researchers have in fact scaled up to unprecedented levels. Academic institutions need to rethink their role in the new world we are building. The talk reflects on our role and responsibility as researchers and educators in the new world\u2014 and on whether our institutions are ready for it.",
+        "url": "https://2026.acsos.org/info/keynotes"
+      }
+    ],
+    "committees": [
+      {
+        "name": "Ivana Dusparic",
+        "role": "General Chair",
+        "affiliation": "Trinity College Dublin, Ireland",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Danilo Pianini",
+        "role": "General Chair",
+        "affiliation": "University of Bologna Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Robert Birke",
+        "role": "Program Chair",
+        "affiliation": "University of Turin, Italy Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Christian Krupitzer",
+        "role": "Program Chair",
+        "affiliation": "University of Hohenheim, Germany Germany",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Aishwaryaprajna",
+        "role": "Workshop Co-Chair",
+        "affiliation": "University of Exeter United Kingdom",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Elsy Kaddoum",
+        "role": "Workshop Co-Chair",
+        "affiliation": "IRIT - University of Toulouse France",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Mirko D'Angelo",
+        "role": "Registration Chair",
+        "affiliation": "Ericsson Research Sweden",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Ilias Gerostathopoulos",
+        "role": "Tutorial Chair",
+        "affiliation": "Vrije Universiteit Amsterdam Netherlands",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Gabriele Russo",
+        "role": "Tutorial Chair",
+        "affiliation": "University of Rome Tor Vergata, Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Roberto Casadei",
+        "role": "Finance Chair",
+        "affiliation": "University of Bologna, Italy Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "David King",
+        "role": "Sponsorship Chair",
+        "affiliation": "Northrop Grumman Corporation United States",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Sven Tomforde",
+        "role": "Sponsorship Chair",
+        "affiliation": "Christian-Albrechts-Universit\u00e4t zu Kiel Germany",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Kirstie Bellman",
+        "role": "Community Building Chair",
+        "affiliation": "Topcy House Consulting",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Elia Henrichs",
+        "role": "Community Building Chair",
+        "affiliation": "University of Hohenheim Germany",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Jenna Kline",
+        "role": "Community Building Chair",
+        "affiliation": "The Ohio State University, USA United States",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Lukas Esterle",
+        "role": "PhD Symposium Chair",
+        "affiliation": "Aarhus University Denmark",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Fatemeh Golpayegani",
+        "role": "PhD Symposium Chair",
+        "affiliation": "University College Dublin Ireland",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Jialong Li",
+        "role": "Proceedings Chair",
+        "affiliation": "Waseda University, Japan Japan",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Antonio Bucchiarone",
+        "role": "Publicity Co-Chair",
+        "affiliation": "DISIM, University of L'Aquila Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Angela Cortecchia",
+        "role": "Publicity Chair",
+        "affiliation": "Alma Mater Studiorum - Universit\u00e0 di Bologna Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Davide Domini",
+        "role": "Social Experience Chair",
+        "affiliation": "Alma Mater Studiorum - Universit\u00e0 di Bologna Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Nathan Lloyd",
+        "role": "Publicity Chair",
+        "affiliation": "Ontario Tech University Canada",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Markus Stumptner",
+        "role": "Publicity Co-Chair",
+        "affiliation": "University of South Australia",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Gianluca Aguzzi",
+        "role": "Web Chair",
+        "affiliation": "Alma Mater Studiorum - Universit\u00e0 di Bologna Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Juan C. Rosero",
+        "role": "Web Chair",
+        "affiliation": "Trinity College Dublin, Ireland Ireland",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Alessandro Vittorio Papadopoulos",
+        "role": "In Practice Chair",
+        "affiliation": "M\u00e4lardalen University Sweden",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Ana Petrovska",
+        "role": "In Practice Chair",
+        "affiliation": "Technical University of Munich, Germany",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Nicol\u00e1s Cardozo",
+        "role": "Artifact Evaluation Chair",
+        "affiliation": "Universidad de los Andes Colombia",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Evangelos Pournaras",
+        "role": "Artifact Evaluation Chair",
+        "affiliation": "University of Leeds United Kingdom",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Simon Dobson",
+        "role": "Expert Panel Chair",
+        "affiliation": "University of St Andrews United Kingdom",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Mirgita Frasheri",
+        "role": "Expert Panel Chair",
+        "affiliation": "Aarhus University",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Martina Baiardi",
+        "role": "Student Volunteers Chair",
+        "affiliation": "University of Bologna Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Sona Ghahremani",
+        "role": "Student Volunteers Chair",
+        "affiliation": "Hasso Plattner Institute, University of Potsdam Germany",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Ghassan Al-Falouji",
+        "role": "Demo & Poster Chair",
+        "affiliation": "University of Kiel, Germany Germany",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Nasim Beigi-Mohammadi",
+        "role": "Demo & Poster Co-Chair",
+        "affiliation": "Ontario Tech University - Faculty of Engineering and Applied Science - Electrical-Computer & Software Engineering",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      },
+      {
+        "name": "Marco Edoardo Santimaria",
+        "role": "AI Chair",
+        "affiliation": "University of Turin, Italy Italy",
+        "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+      }
+    ]
+  }
+}
