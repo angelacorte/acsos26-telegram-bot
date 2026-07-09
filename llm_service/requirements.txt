@@ -1,0 +1,5 @@
+deepagents==0.6.12
+fastapi==0.116.0
+langchain-ollama>=1.0.0,<2.0.0
+pytest==9.0.2
+uvicorn[standard]==0.35.0
