@@ -1,9 +1,11 @@
 [versions]
+jackson = "2.19.2"
 kotest = "6.2.2"
 kotlin = "2.4.0"
 mockito = "5.23.0"
 
 [libraries]
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 konf = "com.uchuhimo:konf-core:1.1.2"
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
@@ -21,5 +23,5 @@ dokka = "org.jetbrains.dokka:2.2.0"
 gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:7.0.22"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.101.1"
-shadowJar = "com.github.johnrengelman.shadow:8.1.1"
+shadowJar = "com.gradleup.shadow:9.5.1"
 taskTree = "com.dorongold.task-tree:4.0.1"

@@ -20,4 +20,4 @@ gitHooks {
     createHooks()
 }
 
-rootProject.name = "acsos23-telegram-bot"
+rootProject.name = "acsos26-telegram-bot"

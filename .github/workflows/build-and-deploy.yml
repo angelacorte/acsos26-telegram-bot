@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7.0.0
       - name: Build the container
-        run: docker build -t danysk/acsos23-telegram-bot .
+        run: docker build -t angelacorte/acsos26-telegram-bot .
   autoupdate-container:
     runs-on: ubuntu-24.04
     concurrency:
@@ -38,7 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7.0.0
       - name: Build the container
-        run: docker build -t danysk/acsos23-telegram-bot-autoupdate autoupdate
+        run: docker build -t angelacorte/acsos26-telegram-bot-autoupdate autoupdate
   release:
     permissions:
       contents: write
