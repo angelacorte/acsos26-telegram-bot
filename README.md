@@ -17,7 +17,8 @@ serves `/ask` through Deep Agents plus Ollama when configured.
 - `/venue` - show venue information.
 - `/registration` - show the registration link.
 - `/social` - show social events once they are available in the data file.
-- `/ask <question>` - ask the optional LLM assistant.
+- `/ask <question>` - ask the optional LLM assistant. Free-form messages without
+  a slash command are also sent to the LLM assistant.
 
 ## Data updates
 
@@ -33,6 +34,25 @@ You can run the same refresh locally:
 ```bash
 python3 scripts/refresh_conference_data.py
 ```
+
+The LLM service also has a separate bounded URL catalog for live lookups. This
+does not rebuild `conference.json` or embeddings; it only refreshes the list of
+known ACSOS pages and compact metadata used for ranking:
+
+```bash
+python3 scripts/refresh_conference_catalog.py --verbose
+```
+
+Site analysis notes for `https://2026.acsos.org`:
+
+- `robots.txt` allows public pages, disallows query URLs, sign-in/sign-up, and
+  asks crawlers to use a 2 second crawl delay.
+- no `sitemap.xml` is exposed;
+- the relevant conference content, navigation, dates, news, tracks, committees,
+  and attending pages are available in HTML without Playwright or Selenium;
+- the internal search page is a POST form on `/search//all`, but the reliable
+  low-traffic method is ranking the bounded local URL catalog discovered from
+  navigation and known conference pages.
 
 When the final schedule is published, the refresh script should be extended to
 parse the new schedule section into `sessions` with day, time, room, track id,
@@ -79,7 +99,12 @@ pip install -r llm_service/requirements.txt
 uvicorn llm_service.app:app --reload --host 0.0.0.0 --port 8000
 ```
 
-By default it uses `DEEPAGENTS_MODEL=ollama:gpt-oss:20b`. Pull the model before
+By default it uses `DEEPAGENTS_MODEL=ollama:gpt-oss:20b`,
+`OLLAMA_KEEP_ALIVE=30m`, `LLM_TEMPERATURE=0.1`, and
+`LLM_FAILURE_COOLDOWN_SECONDS=600`. `OLLAMA_KEEP_ALIVE` prevents Ollama from
+unloading the model immediately between rare `/ask` requests; increase it if
+the model still has to reload too often. `LLM_FAILURE_COOLDOWN_SECONDS` prevents
+repeated reload attempts for a broken or oversized model. Pull the model before
 using Deep Agents with Ollama:
 
 ```bash
@@ -87,6 +112,49 @@ ollama pull gpt-oss:20b
 ```
 
 Set `DISABLE_DEEPAGENTS=true` to run deterministic retrieval only.
+
+### Live ACSOS website retrieval
+
+`/ask` first searches local `conference.json`. For questions with weak local
+matches, or questions that explicitly ask for recent/current information, the
+service performs a bounded live lookup against ACSOS pages, merges the live
+chunks with local context, and asks Ollama to answer from those sources. Simple
+high-confidence questions still use deterministic local answers to keep
+Telegram latency low.
+
+The live retriever:
+
+- ranks at most `ACSOS_MAX_SEARCH_RESULTS=5` candidate URLs from the catalog;
+- fetches at most `ACSOS_MAX_PAGES_PER_QUERY=3` pages per question;
+- allows only `2026.acsos.org` and the required `conf.researchr.org` host;
+- blocks non-HTTP(S), query URLs, login/signup paths, private/local IPs, and
+  redirects outside the allowlist;
+- caches extracted pages with ETag/Last-Modified revalidation;
+- uses TTLs of 15 minutes for dynamic pages, 6 hours for standard pages, and
+  24 hours for mostly static pages by default;
+- falls back to local data if the live site is slow or unavailable.
+
+Useful live-search environment variables:
+
+```dotenv
+ACSOS_BASE_URL=https://2026.acsos.org
+ACSOS_LIVE_SEARCH_ENABLED=true
+ACSOS_MAX_SEARCH_RESULTS=5
+ACSOS_MAX_PAGES_PER_QUERY=3
+ACSOS_MAX_LIVE_TOOL_CALLS=2
+ACSOS_CACHE_TTL_DYNAMIC_SECONDS=900
+ACSOS_CACHE_TTL_STANDARD_SECONDS=21600
+ACSOS_CACHE_TTL_STATIC_SECONDS=86400
+ACSOS_CONNECT_TIMEOUT_SECONDS=3
+ACSOS_READ_TIMEOUT_SECONDS=7
+ACSOS_OVERALL_TIMEOUT_SECONDS=10
+ACSOS_USER_AGENT=acsos26-telegram-bot/1.0 (+https://2026.acsos.org)
+```
+
+Examples:
+
+- local-only path: `who are the general chairs?`
+- live-verification path: `what is the latest registration information?`
 
 ## Docker Compose
 
@@ -105,6 +173,10 @@ BOT_ACCESS_KEY=<private-user-access-key>
 LLM_API_KEY=<service-to-service-key>
 DEEPAGENTS_MODEL=ollama:gpt-oss:20b
 OLLAMA_MODEL=gpt-oss:20b
+LLM_FAILURE_COOLDOWN_SECONDS=600
+OLLAMA_KEEP_ALIVE=30m
+LLM_TEMPERATURE=0.1
+ACSOS_LIVE_SEARCH_ENABLED=true
 ```
 
 `LLM_API_KEY` must have the same value for the `bot` and `llm` services. The
@@ -141,4 +213,6 @@ without exposing backend error details to Telegram users.
 ```bash
 ./gradlew test
 python3 -m py_compile llm_service/app.py
+python3 -m py_compile llm_service/conference_live.py scripts/refresh_conference_catalog.py
+python3 -m pytest llm_service
 ```
