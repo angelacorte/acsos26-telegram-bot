@@ -18,9 +18,10 @@ internal class CommandRouter(
         botUsername: String = conference.botUsername,
         chatId: Long? = null,
     ): String? {
+        val trimmed = message.trim()
         val command =
-            TelegramCommand.parse(message, botUsername)
-                ?: return mentionedAnswer(message, botUsername, chatId)
+            TelegramCommand.parse(trimmed, botUsername)
+                ?: return freeFormAnswer(trimmed, botUsername, chatId)
         if (command.name in setOf("start", "auth")) {
             return authenticate(command.argument, chatId)
         }
@@ -47,20 +48,25 @@ internal class CommandRouter(
         }
     }
 
-    private fun mentionedAnswer(
+    private fun freeFormAnswer(
         message: String,
         botUsername: String,
         chatId: Long?,
-    ): String? =
-        if (message.mentions(botUsername)) {
-            if (!accessControl.isAuthorized(chatId)) {
-                return privateAccessRequired()
-            }
-            val question = message.replace(Regex("@$botUsername", RegexOption.IGNORE_CASE), "").trim()
-            if (question.isBlank()) help() else ask(question)
-        } else {
-            null
+    ): String? {
+        if (message.isBlank() || message.startsWith("/")) {
+            return null
         }
+        if (!accessControl.isAuthorized(chatId)) {
+            return privateAccessRequired()
+        }
+        val question =
+            if (message.mentions(botUsername)) {
+                message.replace(Regex("@$botUsername", RegexOption.IGNORE_CASE), "").trim()
+            } else {
+                message
+            }
+        return if (question.isBlank()) help() else ask(question)
+    }
 
     private fun authenticate(
         key: String,
@@ -82,7 +88,7 @@ internal class CommandRouter(
             appendLine()
             conference.commands.forEach { appendLine("${it.command} - ${it.description}") }
             appendLine()
-            appendLine("For free-form questions, use /ask followed by the question.")
+            appendLine("For free-form questions, send the question directly or use /ask followed by the question.")
         }.trim()
 
     private fun about(): String =

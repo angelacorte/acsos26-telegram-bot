@@ -30,6 +30,14 @@ class CommandRouterTest :
             router.answer("/ask When is the main track?") shouldBe "LLM answer"
         }
 
+        "free-form messages delegate to the llm client" {
+            router.answer("When is the main track?") shouldBe "LLM answer"
+        }
+
+        "mentions without slash delegate to the llm client" {
+            router.answer("@acsos_26_bot When is the main track?", "acsos_26_bot") shouldBe "LLM answer"
+        }
+
         "private mode requires access key before commands work" {
             val privateRouter =
                 CommandRouter(
@@ -38,9 +46,11 @@ class CommandRouterTest :
                     AccessControl("secret"),
                 )
             privateRouter.answer("/ask When is the main track?", chatId = 1L) shouldContain "private"
+            privateRouter.answer("When is the main track?", chatId = 1L) shouldContain "private"
             privateRouter.answer("/start wrong", chatId = 1L) shouldBe "Invalid access key."
             privateRouter.answer("/start secret", chatId = 1L) shouldContain "Access granted"
             privateRouter.answer("/ask When is the main track?", chatId = 1L) shouldBe "LLM answer"
+            privateRouter.answer("When is the main track?", chatId = 1L) shouldBe "LLM answer"
         }
 
         "commands addressed to another bot are ignored" {
