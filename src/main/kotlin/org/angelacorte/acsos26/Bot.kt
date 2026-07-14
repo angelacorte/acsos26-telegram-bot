@@ -7,6 +7,7 @@ import com.github.kotlintelegrambot.dispatch
 import com.github.kotlintelegrambot.dispatcher.newChatMembers
 import com.github.kotlintelegrambot.dispatcher.text
 import com.github.kotlintelegrambot.entities.ChatId
+import com.github.kotlintelegrambot.entities.User
 import java.lang.management.ManagementFactory
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -56,7 +57,7 @@ fun main() {
     bot.startPolling()
 }
 
-private fun com.github.kotlintelegrambot.entities.User.displayName(): String =
+private fun User.displayName(): String =
     username?.let { "@$it" } ?: listOfNotNull(firstName, lastName).joinToString(" ")
 
 private fun uptimeAnswer(
