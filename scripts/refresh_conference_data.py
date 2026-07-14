@@ -69,6 +69,11 @@ INFO_PAGES = [
         "title": "Registration",
         "url": "https://2026.acsos.org/attending/Registration",
     },
+    {
+        "id": "mainSocialEvent",
+        "title": "Main Social Event",
+        "url": "https://2026.acsos.org/attending/main-social-event",
+    },
 ]
 SOCIAL_URL = "https://2026.acsos.org/attending/social-events"
 KEYNOTES_URL = "https://2026.acsos.org/info/keynotes"
