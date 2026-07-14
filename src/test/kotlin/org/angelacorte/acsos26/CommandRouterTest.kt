@@ -34,8 +34,29 @@ class CommandRouterTest :
             router.answer("When is the main track?") shouldBe "LLM answer"
         }
 
+        "group free-form messages without mention are ignored" {
+            router.answer("When is the main track?", chatType = "group") shouldBe null
+        }
+
+        "group ask command delegates to the llm client" {
+            router.answer("/ask When is the main track?", chatType = "group") shouldBe "LLM answer"
+        }
+
         "mentions without slash delegate to the llm client" {
-            router.answer("@acsos_26_bot When is the main track?", "acsos_26_bot") shouldBe "LLM answer"
+            router.answer(
+                message = "@acsos_26_bot When is the main track?",
+                botUsername = "acsos_26_bot",
+            ) shouldBe "LLM answer"
+        }
+
+        "group mentions without slash delegate to the llm client without the mention" {
+            val echoRouter = CommandRouter(conference, echoLlmClient())
+
+            echoRouter.answer(
+                message = "@acsos_26_bot When is the main track?",
+                botUsername = "acsos_26_bot",
+                chatType = "supergroup",
+            ) shouldBe "When is the main track?"
         }
 
         "private mode requires access key before commands work" {
@@ -47,6 +68,13 @@ class CommandRouterTest :
                 )
             privateRouter.answer("/ask When is the main track?", chatId = 1L) shouldContain "private"
             privateRouter.answer("When is the main track?", chatId = 1L) shouldContain "private"
+            privateRouter.answer("When is the main track?", chatId = 1L, chatType = "group") shouldBe null
+            privateRouter.answer(
+                message = "@acsos_26_bot When is the main track?",
+                botUsername = "acsos_26_bot",
+                chatId = 1L,
+                chatType = "group",
+            ) shouldContain "private"
             privateRouter.answer("/start wrong", chatId = 1L) shouldBe "Invalid access key."
             privateRouter.answer("/start secret", chatId = 1L) shouldContain "Access granted"
             privateRouter.answer("/ask When is the main track?", chatId = 1L) shouldBe "LLM answer"
@@ -61,4 +89,9 @@ class CommandRouterTest :
 private fun fixedLlmClient(answer: String): LlmClient =
     object : LlmClient {
         override fun ask(question: String): Result<String> = Result.success(answer)
+    }
+
+private fun echoLlmClient(): LlmClient =
+    object : LlmClient {
+        override fun ask(question: String): Result<String> = Result.success(question)
     }
