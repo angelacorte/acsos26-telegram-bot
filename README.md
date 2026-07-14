@@ -17,8 +17,10 @@ serves `/ask` through Deep Agents plus Ollama when configured.
 - `/venue` - show venue information.
 - `/registration` - show the registration link.
 - `/social` - show social events once they are available in the data file.
-- `/ask <question>` - ask the optional LLM assistant. Free-form messages without
-  a slash command are also sent to the LLM assistant.
+- `/ask <question>` - ask the optional LLM assistant. In private chats,
+  free-form messages without a slash command are also sent to the LLM assistant.
+  In groups, the bot only answers LLM questions sent with `/ask` or with a
+  mention, for example `@acsos_26_bot When is the main track?`.
 
 ## Data updates
 
