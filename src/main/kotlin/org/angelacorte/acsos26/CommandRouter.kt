@@ -1,6 +1,11 @@
 package org.angelacorte.acsos26
 
 private const val MAX_PAPERS_IN_COMMAND_REPLY = 8
+private const val PRIVATE_CHAT_TYPE = "private"
+private const val PRIVATE_ACCESS_REQUIRED_MESSAGE =
+    "This bot is private. Send /start <access-key> to enable it in this chat."
+
+private val AUTH_COMMANDS = setOf("start", "auth")
 
 /**
  * Maps Telegram text messages to conference answers.
@@ -17,18 +22,32 @@ internal class CommandRouter(
         message: String,
         botUsername: String = conference.botUsername,
         chatId: Long? = null,
+        chatType: String = PRIVATE_CHAT_TYPE,
     ): String? {
         val trimmed = message.trim()
         val command =
             TelegramCommand.parse(trimmed, botUsername)
-                ?: return freeFormAnswer(trimmed, botUsername, chatId)
-        if (command.name in setOf("start", "auth")) {
-            return authenticate(command.argument, chatId)
+                ?: return freeFormAnswer(trimmed, botUsername, chatId, chatType)
+        return commandAnswer(command, chatId)
+    }
+
+    private fun commandAnswer(
+        command: TelegramCommand,
+        chatId: Long?,
+    ): String =
+        when {
+            command.name in AUTH_COMMANDS -> authenticate(command.argument, chatId)
+            !accessControl.isAuthorized(chatId) -> PRIVATE_ACCESS_REQUIRED_MESSAGE
+            else -> publicCommandAnswer(command)
         }
-        if (!accessControl.isAuthorized(chatId)) {
-            return privateAccessRequired()
-        }
-        return when (command.name) {
+
+    private fun publicCommandAnswer(command: TelegramCommand): String =
+        generalCommandAnswer(command)
+            ?: trackCommandAnswer(command.name)
+            ?: unknownCommand(command.name)
+
+    private fun generalCommandAnswer(command: TelegramCommand): String? =
+        when (command.name) {
             "help" -> help()
             "about" -> about()
             "tracks" -> tracks()
@@ -38,30 +57,43 @@ internal class CommandRouter(
             "venue" -> page("venue")
             "registration" -> page("registration")
             "ask" -> ask(command.argument)
+            else -> null
+        }
+
+    private fun trackCommandAnswer(command: String): String? =
+        when (command) {
             "maintrack" -> track("main")
             "artifacts" -> track("artifacts")
             "doctoral" -> track("doctoral")
             "posters" -> track("posters")
             "tutorials" -> track("tutorials")
             "workshops" -> track("workshops")
-            else -> unknownCommand(command.name)
+            else -> null
         }
-    }
 
     private fun freeFormAnswer(
         message: String,
         botUsername: String,
         chatId: Long?,
+        chatType: String,
     ): String? {
-        if (message.isBlank() || message.startsWith("/")) {
-            return null
+        val addressedToBot = message.mentions(botUsername)
+        return when {
+            message.isBlank() || message.startsWith("/") -> null
+            !chatType.isPrivateChat() && !addressedToBot -> null
+            !accessControl.isAuthorized(chatId) -> PRIVATE_ACCESS_REQUIRED_MESSAGE
+            else -> freeFormQuestionAnswer(message, botUsername, addressedToBot)
         }
-        if (!accessControl.isAuthorized(chatId)) {
-            return privateAccessRequired()
-        }
+    }
+
+    private fun freeFormQuestionAnswer(
+        message: String,
+        botUsername: String,
+        addressedToBot: Boolean,
+    ): String {
         val question =
-            if (message.mentions(botUsername)) {
-                message.replace(Regex("@$botUsername", RegexOption.IGNORE_CASE), "").trim()
+            if (addressedToBot) {
+                message.withoutMention(botUsername)
             } else {
                 message
             }
@@ -74,13 +106,10 @@ internal class CommandRouter(
     ): String =
         when {
             !accessControl.isEnabled -> help()
-            key.isBlank() -> privateAccessRequired()
+            key.isBlank() -> PRIVATE_ACCESS_REQUIRED_MESSAGE
             accessControl.authorize(chatId, key.trim()) -> "Access granted. Use /help to see the available commands."
             else -> "Invalid access key."
         }
-
-    private fun privateAccessRequired(): String =
-        "This bot is private. Send /start <access-key> to enable it in this chat."
 
     private fun help(): String =
         buildString {
@@ -88,7 +117,8 @@ internal class CommandRouter(
             appendLine()
             conference.commands.forEach { appendLine("${it.command} - ${it.description}") }
             appendLine()
-            appendLine("For free-form questions, send the question directly or use /ask followed by the question.")
+            appendLine("For free-form questions, send the question directly in private chats.")
+            appendLine("In groups, mention @${conference.botUsername} or use /ask followed by the question.")
         }.trim()
 
     private fun about(): String =
@@ -230,3 +260,8 @@ private data class TelegramCommand(
 }
 
 internal fun String.mentions(botUsername: String): Boolean = contains("@$botUsername", ignoreCase = true)
+
+private fun String.withoutMention(botUsername: String): String =
+    replace(Regex("@${Regex.escape(botUsername)}\\b", RegexOption.IGNORE_CASE), "").trim()
+
+private fun String.isPrivateChat(): Boolean = equals(PRIVATE_CHAT_TYPE, ignoreCase = true)

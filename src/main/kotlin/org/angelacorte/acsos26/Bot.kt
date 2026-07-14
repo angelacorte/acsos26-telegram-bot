@@ -14,6 +14,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 private const val TELEGRAM_MESSAGE_LIMIT = 4096
+private const val TELEGRAM_TRUNCATION_SUFFIX = "\n\n[message truncated]"
 
 /**
  * Telegram bot entrypoint.
@@ -43,7 +44,7 @@ fun main() {
                     val chatId = ChatId.fromId(message.chat.id)
                     val receivedText = message.text.orEmpty()
                     val answer =
-                        router.answer(receivedText, botUsername, message.chat.id)
+                        router.answer(receivedText, botUsername, message.chat.id, message.chat.type)
                             ?: uptimeAnswer(receivedText, botUsername)
                     if (answer != null) {
                         bot.sendMessage(
@@ -78,5 +79,5 @@ private fun String.telegramSafe(): String =
     if (length <= TELEGRAM_MESSAGE_LIMIT) {
         this
     } else {
-        take(TELEGRAM_MESSAGE_LIMIT - 20) + "\n\n[message truncated]"
+        take(TELEGRAM_MESSAGE_LIMIT - TELEGRAM_TRUNCATION_SUFFIX.length) + TELEGRAM_TRUNCATION_SUFFIX
     }

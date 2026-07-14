@@ -7,6 +7,11 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
 
+private const val LLM_CONNECT_TIMEOUT_SECONDS = 5L
+private const val LLM_REQUEST_TIMEOUT_SECONDS = 45L
+private const val HTTP_SUCCESS_MIN = 200
+private const val HTTP_SUCCESS_MAX = 299
+
 /**
  * Client for the optional Python conference assistant service.
  */
@@ -41,7 +46,7 @@ internal class HttpLlmClient(
         HttpClient
             .newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
-            .connectTimeout(Duration.ofSeconds(5))
+            .connectTimeout(Duration.ofSeconds(LLM_CONNECT_TIMEOUT_SECONDS))
             .build(),
     private val mapper: ObjectMapper = ObjectMapper(),
 ) : LlmClient {
@@ -52,7 +57,7 @@ internal class HttpLlmClient(
                 HttpRequest
                     .newBuilder(endpoint)
                     .version(HttpClient.Version.HTTP_1_1)
-                    .timeout(Duration.ofSeconds(45))
+                    .timeout(Duration.ofSeconds(LLM_REQUEST_TIMEOUT_SECONDS))
                     .header("Content-Type", "application/json")
             if (!apiKey.isNullOrBlank()) {
                 requestBuilder.header("X-LLM-API-Key", apiKey)
@@ -62,7 +67,7 @@ internal class HttpLlmClient(
                     .POST(HttpRequest.BodyPublishers.ofString(body))
                     .build()
             val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-            check(response.statusCode() in 200..299) {
+            check(response.statusCode() in HTTP_SUCCESS_MIN..HTTP_SUCCESS_MAX) {
                 "LLM service returned HTTP ${response.statusCode()}: ${response.body()}"
             }
             val tree = mapper.readTree(response.body())
