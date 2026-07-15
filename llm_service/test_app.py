@@ -355,6 +355,13 @@ def test_generation_timeout_falls_back_without_long_cooldown(monkeypatch) -> Non
     assert "too late" not in payload["answer"]
 
 
+def test_max_concurrent_asks_is_always_positive(monkeypatch) -> None:
+    """Invalid or unsafe concurrency values must retain at least one worker slot."""
+    monkeypatch.setenv("LLM_MAX_CONCURRENT_ASKS", "0")
+
+    assert service.max_concurrent_asks() == 1
+
+
 def test_direct_chat_agent_makes_one_grounded_call() -> None:
     """The default responder issues a single system-anchored call and returns its content."""
     captured: dict = {}

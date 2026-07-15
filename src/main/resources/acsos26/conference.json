@@ -19,6 +19,18 @@
         "description": "Show conference overview, dates, and website."
       },
       {
+        "command": "/site",
+        "description": "Show the ACSOS 2026 website."
+      },
+      {
+        "command": "/links",
+        "description": "Show ACSOS community links."
+      },
+      {
+        "command": "/group",
+        "description": "Show the Telegram group invite link."
+      },
+      {
         "command": "/tracks",
         "description": "List all conference tracks."
       },

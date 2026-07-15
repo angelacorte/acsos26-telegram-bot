@@ -32,6 +32,8 @@ DEFAULT_LLM_FAILURE_COOLDOWN_SECONDS = 60.0
 DEFAULT_LLM_TIMEOUT_COOLDOWN_SECONDS = 20.0
 # Cap how long one answer may take server-side so the request never hangs to the client timeout.
 DEFAULT_LLM_GENERATION_TIMEOUT_SECONDS = 30.0
+# Keep bursts from starting enough live retrieval and model work to exhaust Ollama.
+DEFAULT_LLM_MAX_CONCURRENT_ASKS = 2
 # Small, fast, multilingual instruct model that fits in RAM on a CPU-only host: good IT/EN
 # adherence with low latency. Bump to 7b/14b on machines with more memory or a GPU.
 DEFAULT_MODEL = "ollama:qwen2.5:3b-instruct"
@@ -877,6 +879,11 @@ def parse_int_env(name: str, default: int) -> int:
         return default
 
 
+def max_concurrent_asks() -> int:
+    """Return the positive global limit for concurrent /ask handlers."""
+    return max(1, parse_int_env("LLM_MAX_CONCURRENT_ASKS", DEFAULT_LLM_MAX_CONCURRENT_ASKS))
+
+
 class DirectChatAgent:
     """Single-shot, source-grounded chat over the configured model.
 
@@ -1009,6 +1016,7 @@ live_fetcher = ConferencePageFetcher(live_config, live_cache)
 live_retriever = ConferenceLiveRetriever(live_config, live_site_search, live_fetcher, data_path)
 agent = create_agent(knowledge)
 llm_disabled_until = 0.0
+ask_semaphore = asyncio.Semaphore(max_concurrent_asks())
 app = FastAPI(title="ACSOS 2026 conference assistant")
 
 
@@ -1195,6 +1203,12 @@ async def ask(
     """Answer an ACSOS 2026 question."""
     verify_llm_api_key(x_llm_api_key)
     ask_request = await parse_ask_request(request)
+    async with ask_semaphore:
+        return await answer_ask_request(ask_request)
+
+
+async def answer_ask_request(ask_request: AskRequest) -> AskResponse:
+    """Run one bounded answer pipeline after authentication and request validation."""
     local_chunks = knowledge.search(ask_request.question)
     direct_answer = knowledge.high_confidence_answer(ask_request.question)
     if direct_answer is not None and not asks_for_live_verification(ask_request.question):

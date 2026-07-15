@@ -29,16 +29,6 @@ jobs:
         uses: actions/checkout@v7.0.0
       - name: Build the container
         run: docker build -t angelacorte/acsos26-telegram-bot .
-  autoupdate-container:
-    runs-on: ubuntu-24.04
-    concurrency:
-      group: autoupdate-container-${{ github.workflow }}-${{ github.event.number || github.ref }}
-      cancel-in-progress: true
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7.0.0
-      - name: Build the container
-        run: docker build -t angelacorte/acsos26-telegram-bot-autoupdate autoupdate
   release:
     permissions:
       contents: write
@@ -46,7 +36,6 @@ jobs:
       # Only one release job at a time. Strictly sequential.
       group: release-${{ github.workflow }}-${{ github.event.number || github.ref }}
     needs:
-      - autoupdate-container
       - build
       - containerize
     runs-on: ubuntu-latest
