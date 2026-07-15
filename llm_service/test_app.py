@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import sys
-from types import ModuleType
+import time
+from types import ModuleType, SimpleNamespace
 
 from fastapi.testclient import TestClient
 
@@ -258,6 +259,120 @@ def test_workshop_questions_are_specific_about_missing_entries() -> None:
         "Workshops: Workshop information for ACSOS 2026. "
         "No accepted contributions or timed sessions are listed in the current conference data yet."
     )
+
+
+def test_paper_count_questions_are_answered_deterministically() -> None:
+    """'How many papers' questions must be counted, not sent to the model or mismatched."""
+    overall = service.knowledge.deterministic_answer("how many accepted papers")
+    assert overall.mode == "deterministic"
+    assert "27 accepted papers" in overall.answer
+
+    main = service.knowledge.deterministic_answer("how many papers are accepted in main track?")
+    assert main.answer == "Main Track: 27 accepted paper(s)."
+
+    workshops = service.knowledge.deterministic_answer("how many papers in the workshops track?")
+    assert workshops.answer == "Workshops: 0 accepted paper(s)."
+
+    italian = service.knowledge.deterministic_answer("quanti paper ci sono nel main track?")
+    assert "Main Track: 27" in italian.answer
+
+
+def test_paper_question_is_not_captured_by_social_events() -> None:
+    """A question about papers must never be answered with a social event (kart) block."""
+    answer = service.knowledge.deterministic_answer("how many papers are accepted in main track?")
+    assert "Riviera" not in answer.answer
+    assert "kart" not in answer.answer.casefold()
+
+
+def test_distinctive_social_event_terms_are_matched_in_body() -> None:
+    """Questions about a distinctive detail (kart/karting/race) must find the right event."""
+    for question in (
+        "when is the kart activity?",
+        "when is the kart race event?",
+        "when is the karting?",
+        "quand e la kart activity",
+    ):
+        answer = service.knowledge.social_event_answer(question)
+        assert answer is not None, question
+        assert "Thursday, September 10" in answer.answer, question
+        assert "Riccione" in answer.answer, question
+
+    # A single distinctive event must not be shadowed by unrelated deterministic answers.
+    assert service.knowledge.social_event_answer("where is the conference venue?") is None
+    assert service.knowledge.social_event_answer("who are the general chairs?") is None
+
+
+def test_italian_questions_are_answered_deterministically() -> None:
+    """Italian questions should hit the same reliable deterministic paths as English ones."""
+    original_agent = service.agent
+    service.agent = FailingAgent()
+    try:
+        client = TestClient(service.app)
+        dates = client.post("/ask", json={"question": "quando si terra la conferenza?"}).json()
+        venue = client.post("/ask", json={"question": "dove si svolge la conferenza?"}).json()
+        registration = client.post("/ask", json={"question": "come funziona la registrazione?"}).json()
+        chairs = client.post("/ask", json={"question": "chi sono i general chair?"}).json()
+    finally:
+        service.agent = original_agent
+
+    assert dates["mode"] == "deterministic"
+    assert "September 2026" in dates["answer"]
+    assert venue["mode"] == "deterministic"
+    assert "University of Bologna" in venue["answer"]
+    assert registration["mode"] == "deterministic"
+    assert "http" in registration["answer"]
+    assert chairs["mode"] == "deterministic"
+    assert "General Chair" in chairs["answer"]
+
+
+def test_generation_timeout_falls_back_without_long_cooldown(monkeypatch) -> None:
+    """A slow model must not hang the request; it should fall back and recover quickly."""
+
+    class SlowAgent:
+        """Simulate a model that is too slow to answer in time."""
+
+        def invoke(self, payload: dict) -> dict:
+            """Block longer than the configured generation timeout."""
+            time.sleep(1.0)
+            return {"messages": [SimpleNamespace(content="too late")]}
+
+    monkeypatch.setenv("LLM_GENERATION_TIMEOUT_SECONDS", "0.1")
+    monkeypatch.setenv("LLM_TIMEOUT_COOLDOWN_SECONDS", "0")
+    original_agent = service.agent
+    original_disabled_until = service.llm_disabled_until
+    service.agent = SlowAgent()
+    service.llm_disabled_until = 0.0
+    try:
+        payload = TestClient(service.app).post(
+            "/ask",
+            json={"question": "summarize the general themes of the conference for a newcomer"},
+        ).json()
+    finally:
+        service.agent = original_agent
+        service.llm_disabled_until = original_disabled_until
+
+    assert payload["mode"] == "fallback"
+    assert "too late" not in payload["answer"]
+
+
+def test_direct_chat_agent_makes_one_grounded_call() -> None:
+    """The default responder issues a single system-anchored call and returns its content."""
+    captured: dict = {}
+
+    class FakeModel:
+        """Capture the messages passed to a single-shot model call."""
+
+        def invoke(self, messages: list) -> SimpleNamespace:
+            """Record messages and return a canned answer."""
+            captured["messages"] = messages
+            return SimpleNamespace(content="risposta breve")
+
+    agent = service.DirectChatAgent(FakeModel())
+    result = agent.invoke({"messages": [{"role": "user", "content": "domanda"}]})
+
+    assert service.extract_agent_answer(result) == "risposta breve"
+    assert captured["messages"][0][0] == "system"
+    assert captured["messages"][-1] == ("user", "domanda")
 
 
 def test_live_sources_are_prioritized_in_prompt_and_sources() -> None:

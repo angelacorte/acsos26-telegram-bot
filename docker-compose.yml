@@ -18,8 +18,13 @@ services:
       dockerfile: llm_service/Dockerfile
     environment:
       CONFERENCE_DATA: /app/conference.json
-      DEEPAGENTS_MODEL: ${DEEPAGENTS_MODEL:-ollama:gpt-oss:20b}
-      LLM_FAILURE_COOLDOWN_SECONDS: ${LLM_FAILURE_COOLDOWN_SECONDS:-600}
+      DEEPAGENTS_MODEL: ${DEEPAGENTS_MODEL:-ollama:qwen2.5:3b-instruct}
+      USE_DEEPAGENTS: ${USE_DEEPAGENTS:-}
+      LLM_FAILURE_COOLDOWN_SECONDS: ${LLM_FAILURE_COOLDOWN_SECONDS:-60}
+      LLM_TIMEOUT_COOLDOWN_SECONDS: ${LLM_TIMEOUT_COOLDOWN_SECONDS:-20}
+      LLM_GENERATION_TIMEOUT_SECONDS: ${LLM_GENERATION_TIMEOUT_SECONDS:-30}
+      OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-4096}
+      OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-512}
       OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-30m}
       LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.1}
       LLM_API_KEY: ${LLM_API_KEY:-}
@@ -56,7 +61,7 @@ services:
     image: ollama/ollama:0.31.1
     environment:
       OLLAMA_HOST: http://ollama:11434
-      OLLAMA_MODEL: ${OLLAMA_MODEL:-gpt-oss:20b}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b-instruct}
     volumes:
       - ollama:/root/.ollama
     depends_on:

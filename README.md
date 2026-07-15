@@ -3,7 +3,8 @@
 Telegram bot and optional LLM assistant for [ACSOS 2026](https://2026.acsos.org/).
 
 The Kotlin bot is the always-on Telegram process. The Python service is optional and
-serves `/ask` through Deep Agents plus Ollama when configured.
+serves `/ask` through a fast, source-grounded Ollama model (with an optional Deep
+Agents mode) when configured.
 
 ## Bot commands
 
@@ -101,26 +102,51 @@ pip install -r llm_service/requirements.txt
 uvicorn llm_service.app:app --reload --host 0.0.0.0 --port 8000
 ```
 
-By default it uses `DEEPAGENTS_MODEL=ollama:gpt-oss:20b`,
-`OLLAMA_KEEP_ALIVE=30m`, `LLM_TEMPERATURE=0.1`, and
-`LLM_FAILURE_COOLDOWN_SECONDS=600`. `OLLAMA_KEEP_ALIVE` prevents Ollama from
-unloading the model immediately between rare `/ask` requests; increase it if
-the model still has to reload too often. `LLM_FAILURE_COOLDOWN_SECONDS` prevents
-repeated reload attempts for a broken or oversized model. Pull the model before
-using Deep Agents with Ollama:
+By default the assistant makes a **single grounded model call** rather than
+running a tool-calling agent loop: the retrieved local and live sources are put
+into the prompt, and the model is instructed to answer only from those sources
+or to say the information is not available yet. This keeps answers on topic and
+fast. The default model is `DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct` — a
+small, fast, multilingual (Italian/English) instruct model that fits in RAM on a
+CPU-only host. Set `USE_DEEPAGENTS=1` to switch back to the tool-calling Deep
+Agent, and set `DISABLE_LLM=true` (or the legacy `DISABLE_DEEPAGENTS=true`) to run
+deterministic retrieval only.
+
+**Pick a model that fits in host memory.** On a CPU-only host, a model that is too
+large is killed by the OS while loading — Ollama logs `llama-server process has
+terminated: signal: killed` and returns HTTP 500, so the bot silently falls back
+to deterministic answers. This is a memory problem, not a timeout. Rough CPU RAM
+needs (q4): `3b` ~3 GB, `7b` ~6 GB, `14b` ~10 GB, `gpt-oss:20b` ~14 GB. Use the
+largest model that comfortably fits (or a GPU host), e.g.
+`DEEPAGENTS_MODEL=ollama:qwen2.5:7b-instruct` with `OLLAMA_MODEL=qwen2.5:7b-instruct`.
+`OLLAMA_NUM_CTX=4096` and `OLLAMA_NUM_PREDICT=512` bound memory and latency.
+
+Latency and reliability defaults:
+
+- `LLM_GENERATION_TIMEOUT_SECONDS=30` caps how long one answer may take
+  server-side, so a slow generation falls back instead of hanging the request.
+- `LLM_FAILURE_COOLDOWN_SECONDS=60` backs off after a *hard* backend failure
+  (e.g. the model cannot load); it is short so the assistant recovers quickly.
+- `LLM_TIMEOUT_COOLDOWN_SECONDS=20` is a brief back-off after a slow generation.
+- `OLLAMA_KEEP_ALIVE=30m` keeps the model warm between rare requests.
+- `LLM_TEMPERATURE=0.1` keeps answers deterministic.
+
+Questions in Italian activate the same reliable deterministic paths as English:
+the tokenizer strips accents and maps common Italian terms (quando, dove, chi,
+sede, registrazione, sessione, relatore, articolo, …) onto their English
+canonical terms. Pull the model before first use:
 
 ```bash
-ollama pull gpt-oss:20b
+ollama pull qwen2.5:3b-instruct
 ```
-
-Set `DISABLE_DEEPAGENTS=true` to run deterministic retrieval only.
 
 ### Live ACSOS website retrieval
 
 `/ask` first searches local `conference.json`. For questions with weak local
 matches, or questions that explicitly ask for recent/current information, the
 service performs a bounded live lookup against ACSOS pages, merges the live
-chunks with local context, and asks Ollama to answer from those sources. Simple
+chunks with local context, and asks the model to answer from those sources
+(saying so explicitly when the sources do not contain the answer). Simple
 high-confidence questions still use deterministic local answers to keep
 Telegram latency low.
 
@@ -173,9 +199,11 @@ Then edit `.env`:
 BOT_TOKEN=<telegram-token>
 BOT_ACCESS_KEY=<private-user-access-key>
 LLM_API_KEY=<service-to-service-key>
-DEEPAGENTS_MODEL=ollama:gpt-oss:20b
-OLLAMA_MODEL=gpt-oss:20b
-LLM_FAILURE_COOLDOWN_SECONDS=600
+DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct
+OLLAMA_MODEL=qwen2.5:3b-instruct
+LLM_FAILURE_COOLDOWN_SECONDS=60
+LLM_TIMEOUT_COOLDOWN_SECONDS=20
+LLM_GENERATION_TIMEOUT_SECONDS=30
 OLLAMA_KEEP_ALIVE=30m
 LLM_TEMPERATURE=0.1
 ACSOS_LIVE_SEARCH_ENABLED=true
@@ -190,9 +218,9 @@ If the LLM service logs `Unsupported upgrade request` and `/ask` returns a 422
 empty-body error, rebuild the bot image. The Kotlin client is pinned to HTTP/1.1
 to avoid cleartext HTTP/2 upgrade attempts against Uvicorn.
 
-If `ollama pull gpt-oss:20b` says the model requires a newer Ollama version,
-recreate the Ollama container. The compose file pins `ollama/ollama:0.31.1`,
-which is new enough for current GPT-OSS model manifests.
+If `ollama pull` says a model requires a newer Ollama version, recreate the
+Ollama container. The compose file pins `ollama/ollama:0.31.1`, which is new
+enough for the default `qwen2.5:3b-instruct` and for GPT-OSS model manifests.
 
 Docker Compose also starts an `ollama-pull` one-shot service. It waits for
 Ollama, pulls `OLLAMA_MODEL`, and only then lets the LLM service start. If the

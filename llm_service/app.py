@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import os
 import re
 import time
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -24,12 +26,31 @@ from llm_service.conference_live import (
 )
 
 DEFAULT_DATA_PATH = Path(__file__).resolve().parents[1] / "src/main/resources/acsos26/conference.json"
-DEFAULT_LLM_FAILURE_COOLDOWN_SECONDS = 600.0
+# A single hard backend failure should not silence the assistant for long: recover in ~1 minute.
+DEFAULT_LLM_FAILURE_COOLDOWN_SECONDS = 60.0
+# A slow generation should back off only briefly so a transient stall does not disable the model.
+DEFAULT_LLM_TIMEOUT_COOLDOWN_SECONDS = 20.0
+# Cap how long one answer may take server-side so the request never hangs to the client timeout.
+DEFAULT_LLM_GENERATION_TIMEOUT_SECONDS = 30.0
+# Small, fast, multilingual instruct model that fits in RAM on a CPU-only host: good IT/EN
+# adherence with low latency. Bump to 7b/14b on machines with more memory or a GPU.
+DEFAULT_MODEL = "ollama:qwen2.5:3b-instruct"
+# Cap context and output to bound memory use and latency; the grounded prompt is small.
+DEFAULT_OLLAMA_NUM_CTX = 4096
+DEFAULT_OLLAMA_NUM_PREDICT = 512
 DEFAULT_OLLAMA_KEEP_ALIVE = "30m"
 DEFAULT_LLM_TEMPERATURE = 0.1
 MAX_CONTEXT_CHUNKS = 6
 MAX_PROMPT_CONTEXT_CHARS = 7000
 LOGGER = logging.getLogger(__name__)
+# Anchor the model to its role; the full grounded context is supplied in the user message.
+DIRECT_SYSTEM_PROMPT = (
+    "You are the ACSOS 2026 conference assistant. Answer questions about ACSOS 2026 strictly "
+    "from the source blocks provided in the user message. Never rely on prior knowledge and never "
+    "guess. If the answer is not in the sources, say the information is not available in the "
+    "ACSOS 2026 data yet. Always answer in the same language as the user's question, in at most "
+    "three short sentences, and never add unrelated information."
+)
 GENERIC_SOCIAL_TERMS = {
     "activities",
     "activity",
@@ -47,6 +68,7 @@ GENERIC_SOCIAL_TERMS = {
     "where",
 }
 STOPWORDS = {
+    # English
     "a",
     "about",
     "an",
@@ -59,8 +81,11 @@ STOPWORDS = {
     "from",
     "in",
     "is",
+    "me",
     "of",
     "on",
+    "please",
+    "tell",
     "the",
     "this",
     "to",
@@ -69,6 +94,93 @@ STOPWORDS = {
     "will",
     "who",
     "with",
+    # Italian
+    "al",
+    "alla",
+    "che",
+    "ci",
+    "con",
+    "cosa",
+    "da",
+    "dei",
+    "del",
+    "della",
+    "delle",
+    "di",
+    "e",
+    "ed",
+    "gli",
+    "il",
+    "in",
+    "la",
+    "le",
+    "lo",
+    "mi",
+    "nel",
+    "per",
+    "qual",
+    "quale",
+    "quali",
+    "si",
+    "sono",
+    "su",
+    "un",
+    "una",
+    "uno",
+}
+# Map Italian query terms onto the English canonical terms the data and gates use, so
+# Italian questions activate the same deterministic paths and retrieval as English ones.
+SYNONYMS = {
+    "articolo": "paper",
+    "articoli": "paper",
+    "attivita": "activity",
+    "aula": "room",
+    "aule": "room",
+    "autore": "author",
+    "autori": "author",
+    "cena": "dinner",
+    "cene": "dinner",
+    "chi": "who",
+    "come": "how",
+    "comitato": "committee",
+    "conferenza": "conference",
+    "data": "date",
+    "dove": "where",
+    "evento": "event",
+    "eventi": "event",
+    "iscrizione": "registration",
+    "iscrizioni": "registration",
+    "keynote": "keynote",
+    "luogo": "venue",
+    "organizzatore": "organizer",
+    "organizzatori": "organizer",
+    "orario": "time",
+    "orari": "time",
+    "paper": "paper",
+    "phd": "doctoral",
+    "poster": "posters",
+    "demo": "demos",
+    "presidente": "chair",
+    "presidenti": "chair",
+    "programma": "program",
+    "quando": "when",
+    "quanti": "many",
+    "quante": "many",
+    "numero": "number",
+    "registrazione": "registration",
+    "relatore": "speaker",
+    "relatori": "speaker",
+    "sala": "room",
+    "sale": "room",
+    "sede": "venue",
+    "seminario": "seminar",
+    "sessione": "session",
+    "sessioni": "session",
+    "sociale": "social",
+    "sociali": "social",
+    "stanza": "room",
+    "tutorial": "tutorial",
+    "workshop": "workshop",
 }
 
 
@@ -102,6 +214,10 @@ class ConferenceKnowledge:
         self.data_path = data_path
         self.data = json.loads(data_path.read_text(encoding="utf-8"))["conference"]
         self.chunks = self._build_chunks()
+        # Terms that appear anywhere OTHER than social events. A social-event term is only
+        # "distinctive" (able to trigger a social answer without a social keyword) if it is
+        # NOT in here — otherwise common words like "track" or "papers" would false-match.
+        self.non_social_terms = self._build_non_social_terms()
 
     def search(self, query: str, limit: int = MAX_CONTEXT_CHUNKS) -> list[Chunk]:
         """Return the most relevant conference facts for a user query."""
@@ -116,12 +232,12 @@ class ConferenceKnowledge:
             if score:
                 scored.append((score, chunk))
         best_score = max((score for score, _ in scored), default=0)
-        if best_score < 2:
+        if best_score < 1:
             return []
         return [
             chunk
             for score, chunk in sorted(scored, key=lambda item: item[0], reverse=True)[:limit]
-            if score >= max(2, best_score - 1)
+            if score >= max(1, best_score - 1)
         ]
 
     def find_paper(self, query: str) -> dict[str, Any] | None:
@@ -155,11 +271,16 @@ class ConferenceKnowledge:
         ]
 
     def find_tracks(self, query: str) -> list[dict[str, Any]]:
-        """Find conference tracks mentioned in a user query."""
-        query_terms = set(tokenize(query))
+        """Find conference tracks mentioned in a user query.
+
+        The generic words "track"/"tracks" are ignored so a phrase like "workshops track"
+        does not also match the Main Track just because its name contains "Track".
+        """
+        generic = {"track", "tracks"}
+        query_terms = set(tokenize(query)) - generic
         matches = []
         for track in self.data["tracks"]:
-            track_terms = set(tokenize(f"{track['id']} {track['command']} {track['name']}"))
+            track_terms = set(tokenize(f"{track['id']} {track['command']} {track['name']}")) - generic
             if query_terms & track_terms:
                 matches.append(track)
         return matches
@@ -172,7 +293,7 @@ class ConferenceKnowledge:
         specific_terms = query_terms - GENERIC_SOCIAL_TERMS
         events = []
         for event in self.data.get("socialEvents", []):
-            event_terms = set(tokenize(f"{event['title']} {event['whenText']} {event['whereText']}"))
+            event_terms = set(tokenize(social_event_search_text(event)))
             if specific_terms and specific_terms & event_terms:
                 events.append(event)
         return events if specific_terms else self.data.get("socialEvents", [])
@@ -350,7 +471,7 @@ class ConferenceKnowledge:
     def social_event_answer(self, question: str) -> AskResponse | None:
         """Answer direct social-event questions."""
         normalized_question = normalize(question)
-        if not any(
+        social_gate = any(
             term in normalized_question
             for term in [
                 "activity",
@@ -364,11 +485,25 @@ class ConferenceKnowledge:
                 "tuesday",
                 "friday",
             ]
-        ):
-            return None
+        )
         events = self.find_social_events(question)
         if not events:
             return None
+        all_events = self.data.get("socialEvents", [])
+        if not social_gate:
+            # Without a social keyword, only answer when a term that is DISTINCTIVE to social
+            # events (e.g. "kart", "karting", "racing") uniquely identifies one event. Common
+            # words like "track" or "papers" appear in event bodies but must not trigger this.
+            specific_terms = set(tokenize(question)) - GENERIC_SOCIAL_TERMS
+            distinctive = specific_terms - self.non_social_terms
+            matched = [
+                event
+                for event in all_events
+                if distinctive & set(tokenize(social_event_search_text(event)))
+            ]
+            if not (distinctive and len(matched) == 1):
+                return None
+            events = matched
         prefix = (
             "The current ACSOS 2026 data does not mark one dinner as the main social dinner. "
             "These are the listed dinner/social events:"
@@ -430,6 +565,7 @@ class ConferenceKnowledge:
     def high_confidence_answer(self, question: str) -> AskResponse | None:
         """Answer structured questions that should bypass generative reasoning."""
         for direct_answer in (
+            self.paper_count_answer(question),
             self.main_social_event_answer(question),
             self.social_event_answer(question),
             self.conference_dates_answer(question),
@@ -477,6 +613,54 @@ class ConferenceKnowledge:
                 mode="deterministic",
             )
         return None
+
+    def _build_non_social_terms(self) -> set[str]:
+        """Collect tokens from all non-social conference data for distinctiveness checks."""
+        parts: list[str] = []
+        data = self.data
+        for key in ("name", "shortName", "description", "programStatus", "location"):
+            parts.append(str(data.get(key, "")))
+        for track in data.get("tracks", []):
+            parts += [track.get("id", ""), track.get("command", ""), track.get("name", ""), track.get("summary", ""), track.get("status", "")]
+            for paper in track.get("acceptedPapers", []):
+                parts.append(paper.get("title", ""))
+                parts += list(paper.get("authors", []))
+        for person in data.get("committees", []):
+            parts += [person.get("name", ""), person.get("role", ""), person.get("affiliation", "")]
+        for page in data.get("infoPages", []):
+            parts += [page.get("title", ""), page.get("body", "")]
+        for keynote in data.get("keynotes", []):
+            parts += [keynote.get("speaker", ""), keynote.get("title", ""), keynote.get("affiliation", ""), keynote.get("abstract", "")]
+        for session in data.get("sessions", []):
+            parts.append(session.get("title", ""))
+        terms: set[str] = set()
+        for part in parts:
+            terms.update(tokenize(part))
+        return terms
+
+    def paper_count_answer(self, question: str) -> AskResponse | None:
+        """Answer 'how many papers' questions deterministically, overall or per track."""
+        terms = set(tokenize(question))
+        asks_count = ("how" in terms and "many" in terms) or bool(terms & {"count", "number", "total", "quanti", "quante"})
+        if not asks_count or not (terms & {"paper", "papers"}):
+            return None
+        tracks = self.find_tracks(question)
+        if tracks:
+            lines = [f"{track['name']}: {len(track.get('acceptedPapers', []))} accepted paper(s)." for track in tracks]
+            return AskResponse(
+                answer="\n".join(lines),
+                sources=sorted({track["url"] for track in tracks}),
+                mode="deterministic",
+            )
+        total = sum(len(track.get("acceptedPapers", [])) for track in self.data["tracks"])
+        breakdown = [
+            f"- {track['name']}: {len(track['acceptedPapers'])}"
+            for track in self.data["tracks"]
+            if track.get("acceptedPapers")
+        ]
+        answer = f"ACSOS 2026 has {total} accepted papers in the current conference data"
+        answer += (":\n" + "\n".join(breakdown) + ".") if breakdown else "."
+        return AskResponse(answer=answer, sources=[self.data["website"]], mode="deterministic")
 
     def _build_chunks(self) -> list[Chunk]:
         chunks = [
@@ -539,13 +723,33 @@ class ConferenceKnowledge:
 
 
 def tokenize(text: str) -> list[str]:
-    """Split text into lowercase searchable terms."""
-    return [term for term in re.findall(r"[a-z0-9]+", normalize(text)) if term not in STOPWORDS]
+    """Split text into lowercase searchable terms, expanding Italian synonyms to English."""
+    terms: list[str] = []
+    for term in re.findall(r"[a-z0-9]+", normalize(text)):
+        if term in STOPWORDS:
+            continue
+        terms.append(term)
+        synonym = SYNONYMS.get(term)
+        if synonym and synonym != term and synonym not in STOPWORDS:
+            terms.append(synonym)
+    return terms
 
 
 def normalize(text: str) -> str:
-    """Normalize text for robust, dependency-free matching."""
-    return text.casefold().replace("-", " ").replace(":", " ")
+    """Normalize text for robust, dependency-free matching (accent- and case-insensitive)."""
+    decomposed = unicodedata.normalize("NFKD", text)
+    without_accents = "".join(char for char in decomposed if not unicodedata.combining(char))
+    return without_accents.casefold().replace("-", " ").replace(":", " ")
+
+
+def social_event_search_text(event: dict[str, str]) -> str:
+    """Build the full searchable text for a social event, including body and details.
+
+    Distinctive words like "kart", "karting", or "race" only appear in the body / fee /
+    includes fields, so matching must look beyond the title, date, and location.
+    """
+    fields = ("title", "whenText", "whereText", "body", "fee", "includes", "capacity")
+    return " ".join(str(event.get(field, "")) for field in fields)
 
 
 def social_event_summary(event: dict[str, str]) -> str:
@@ -653,20 +857,77 @@ def create_chat_model(model_name: str) -> Any:
         "model": model_name.removeprefix("ollama:"),
         "keep_alive": os.getenv("OLLAMA_KEEP_ALIVE", DEFAULT_OLLAMA_KEEP_ALIVE),
         "temperature": parse_float_env("LLM_TEMPERATURE", DEFAULT_LLM_TEMPERATURE),
+        "num_ctx": parse_int_env("OLLAMA_NUM_CTX", DEFAULT_OLLAMA_NUM_CTX),
+        "num_predict": parse_int_env("OLLAMA_NUM_PREDICT", DEFAULT_OLLAMA_NUM_PREDICT),
     }
     if base_url:
         model_kwargs["base_url"] = base_url
     return ChatOllama(**model_kwargs)
 
 
+def parse_int_env(name: str, default: int) -> int:
+    """Read an integer environment variable, falling back to a safe default."""
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        LOGGER.warning("Invalid %s=%r; using %s.", name, value, default)
+        return default
+
+
+class DirectChatAgent:
+    """Single-shot, source-grounded chat over the configured model.
+
+    Unlike a tool-calling agent, this makes exactly one constrained model call with the
+    retrieved context already in the prompt. That removes the freewheeling reasoning loop
+    that could drift off-topic, and it is markedly faster because there is no tool round-trip.
+    """
+
+    def __init__(self, model: Any, system_prompt: str = DIRECT_SYSTEM_PROMPT) -> None:
+        self.model = model
+        self.system_prompt = system_prompt
+
+    def invoke(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """Answer using the provided messages, returning a Deep-Agents-compatible result."""
+        messages: list[tuple[str, str]] = [("system", self.system_prompt)]
+        for message in payload.get("messages", []):
+            role = message.get("role", "user")
+            messages.append(("user" if role not in {"system", "assistant"} else role, message.get("content", "")))
+        result = self.model.invoke(messages)
+        return {"messages": [result]}
+
+
+def llm_disabled_by_env() -> bool:
+    """Return whether the operator has turned the generative assistant off entirely."""
+    flags = (os.getenv("DISABLE_LLM", ""), os.getenv("DISABLE_DEEPAGENTS", ""))
+    return any(flag.lower() in {"1", "true", "yes"} for flag in flags)
+
+
 def create_agent(knowledge: ConferenceKnowledge) -> Any | None:
-    """Create a Deep Agents instance when dependencies and model configuration are available."""
-    if os.getenv("DISABLE_DEEPAGENTS", "").lower() in {"1", "true", "yes"}:
+    """Create the generative responder, defaulting to a fast grounded single-shot model call.
+
+    The tool-calling Deep Agent is still available behind USE_DEEPAGENTS=1 for cases that need
+    it, but the default favours reliability and latency: one grounded completion that either
+    answers from the sources or says the information is unavailable.
+    """
+    if llm_disabled_by_env():
         return None
+    model = create_chat_model(os.getenv("DEEPAGENTS_MODEL", DEFAULT_MODEL))
+    use_deepagents = os.getenv("USE_DEEPAGENTS", "").lower() in {"1", "true", "yes"}
+    if not use_deepagents:
+        if isinstance(model, str):
+            LOGGER.warning("No chat model client available (langchain-ollama missing); staying deterministic.")
+            return None
+        return DirectChatAgent(model)
     try:
         from deepagents import create_deep_agent
     except ImportError:
-        return None
+        if isinstance(model, str):
+            return None
+        LOGGER.warning("deepagents unavailable; using the direct grounded responder instead.")
+        return DirectChatAgent(model)
 
     def search_conference_data(query: str) -> str:
         """Search ACSOS 2026 facts, papers, tracks, sessions, venue, and social events."""
@@ -712,7 +973,7 @@ def create_agent(knowledge: ConferenceKnowledge) -> Any | None:
         )
 
     return create_deep_agent(
-        model=create_chat_model(os.getenv("DEEPAGENTS_MODEL", "ollama:gpt-oss:20b")),
+        model=model,
         tools=[search_conference_data, lookup_paper, lookup_social_events, lookup_keynotes, lookup_committee_role],
         system_prompt=(
             "You answer questions about ACSOS 2026 only. Use the retrieved ACSOS 2026 sources and the most "
@@ -783,11 +1044,26 @@ def llm_is_temporarily_disabled() -> bool:
 
 
 def disable_llm_temporarily() -> None:
-    """Skip LLM calls for a short cooldown after backend failures."""
+    """Skip LLM calls for a short cooldown after a hard backend failure."""
+    _disable_llm_for("LLM_FAILURE_COOLDOWN_SECONDS", DEFAULT_LLM_FAILURE_COOLDOWN_SECONDS)
+
+
+def disable_llm_after_timeout() -> None:
+    """Back off only briefly after a slow generation so the model recovers quickly."""
+    _disable_llm_for("LLM_TIMEOUT_COOLDOWN_SECONDS", DEFAULT_LLM_TIMEOUT_COOLDOWN_SECONDS)
+
+
+def _disable_llm_for(cooldown_env: str, default: float) -> None:
+    """Extend the LLM cooldown window without ever shortening an existing one."""
     global llm_disabled_until
-    cooldown = parse_float_env("LLM_FAILURE_COOLDOWN_SECONDS", DEFAULT_LLM_FAILURE_COOLDOWN_SECONDS)
+    cooldown = parse_float_env(cooldown_env, default)
     if cooldown > 0:
-        llm_disabled_until = time.monotonic() + cooldown
+        llm_disabled_until = max(llm_disabled_until, time.monotonic() + cooldown)
+
+
+def generation_timeout_seconds() -> float:
+    """Return the server-side cap on how long one generative answer may take."""
+    return parse_float_env("LLM_GENERATION_TIMEOUT_SECONDS", DEFAULT_LLM_GENERATION_TIMEOUT_SECONDS)
 
 
 def answering_mode() -> str:
@@ -796,7 +1072,7 @@ def answering_mode() -> str:
         return "deterministic"
     if llm_is_temporarily_disabled():
         return "fallback"
-    return "deepagents"
+    return "llm"
 
 
 def build_context_prompt(
@@ -825,11 +1101,15 @@ def build_context_prompt(
         else ""
     )
     return (
-        "Answer this ACSOS 2026 question using only the source blocks below.\n"
+        "Answer this ACSOS 2026 question using ONLY the source blocks below.\n"
+        "Do not use any outside or prior knowledge, and do not guess.\n"
         "Prefer LIVE SOURCE blocks over LOCAL SOURCE blocks if they conflict.\n"
         "Do not invent dates, people, events, places, session details, or registration details.\n"
-        "If the sources are insufficient, state what could not be verified.\n"
-        "End with a short 'Sources:' list containing only URLs used.\n\n"
+        "If the sources do not contain the answer, reply only that the information is not available "
+        "in the ACSOS 2026 data yet and suggest checking https://2026.acsos.org/ ; do not improvise.\n"
+        "Reply in the same language as the question.\n"
+        "Keep the answer to at most three short sentences and stay strictly on the asked topic.\n"
+        "End with a short 'Sources:' list containing only URLs you actually used.\n\n"
         f"{live_note}\n\n"
         f"Question: {question}\n\n"
         f"Sources:\n{context}"
@@ -933,21 +1213,27 @@ async def ask(
             sources=contextual.sources,
             mode="fallback",
         )
+    prompt = build_context_prompt(ask_request.question, local_chunks, live_result)
     try:
-        prompt = build_context_prompt(ask_request.question, local_chunks, live_result)
-        result = agent.invoke({"messages": [{"role": "user", "content": prompt}]})
+        result = await asyncio.wait_for(
+            asyncio.to_thread(agent.invoke, {"messages": [{"role": "user", "content": prompt}]}),
+            timeout=generation_timeout_seconds(),
+        )
         return AskResponse(
             answer=extract_agent_answer(result),
             sources=source_urls(local_chunks, live_result, knowledge.data["website"]),
-            mode="deepagents",
+            mode="llm",
         )
+    except (asyncio.TimeoutError, TimeoutError):
+        LOGGER.warning("LLM generation timed out after %.1fs; using fallback.", generation_timeout_seconds())
+        disable_llm_after_timeout()
     except Exception as error:
         LOGGER.warning("LLM agent failed; using deterministic fallback: %s", error)
         disable_llm_temporarily()
-        fallback = direct_answer or knowledge.deterministic_answer(ask_request.question)
-        contextual = deterministic_context_answer(ask_request.question, local_chunks, live_result, fallback)
-        return AskResponse(
-            answer=contextual.answer,
-            sources=contextual.sources,
-            mode="fallback",
-        )
+    fallback = direct_answer or knowledge.deterministic_answer(ask_request.question)
+    contextual = deterministic_context_answer(ask_request.question, local_chunks, live_result, fallback)
+    return AskResponse(
+        answer=contextual.answer,
+        sources=contextual.sources,
+        mode="fallback",
+    )

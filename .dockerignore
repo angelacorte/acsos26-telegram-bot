@@ -1,0 +1,31 @@
+# Keep secrets, VCS metadata, build output and local envs OUT of the Docker build
+# context. The root Dockerfile uses `COPY . /app`, so without this file the build
+# layer would embed .env (BOT_TOKEN!), .git history, and hundreds of MB of caches.
+.git
+.github
+.gradle
+.gradle-cache
+.kotlin
+.idea
+.vscode
+bin
+build
+out
+
+# Python local environments and caches (not needed to build either image)
+env
+.venv
+**/__pycache__
+.pytest_cache
+*.pyc
+
+# Node tooling used only for release automation
+node_modules
+
+# Secrets and local-only config (never bake into an image)
+.env
+.env.*
+!.env.example
+
+# Docs are not needed inside runtime images
+*.md
