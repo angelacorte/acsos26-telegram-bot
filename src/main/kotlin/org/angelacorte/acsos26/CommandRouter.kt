@@ -2,8 +2,11 @@ package org.angelacorte.acsos26
 
 private const val MAX_PAPERS_IN_COMMAND_REPLY = 8
 private const val PRIVATE_CHAT_TYPE = "private"
+private const val COMMUNITY_LINKS_URL = "https://linktr.ee/acsosconf"
 private const val PRIVATE_ACCESS_REQUIRED_MESSAGE =
     "This bot is private. Send /start <access-key> to enable it in this chat."
+private const val GROUP_LINK_NOT_CONFIGURED_MESSAGE =
+    "The Telegram group invite link is not configured."
 
 private val AUTH_COMMANDS = setOf("start", "auth")
 
@@ -14,6 +17,7 @@ internal class CommandRouter(
     private val conference: Conference,
     private val llmClient: LlmClient,
     private val accessControl: AccessControl = AccessControl.disabled(),
+    private val groupInviteUrl: String = "",
 ) {
     /**
      * Returns the answer for a message, or null when the bot should stay silent.
@@ -70,6 +74,9 @@ internal class CommandRouter(
         when (command.name) {
             "help" -> help()
             "about" -> about()
+            "site" -> conference.website
+            "links" -> COMMUNITY_LINKS_URL
+            "group" -> groupInviteUrl.ifBlank { GROUP_LINK_NOT_CONFIGURED_MESSAGE }
             "tracks" -> tracks()
             "program" -> program(command.argument)
             "sessions" -> sessions()

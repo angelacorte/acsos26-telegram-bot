@@ -13,6 +13,26 @@ class CommandRouterTest :
             val answer = router.answer("/help")
             answer shouldContain "/program"
             answer shouldContain "/ask"
+            answer shouldContain "/site"
+            answer shouldContain "/links"
+            answer shouldContain "/group"
+        }
+
+        "link commands return their configured destinations" {
+            val routerWithGroup =
+                CommandRouter(
+                    conference,
+                    fixedLlmClient("LLM answer"),
+                    groupInviteUrl = "https://telegram.me/+example",
+                )
+
+            routerWithGroup.answer("/site") shouldBe conference.website
+            routerWithGroup.answer("/links") shouldBe "https://linktr.ee/acsosconf"
+            routerWithGroup.answer("/group") shouldBe "https://telegram.me/+example"
+        }
+
+        "group command reports missing configuration" {
+            router.answer("/group") shouldContain "not configured"
         }
 
         "program does not invent unpublished sessions" {
