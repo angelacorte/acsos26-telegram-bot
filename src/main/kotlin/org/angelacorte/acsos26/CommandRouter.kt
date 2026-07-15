@@ -31,6 +31,23 @@ internal class CommandRouter(
         return commandAnswer(command, chatId)
     }
 
+    /**
+     * Returns true when a message will reach the (slower) LLM assistant, so the caller can show a
+     * "typing" indicator. Errs on the side of showing it; a spurious indicator is harmless.
+     */
+    fun triggersAssistant(
+        message: String,
+        botUsername: String = conference.botUsername,
+        chatType: String = PRIVATE_CHAT_TYPE,
+    ): Boolean {
+        val trimmed = message.trim()
+        if (trimmed.isBlank()) return false
+        val command = TelegramCommand.parse(trimmed, botUsername)
+        if (command != null) return command.name == "ask" && command.argument.isNotBlank()
+        if (trimmed.startsWith("/")) return false
+        return chatType.isPrivateChat() || trimmed.mentions(botUsername)
+    }
+
     private fun commandAnswer(
         command: TelegramCommand,
         chatId: Long?,
@@ -158,9 +175,8 @@ internal class CommandRouter(
 
     private fun track(trackIdOrCommand: String): String {
         val track =
-            conference.tracks.firstOrNull {
-                it.id == trackIdOrCommand || it.command == trackIdOrCommand
-            } ?: return "I do not know that track yet. Use /tracks to see the available tracks."
+            resolveTrack(trackIdOrCommand)
+                ?: return "I do not know that track yet. Use /tracks to see the available tracks."
         val sessions = conference.sessions.filter { it.trackId == track.id }
         return buildString {
             appendLine(track.name)
@@ -187,6 +203,23 @@ internal class CommandRouter(
             appendLine()
             appendLine("Details: ${track.url}")
         }.trim()
+    }
+
+    /**
+     * Resolves a free-form track token tolerantly: exact id/command, known synonyms
+     * (e.g. "poster" -> Posters and Demos, "phd" -> Doctoral Symposium), and loose
+     * singular/plural or prefix matches against the id, command, and name words.
+     */
+    private fun resolveTrack(query: String): Track? {
+        val normalized = query.trim().lowercase()
+        if (normalized.isBlank()) return null
+        conference.tracks.firstOrNull { it.id == normalized || it.command == normalized }?.let { return it }
+        TRACK_SYNONYMS[normalized]?.let { id ->
+            conference.tracks.firstOrNull { it.id == id }?.let { return it }
+        }
+        if (normalized.length < 3) return null
+        val stem = normalized.stripPlural()
+        return conference.tracks.firstOrNull { it.matchesLoosely(normalized, stem) }
     }
 
     private fun sessions(): String =
@@ -256,6 +289,45 @@ private data class TelegramCommand(
                 null
             }
         }
+    }
+}
+
+private val TRACK_SYNONYMS =
+    mapOf(
+        "main" to "main",
+        "maintrack" to "main",
+        "paper" to "main",
+        "papers" to "main",
+        "artifact" to "artifacts",
+        "artifacts" to "artifacts",
+        "ae" to "artifacts",
+        "doctoral" to "doctoral",
+        "phd" to "doctoral",
+        "symposium" to "doctoral",
+        "ds" to "doctoral",
+        "poster" to "posters",
+        "posters" to "posters",
+        "demo" to "posters",
+        "demos" to "posters",
+        "tutorial" to "tutorials",
+        "tutorials" to "tutorials",
+        "workshop" to "workshops",
+        "workshops" to "workshops",
+    )
+
+private val TRACK_NAME_STOPWORDS = setOf("and", "the", "of", "for", "on")
+
+private fun String.stripPlural(): String = if (length > 3 && endsWith("s")) dropLast(1) else this
+
+private fun Track.matchesLoosely(
+    query: String,
+    stem: String,
+): Boolean {
+    val keys =
+        (listOf(id, command) + name.lowercase().split(Regex("[^a-z0-9]+")))
+            .filter { it.length >= 3 && it !in TRACK_NAME_STOPWORDS }
+    return keys.any { key ->
+        key == query || key.stripPlural() == stem || key.startsWith(query) || query.startsWith(key)
     }
 }
 

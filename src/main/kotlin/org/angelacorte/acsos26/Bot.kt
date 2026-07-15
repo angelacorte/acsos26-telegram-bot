@@ -6,6 +6,7 @@ import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.dispatch
 import com.github.kotlintelegrambot.dispatcher.newChatMembers
 import com.github.kotlintelegrambot.dispatcher.text
+import com.github.kotlintelegrambot.entities.ChatAction
 import com.github.kotlintelegrambot.entities.ChatId
 import com.github.kotlintelegrambot.entities.User
 import java.lang.management.ManagementFactory
@@ -43,6 +44,9 @@ fun main() {
                 text {
                     val chatId = ChatId.fromId(message.chat.id)
                     val receivedText = message.text.orEmpty()
+                    if (router.triggersAssistant(receivedText, botUsername, message.chat.type)) {
+                        runCatching { bot.sendChatAction(chatId, ChatAction.TYPING) }
+                    }
                     val answer =
                         router.answer(receivedText, botUsername, message.chat.id, message.chat.type)
                             ?: uptimeAnswer(receivedText, botUsername)

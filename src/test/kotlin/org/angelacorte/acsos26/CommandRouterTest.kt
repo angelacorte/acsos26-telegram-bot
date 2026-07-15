@@ -26,6 +26,15 @@ class CommandRouterTest :
             answer shouldContain "A Multi-Agent LLM Architecture"
         }
 
+        "program resolves track names tolerantly" {
+            router.answer("/program poster") shouldContain "Posters and Demos"
+            router.answer("/program demos") shouldContain "Posters and Demos"
+            router.answer("/program phd") shouldContain "Doctoral Symposium"
+            router.answer("/program workshop") shouldContain "Workshops"
+            router.answer("/program artifact") shouldContain "Artifacts"
+            router.answer("/program tutorial") shouldContain "Tutorials"
+        }
+
         "ask delegates to the llm client" {
             router.answer("/ask When is the main track?") shouldBe "LLM answer"
         }
