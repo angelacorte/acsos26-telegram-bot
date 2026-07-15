@@ -1,18 +1,50 @@
+x-container-security: &container-security
+  cap_drop:
+    - ALL
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+
+x-container-logging: &container-logging
+  driver: ${CONTAINER_LOG_DRIVER:-json-file}
+  options:
+    tag: "{{.Name}}"
+
 services:
   bot:
+    <<: *container-security
+    image: ${BOT_IMAGE:-acsos26-telegram-bot:1.0.0}
     build: .
     environment:
-      BOT_TOKEN: ${BOT_TOKEN}
-      BOT_USERNAME: acsos_26_bot
+      BOT_TOKEN: ${BOT_TOKEN:?Set BOT_TOKEN in .env}
+      BOT_USERNAME: ${BOT_USERNAME:-acsos_26_bot}
       BOT_ACCESS_KEY: ${BOT_ACCESS_KEY:-}
+      TELEGRAM_GROUP_INVITE_URL: ${TELEGRAM_GROUP_INVITE_URL:?Set TELEGRAM_GROUP_INVITE_URL in .env}
+      BOT_CHAT_COOLDOWN_SECONDS: ${BOT_CHAT_COOLDOWN_SECONDS:-3}
       LLM_API_URL: http://llm:8000/ask
-      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
+      HOME: /tmp
     depends_on:
       llm:
-        condition: service_started
+        condition: service_healthy
+    networks:
+      - bot-internal
+      - bot-egress
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cpus: ${BOT_CPUS:-1.0}
+    mem_limit: ${BOT_MEMORY_LIMIT:-512m}
+    mem_reservation: ${BOT_MEMORY_RESERVATION:-256m}
+    pids_limit: 128
+    deploy:
+      replicas: 1
+    logging: *container-logging
+    stop_grace_period: 30s
     restart: unless-stopped
 
   llm:
+    <<: *container-security
+    image: ${LLM_IMAGE:-acsos26-telegram-bot-llm:1.0.0}
     build:
       context: .
       dockerfile: llm_service/Dockerfile
@@ -23,11 +55,12 @@ services:
       LLM_FAILURE_COOLDOWN_SECONDS: ${LLM_FAILURE_COOLDOWN_SECONDS:-60}
       LLM_TIMEOUT_COOLDOWN_SECONDS: ${LLM_TIMEOUT_COOLDOWN_SECONDS:-20}
       LLM_GENERATION_TIMEOUT_SECONDS: ${LLM_GENERATION_TIMEOUT_SECONDS:-30}
+      LLM_MAX_CONCURRENT_ASKS: ${LLM_MAX_CONCURRENT_ASKS:-2}
       OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-4096}
       OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-512}
       OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-30m}
       LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.1}
-      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
       OLLAMA_HOST: http://ollama:11434
       OLLAMA_BASE_URL: http://ollama:11434
       ACSOS_BASE_URL: ${ACSOS_BASE_URL:-https://2026.acsos.org}
@@ -42,40 +75,97 @@ services:
       ACSOS_READ_TIMEOUT_SECONDS: ${ACSOS_READ_TIMEOUT_SECONDS:-7}
       ACSOS_OVERALL_TIMEOUT_SECONDS: ${ACSOS_OVERALL_TIMEOUT_SECONDS:-10}
       ACSOS_USER_AGENT: ${ACSOS_USER_AGENT:-acsos26-telegram-bot/1.0 (+https://2026.acsos.org)}
+      ACSOS_PAGE_CACHE: /var/cache/acsos/pages.json
+      HOME: /tmp
     depends_on:
+      ollama:
+        condition: service_healthy
       ollama-pull:
         condition: service_completed_successfully
-    ports:
-      - "8000:8000"
+    networks:
+      - bot-internal
+      - model-internal
+      - llm-egress
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+      - /var/cache/acsos:rw,noexec,nosuid,size=16m,uid=10001,gid=10001
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    cpus: ${LLM_CPUS:-2.0}
+    mem_limit: ${LLM_MEMORY_LIMIT:-1g}
+    mem_reservation: ${LLM_MEMORY_RESERVATION:-512m}
+    pids_limit: 256
+    logging: *container-logging
+    stop_grace_period: 30s
     restart: unless-stopped
 
   ollama:
+    <<: *container-security
     image: ollama/ollama:0.31.1
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
     volumes:
       - ollama:/root/.ollama
-    ports:
-      - "11434:11434"
+    networks:
+      - model-internal
+      - model-egress
+    tmpfs:
+      - /tmp:rw,nosuid,size=1g
+    healthcheck:
+      # The Ollama CLI's list command calls GET /api/tags without adding curl to the image.
+      test: ["CMD-SHELL", "OLLAMA_HOST=http://127.0.0.1:11434 ollama list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    cpus: ${OLLAMA_CPUS:-4.0}
+    mem_limit: ${OLLAMA_MEMORY_LIMIT:-5g}
+    mem_reservation: ${OLLAMA_MEMORY_RESERVATION:-3g}
+    pids_limit: 512
+    logging: *container-logging
+    stop_grace_period: 60s
     restart: unless-stopped
 
   ollama-pull:
+    <<: *container-security
     image: ollama/ollama:0.31.1
     environment:
       OLLAMA_HOST: http://ollama:11434
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b-instruct}
     volumes:
       - ollama:/root/.ollama
+    networks:
+      - model-internal
+    tmpfs:
+      - /tmp:rw,nosuid,size=128m
     depends_on:
       ollama:
-        condition: service_started
+        condition: service_healthy
     entrypoint: ["/bin/sh", "-c"]
-    command:
-      - >
-        until ollama list >/dev/null 2>&1; do
-          echo "Waiting for Ollama...";
-          sleep 2;
-        done;
-        ollama pull "${OLLAMA_MODEL:-gpt-oss:20b}"
+    command: ["ollama pull \"$${OLLAMA_MODEL}\""]
+    cpus: ${OLLAMA_PULL_CPUS:-1.0}
+    mem_limit: ${OLLAMA_PULL_MEMORY_LIMIT:-512m}
+    mem_reservation: ${OLLAMA_PULL_MEMORY_RESERVATION:-128m}
+    pids_limit: 128
+    logging: *container-logging
     restart: "no"
 
 volumes:
   ollama:
+
+networks:
+  bot-internal:
+    internal: true
+  model-internal:
+    internal: true
+  bot-egress:
+  llm-egress:
+  model-egress:
