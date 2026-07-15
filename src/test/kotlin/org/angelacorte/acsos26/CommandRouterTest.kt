@@ -51,6 +51,14 @@ class CommandRouterTest :
             router.answer("/ask When is the main track?", chatType = "group") shouldBe "LLM answer"
         }
 
+        "group reply to the bot delegates to the llm client without a mention" {
+            router.answer(
+                message = "When is the main track?",
+                chatType = "supergroup",
+                addressed = true,
+            ) shouldBe "LLM answer"
+        }
+
         "mentions without slash delegate to the llm client" {
             router.answer(
                 message = "@acsos_26_bot When is the main track?",

@@ -23,29 +23,32 @@ internal class CommandRouter(
         botUsername: String = conference.botUsername,
         chatId: Long? = null,
         chatType: String = PRIVATE_CHAT_TYPE,
+        addressed: Boolean = false,
     ): String? {
         val trimmed = message.trim()
         val command =
             TelegramCommand.parse(trimmed, botUsername)
-                ?: return freeFormAnswer(trimmed, botUsername, chatId, chatType)
+                ?: return freeFormAnswer(trimmed, botUsername, chatId, chatType, addressed)
         return commandAnswer(command, chatId)
     }
 
     /**
      * Returns true when a message will reach the (slower) LLM assistant, so the caller can show a
      * "typing" indicator. Errs on the side of showing it; a spurious indicator is harmless.
+     * [addressed] is true when the message is a reply to the bot (another way of "tagging" it).
      */
     fun triggersAssistant(
         message: String,
         botUsername: String = conference.botUsername,
         chatType: String = PRIVATE_CHAT_TYPE,
+        addressed: Boolean = false,
     ): Boolean {
         val trimmed = message.trim()
         if (trimmed.isBlank()) return false
         val command = TelegramCommand.parse(trimmed, botUsername)
         if (command != null) return command.name == "ask" && command.argument.isNotBlank()
         if (trimmed.startsWith("/")) return false
-        return chatType.isPrivateChat() || trimmed.mentions(botUsername)
+        return chatType.isPrivateChat() || trimmed.mentions(botUsername) || addressed
     }
 
     private fun commandAnswer(
@@ -93,13 +96,15 @@ internal class CommandRouter(
         botUsername: String,
         chatId: Long?,
         chatType: String,
+        addressed: Boolean,
     ): String? {
-        val addressedToBot = message.mentions(botUsername)
+        val mentionsBot = message.mentions(botUsername)
+        val addressedToBot = mentionsBot || addressed
         return when {
             message.isBlank() || message.startsWith("/") -> null
             !chatType.isPrivateChat() && !addressedToBot -> null
             !accessControl.isAuthorized(chatId) -> PRIVATE_ACCESS_REQUIRED_MESSAGE
-            else -> freeFormQuestionAnswer(message, botUsername, addressedToBot)
+            else -> freeFormQuestionAnswer(message, botUsername, mentionsBot)
         }
     }
 

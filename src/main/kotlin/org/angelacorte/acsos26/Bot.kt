@@ -44,11 +44,16 @@ fun main() {
                 text {
                     val chatId = ChatId.fromId(message.chat.id)
                     val receivedText = message.text.orEmpty()
-                    if (router.triggersAssistant(receivedText, botUsername, message.chat.type)) {
+                    val repliedToBot =
+                        message.replyToMessage
+                            ?.from
+                            ?.username
+                            ?.equals(botUsername, ignoreCase = true) == true
+                    if (router.triggersAssistant(receivedText, botUsername, message.chat.type, repliedToBot)) {
                         runCatching { bot.sendChatAction(chatId, ChatAction.TYPING) }
                     }
                     val answer =
-                        router.answer(receivedText, botUsername, message.chat.id, message.chat.type)
+                        router.answer(receivedText, botUsername, message.chat.id, message.chat.type, repliedToBot)
                             ?: uptimeAnswer(receivedText, botUsername)
                     if (answer != null) {
                         bot.sendMessage(
