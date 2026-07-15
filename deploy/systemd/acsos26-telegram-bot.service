@@ -1,0 +1,24 @@
+[Unit]
+Description=ACSOS 2026 Telegram bot Docker Compose stack
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+ConditionPathExists=/opt/acsos26-telegram-bot/docker-compose.yml
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/acsos26-telegram-bot
+Environment=CONTAINER_LOG_DRIVER=journald
+ExecStartPre=/usr/bin/docker compose config --quiet
+ExecStart=/usr/bin/docker compose up -d --remove-orphans
+ExecReload=/usr/bin/docker compose pull
+ExecReload=/usr/bin/docker compose up -d --remove-orphans
+ExecStop=/usr/bin/docker compose stop --timeout 30
+TimeoutStartSec=0
+TimeoutStopSec=120
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

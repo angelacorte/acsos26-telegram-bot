@@ -10,6 +10,10 @@ Agents mode) when configured.
 
 - `/help` - list the available commands.
 - `/about` - show conference dates, location, and website.
+- `/site` - show the ACSOS 2026 website.
+- `/links` - show the ACSOS Linktree page.
+- `/group` - show the Telegram group invite link configured with
+  `TELEGRAM_GROUP_INVITE_URL`.
 - `/tracks` - list ACSOS 2026 tracks.
 - `/program` - show the current program status.
 - `/program main` or `/maintrack` - show Main Track information.
@@ -21,7 +25,8 @@ Agents mode) when configured.
 - `/ask <question>` - ask the optional LLM assistant. In private chats,
   free-form messages without a slash command are also sent to the LLM assistant.
   In groups, the bot only answers LLM questions sent with `/ask` or with a
-  mention, for example `@acsos_26_bot When is the main track?`.
+  mention, for example `@acsos_26_bot When is the main track?`. Group and
+  supergroup answers are replies to the message from the person who asked.
 
 ## Data updates
 
@@ -68,6 +73,7 @@ rooms are not available.
 export BOT_TOKEN=<telegram-token>
 export BOT_USERNAME=acsos_26_bot
 export BOT_ACCESS_KEY=<private-user-access-key>
+export TELEGRAM_GROUP_INVITE_URL=https://telegram.me/+29z6KbEXBdlkYmE0
 ./gradlew run
 ```
 
@@ -198,6 +204,7 @@ Then edit `.env`:
 ```dotenv
 BOT_TOKEN=<telegram-token>
 BOT_ACCESS_KEY=<private-user-access-key>
+TELEGRAM_GROUP_INVITE_URL=https://telegram.me/+29z6KbEXBdlkYmE0
 LLM_API_KEY=<service-to-service-key>
 DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct
 OLLAMA_MODEL=qwen2.5:3b-instruct
@@ -209,8 +216,9 @@ LLM_TEMPERATURE=0.1
 ACSOS_LIVE_SEARCH_ENABLED=true
 ```
 
-`LLM_API_KEY` must have the same value for the `bot` and `llm` services. The
-provided `docker-compose.yml` already passes it to both services from `.env`.
+`LLM_API_KEY` is required by Docker Compose and must have the same value for the
+`bot` and `llm` services. The provided `docker-compose.yml` passes it to both
+services from `.env`.
 On the cluster, store it as a secret and expose it as the `LLM_API_KEY`
 environment variable in both containers.
 
@@ -237,6 +245,12 @@ The compose stack starts the Kotlin bot, the Python service, Ollama, and the
 one-shot model puller. If the model cannot run because the host is out of memory,
 the Python service falls back to deterministic answers from `conference.json`
 without exposing backend error details to Telegram users.
+
+The default `json-file` logging driver works on both Docker Desktop for macOS and
+Linux. The supplied production systemd unit overrides it with `journald`.
+
+For production hardening, boot setup, credential rotation, verification, and
+rollback procedures, see [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
 
 ## Verification
 
