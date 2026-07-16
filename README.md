@@ -62,10 +62,10 @@ Site analysis notes for `https://2026.acsos.org`:
   low-traffic method is ranking the bounded local URL catalog discovered from
   navigation and known conference pages.
 
-When the final schedule is published, the refresh script should be extended to
-parse the new schedule section into `sessions` with day, time, room, track id,
-and paper titles. Until then, the bot explicitly says that session times and
-rooms are not available.
+The refresh script also parses the official tentative Program at a Glance into
+structured `program.days[].entries`, including each block's day, time, title,
+details, and category. Individual paper assignments and rooms are not published
+yet; once they are available, they can be imported into `sessions`.
 
 ## Run the Kotlin bot
 
@@ -74,8 +74,14 @@ export BOT_TOKEN=<telegram-token>
 export BOT_USERNAME=acsos_26_bot
 export BOT_ACCESS_KEY=<private-user-access-key>
 export TELEGRAM_GROUP_INVITE_URL=https://telegram.me/+29z6KbEXBdlkYmE0
+export TELEGRAM_STARTUP_GREETING="Hello! The ACSOS 2026 bot is back online."
 ./gradlew run
 ```
+
+At startup the bot sends `TELEGRAM_STARTUP_GREETING` once to each chat with
+queued messages, then skips the remaining messages sent before the bot started.
+Messages sent after startup are processed normally. No chat id configuration is
+required.
 
 When `BOT_ACCESS_KEY` is set, a Telegram chat must first send:
 
@@ -111,12 +117,24 @@ uvicorn llm_service.app:app --reload --host 0.0.0.0 --port 8000
 By default the assistant makes a **single grounded model call** rather than
 running a tool-calling agent loop: the retrieved local and live sources are put
 into the prompt, and the model is instructed to answer only from those sources
-or to say the information is not available yet. This keeps answers on topic and
-fast. The default model is `DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct` — a
-small, fast, multilingual (Italian/English) instruct model that fits in RAM on a
-CPU-only host. Set `USE_DEEPAGENTS=1` to switch back to the tool-calling Deep
-Agent, and set `DISABLE_LLM=true` (or the legacy `DISABLE_DEEPAGENTS=true`) to run
-deterministic retrieval only.
+or to say the information is not available yet. The assistant answers **only
+ACSOS 2026 questions in English**; off-topic questions get a fixed refusal. The
+full accepted-paper list is always included in the prompt so the model can answer
+topic filters ("papers about AI") by meaning rather than exact wording. The
+default model is `DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct` — a small, fast
+instruct model that fits in RAM on a CPU-only host. Set `USE_DEEPAGENTS=1` to
+switch to the tool-calling Deep Agent (which also gets a `list_accepted_papers`
+tool for semantic paper filtering), and set `DISABLE_LLM=true` (or the legacy
+`DISABLE_DEEPAGENTS=true`) to run deterministic retrieval only.
+
+Set `GEMINI_API_KEY` to use Gemini as the primary model. The default is the stable
+`GEMINI_MODEL=gemini-2.5-flash`; if the key is absent the service uses Ollama, and
+if a Gemini request fails it retries the same grounded request through Ollama.
+`GEMINI_TIMEOUT_SECONDS=10` leaves time for that local retry inside the overall
+generation deadline.
+With `USE_DEEPAGENTS=1`, agents also receive bounded arithmetic and JSON/CSV
+analysis tools. These tools do not expose Python execution, the shell, files, or
+the network.
 
 **Pick a model that fits in host memory.** On a CPU-only host, a model that is too
 large is killed by the OS while loading — Ollama logs `llama-server process has
@@ -137,10 +155,7 @@ Latency and reliability defaults:
 - `OLLAMA_KEEP_ALIVE=30m` keeps the model warm between rare requests.
 - `LLM_TEMPERATURE=0.1` keeps answers deterministic.
 
-Questions in Italian activate the same reliable deterministic paths as English:
-the tokenizer strips accents and maps common Italian terms (quando, dove, chi,
-sede, registrazione, sessione, relatore, articolo, …) onto their English
-canonical terms. Pull the model before first use:
+The assistant answers in English only. Pull the model before first use:
 
 ```bash
 ollama pull qwen2.5:3b-instruct
@@ -205,8 +220,12 @@ Then edit `.env`:
 BOT_TOKEN=<telegram-token>
 BOT_ACCESS_KEY=<private-user-access-key>
 TELEGRAM_GROUP_INVITE_URL=https://telegram.me/+29z6KbEXBdlkYmE0
+TELEGRAM_STARTUP_GREETING="Hello! The ACSOS 2026 bot is back online."
 LLM_API_KEY=<service-to-service-key>
 DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.5-flash
+GEMINI_TIMEOUT_SECONDS=10
 OLLAMA_MODEL=qwen2.5:3b-instruct
 LLM_FAILURE_COOLDOWN_SECONDS=60
 LLM_TIMEOUT_COOLDOWN_SECONDS=20

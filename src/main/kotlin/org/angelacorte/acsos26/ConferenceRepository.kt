@@ -45,6 +45,7 @@ internal data class Conference(
     val sessions: List<Session>,
     val keynotes: List<Keynote>,
     val committees: List<CommitteeMember>,
+    val program: ConferenceProgram? = null,
 )
 
 internal data class CommandHelp(
@@ -104,6 +105,27 @@ internal data class CommitteeMember(
     val role: String,
     val affiliation: String,
     val url: String,
+)
+
+internal data class ConferenceProgram(
+    val title: String,
+    val url: String,
+    val status: String,
+    val notes: List<String>,
+    val days: List<ProgramDay>,
+)
+
+internal data class ProgramDay(
+    val day: String,
+    val date: String,
+    val entries: List<ProgramEntry>,
+)
+
+internal data class ProgramEntry(
+    val time: String,
+    val title: String,
+    val details: String,
+    val category: String,
 )
 
 internal data class Session(

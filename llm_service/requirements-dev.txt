@@ -1,0 +1,5 @@
+# Test/dev dependencies for the ACSOS 2026 LLM service.
+# Install with: pip install -r llm_service/requirements.txt -r llm_service/requirements-dev.txt
+-r requirements.txt
+anyio>=4.0
+httpx>=0.27

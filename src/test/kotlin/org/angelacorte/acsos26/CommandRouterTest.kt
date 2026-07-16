@@ -35,9 +35,10 @@ class CommandRouterTest :
             router.answer("/group") shouldContain "not configured"
         }
 
-        "program does not invent unpublished sessions" {
+        "program reports tentative blocks without inventing paper assignments" {
             val answer = router.answer("/program")
-            answer shouldContain "Timed sessions, rooms, and paper-to-session assignments are not available"
+            answer shouldContain "tentative program-at-a-glance timetable"
+            answer shouldContain "individual paper-to-session assignments are not available"
         }
 
         "main track command shows accepted papers" {

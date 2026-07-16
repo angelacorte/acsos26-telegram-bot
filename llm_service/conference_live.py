@@ -52,7 +52,6 @@ STOPWORDS = {
 DYNAMIC_TERMS = {
     "accommodation",
     "agenda",
-    "attualmente",
     "camera",
     "current",
     "currently",
@@ -66,9 +65,7 @@ DYNAMIC_TERMS = {
     "keynote",
     "latest",
     "news",
-    "oggi",
     "program",
-    "programma",
     "recent",
     "registration",
     "reception",
@@ -81,7 +78,6 @@ DYNAMIC_TERMS = {
     "today",
     "transport",
     "travel",
-    "ultimo",
     "updated",
     "venue",
     "when",
@@ -108,6 +104,12 @@ DEFAULT_CATALOG_SEEDS = (
     ("https://2026.acsos.org/", "ACSOS 2026", "home", "conference overview latest news important dates"),
     ("https://2026.acsos.org/dates", "Important Dates", "dynamic", "deadlines notifications camera ready dates"),
     ("https://2026.acsos.org/news", "News Items", "dynamic", "latest news newsletter updates"),
+    (
+        "https://2026.acsos.org/info/program-at-a-glance",
+        "Program at a Glance",
+        "dynamic",
+        "tentative timetable schedule main track sessions monday tuesday wednesday thursday friday",
+    ),
     ("https://2026.acsos.org/attending/Registration", "Registration", "dynamic", "registration fees cvent author registration"),
     ("https://2026.acsos.org/attending/main-social-event", "Main Social Event", "dynamic", "social dinner event"),
     ("https://2026.acsos.org/attending/social-events", "Additional Social Events", "dynamic", "social events dinner"),
@@ -707,6 +709,29 @@ def candidates_from_knowledge(knowledge: Any, config: LiveSearchConfig) -> list[
     """Build URL candidates from the existing local conference JSON."""
     data = getattr(knowledge, "data", {})
     candidates: list[UrlCandidate] = []
+    program = data.get("program", {})
+    program_summary = " ".join(
+        [
+            program.get("status", ""),
+            *(
+                f"{day.get('day', '')} {day.get('date', '')} "
+                + " ".join(
+                    f"{entry.get('time', '')} {entry.get('title', '')} "
+                    f"{entry.get('details', '')} {entry.get('category', '')}"
+                    for entry in day.get("entries", [])
+                )
+                for day in program.get("days", [])
+            ),
+        ],
+    )
+    add_candidate(
+        candidates,
+        program.get("url"),
+        program.get("title", "Program at a Glance"),
+        "dynamic",
+        program_summary,
+        config,
+    )
     for page in data.get("infoPages", []):
         add_candidate(candidates, page.get("url"), page.get("title", ""), "standard", page.get("body", ""), config)
     for track in data.get("tracks", []):

@@ -13,6 +13,7 @@ import com.github.kotlintelegrambot.entities.ReplyParameters
 import com.github.kotlintelegrambot.entities.User
 import com.github.kotlintelegrambot.types.TelegramBotResult
 import java.lang.management.ManagementFactory
+import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -20,11 +21,13 @@ import java.time.format.DateTimeFormatter
 private const val TELEGRAM_MESSAGE_LIMIT = 4096
 private const val TELEGRAM_TRUNCATION_SUFFIX = "\n\n[message truncated]"
 private const val RATE_LIMIT_MESSAGE = "Please wait a few seconds before asking another question."
+private const val STARTUP_GREETING_ENV = "TELEGRAM_STARTUP_GREETING"
 
 /**
  * Telegram bot entrypoint.
  */
 fun main() {
+    val startupMessageGate = StartupMessageGate(Instant.now().epochSecond)
     val conference = ConferenceRepository.load()
     val llmClient = LlmClient.fromEnvironment()
     val accessControl = AccessControl.fromEnvironment()
@@ -32,6 +35,12 @@ fun main() {
     val router = CommandRouter(conference, llmClient, accessControl, groupInviteUrl)
     val chatRateLimiter = ChatRateLimiter.fromEnvironment()
     val botUsername = System.getenv("BOT_USERNAME") ?: conference.botUsername
+    val startupGreeting =
+        System
+            .getenv(STARTUP_GREETING_ENV)
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?: "Hello! The ${conference.shortName} bot is back online."
 
     val bot =
         bot {
@@ -42,6 +51,15 @@ fun main() {
             dispatch {
                 newChatMembers {
                     val chatId = ChatId.fromId(message.chat.id)
+                    if (
+                        bot.skipQueuedMessage(
+                            startupMessageGate.actionFor(message.chat.id, message.date),
+                            chatId,
+                            startupGreeting,
+                        )
+                    ) {
+                        return@newChatMembers
+                    }
                     val username = message.from?.displayName()
                     if (username != null) {
                         bot.sendMessage(chatId, text = "Welcome to ${conference.shortName}, $username!")
@@ -49,6 +67,15 @@ fun main() {
                 }
                 text {
                     val chatId = ChatId.fromId(message.chat.id)
+                    if (
+                        bot.skipQueuedMessage(
+                            startupMessageGate.actionFor(message.chat.id, message.date),
+                            chatId,
+                            startupGreeting,
+                        )
+                    ) {
+                        return@text
+                    }
                     val receivedText = message.text.orEmpty()
                     val repliedToBot =
                         message.replyToMessage
@@ -91,6 +118,18 @@ fun main() {
         Thread({ bot.stopPolling() }, "telegram-bot-shutdown"),
     )
     bot.startPolling()
+}
+
+private fun Bot.skipQueuedMessage(
+    action: StartupMessageAction,
+    chatId: ChatId,
+    startupGreeting: String,
+): Boolean {
+    if (action == StartupMessageAction.PROCESS) return false
+    if (action == StartupMessageAction.GREET_AND_SKIP) {
+        sendMessage(chatId, text = startupGreeting).logDeliveryError("startup greeting")
+    }
+    return true
 }
 
 /**

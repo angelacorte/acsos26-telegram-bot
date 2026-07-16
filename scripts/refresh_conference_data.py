@@ -75,6 +75,7 @@ INFO_PAGES = [
         "url": "https://2026.acsos.org/attending/main-social-event",
     },
 ]
+PROGRAM_URL = "https://2026.acsos.org/info/program-at-a-glance"
 SOCIAL_URL = "https://2026.acsos.org/attending/social-events"
 KEYNOTES_URL = "https://2026.acsos.org/info/keynotes"
 ORGANIZING_COMMITTEE_URL = "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
@@ -114,6 +115,53 @@ class VisibleTextParser(HTMLParser):
             self.links.append((text, self._current_href))
 
 
+class ProgramTableParser(HTMLParser):
+    """Extract rows, cells, classes, and row spans from the program table."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.in_program_table = False
+        self.current_row: list[dict[str, Any]] | None = None
+        self.current_cell: dict[str, Any] | None = None
+        self.rows: list[list[dict[str, Any]]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        classes = set((attributes.get("class") or "").split())
+        if tag == "table" and "program" in classes:
+            self.in_program_table = True
+        elif self.in_program_table and tag == "tr":
+            self.current_row = []
+        elif self.in_program_table and tag in {"td", "th"} and self.current_row is not None:
+            rowspan = attributes.get("rowspan") or "1"
+            self.current_cell = {
+                "parts": [],
+                "classes": sorted(classes),
+                "rowspan": int(rowspan) if rowspan.isdigit() else 1,
+            }
+
+    def handle_endtag(self, tag: str) -> None:
+        if not self.in_program_table:
+            return
+        if tag in {"td", "th"} and self.current_cell is not None and self.current_row is not None:
+            self.current_row.append(self.current_cell)
+            self.current_cell = None
+        elif tag == "tr" and self.current_row is not None:
+            if self.current_row:
+                self.rows.append(self.current_row)
+            self.current_row = None
+        elif tag == "table":
+            self.in_program_table = False
+
+    def handle_data(self, data: str) -> None:
+        if self.current_cell is None:
+            return
+        text = clean_text(data)
+        parts = self.current_cell["parts"]
+        if text and (not parts or text != parts[-1]):
+            parts.append(text)
+
+
 def main() -> int:
     """Refresh the conference data file."""
     parser = argparse.ArgumentParser()
@@ -122,9 +170,10 @@ def main() -> int:
 
     data = read_json(args.data)
     conference = data["conference"]
-    pages = fetch_pages(
+    pages, raw_pages = fetch_pages(
         [
             BASE_URL,
+            PROGRAM_URL,
             SOCIAL_URL,
             KEYNOTES_URL,
             ORGANIZING_COMMITTEE_URL,
@@ -140,7 +189,14 @@ def main() -> int:
     conference["dates"] = first_line_matching(home_lines, r"Mon 7 - Fri 11 September 2026") or conference["dates"]
     conference["location"] = first_line_matching(home_lines, r"Cesena, Italy") or conference["location"]
     conference["description"] = extract_description(home_lines) or conference["description"]
-    conference["tracks"] = refresh_tracks(conference["tracks"], pages)
+    program = extract_program(raw_pages.get(PROGRAM_URL, ""), pages.get(PROGRAM_URL, []))
+    if program.get("days"):
+        conference["program"] = program
+    conference["tracks"] = refresh_tracks(
+        conference["tracks"],
+        pages,
+        has_tentative_program=bool(conference.get("program", {}).get("days")),
+    )
     conference["infoPages"] = refresh_info_pages(conference["infoPages"], pages)
     social_lines = pages.get(SOCIAL_URL, [])
     conference["socialEvents"] = extract_social_events(social_lines) if social_lines else conference["socialEvents"]
@@ -158,20 +214,23 @@ def main() -> int:
     return 0
 
 
-def fetch_pages(urls: list[str]) -> dict[str, list[str]]:
-    """Fetch pages and return visible text lines keyed by URL."""
-    pages = {}
+def fetch_pages(urls: list[str]) -> tuple[dict[str, list[str]], dict[str, str]]:
+    """Fetch pages and return visible lines plus raw HTML keyed by URL."""
+    pages: dict[str, list[str]] = {}
+    raw_pages: dict[str, str] = {}
     for url in urls:
         try:
             html = fetch(url)
         except OSError as error:
             print(f"warning: could not fetch {url}: {error}", file=sys.stderr)
             pages[url] = []
+            raw_pages[url] = ""
             continue
         parser = VisibleTextParser()
         parser.feed(html)
         pages[url] = collapse_lines(parser.lines)
-    return pages
+        raw_pages[url] = html
+    return pages, raw_pages
 
 
 def fetch(url: str) -> str:
@@ -181,7 +240,103 @@ def fetch(url: str) -> str:
         return response.read().decode("utf-8", errors="replace")
 
 
-def refresh_tracks(existing_tracks: list[dict[str, Any]], pages: dict[str, list[str]]) -> list[dict[str, Any]]:
+def extract_program(html: str, lines: list[str]) -> dict[str, Any]:
+    """Parse the tentative five-day program table into searchable day entries."""
+    parser = ProgramTableParser()
+    parser.feed(html)
+    header_index = next(
+        (
+            index
+            for index, row in enumerate(parser.rows)
+            if len(row) > 1 and any(cell_text(cell).casefold() == "monday 7 september" for cell in row)
+        ),
+        None,
+    )
+    if header_index is None:
+        return {}
+
+    day_cells = parser.rows[header_index][1:]
+    days = [program_day(cell) for cell in day_cells]
+    time_rows = [
+        row
+        for row in parser.rows[header_index + 1 :]
+        if row and "time" in row[0]["classes"]
+    ]
+    occupied_until = [0] * len(days)
+    for row_index, row in enumerate(time_rows):
+        start_label = cell_text(row[0])
+        for cell in row[1:]:
+            day_index = next(
+                (index for index, occupied in enumerate(occupied_until) if occupied <= row_index),
+                None,
+            )
+            if day_index is None:
+                continue
+            rowspan = max(1, cell["rowspan"])
+            end_row_index = min(row_index + rowspan - 1, len(time_rows) - 1)
+            end_label = cell_text(time_rows[end_row_index][0])
+            parts = cell["parts"]
+            days[day_index]["entries"].append(
+                {
+                    "time": program_time_range(start_label, end_label),
+                    "title": parts[0] if parts else "",
+                    "details": " · ".join(parts[1:]),
+                    "category": program_category(cell["classes"]),
+                },
+            )
+            occupied_until[day_index] = row_index + rowspan
+
+    status = first_line_matching(lines, r"^Tentative schedule") or "Tentative schedule, subject to change."
+    notes = [
+        line
+        for line in lines
+        if line.startswith("NOTE: Additional social events")
+        or line.startswith("Rough overview based on the tentative")
+    ]
+    return {
+        "title": "Program at a Glance",
+        "url": PROGRAM_URL,
+        "status": status,
+        "notes": notes,
+        "days": days,
+    }
+
+
+def cell_text(cell: dict[str, Any]) -> str:
+    """Join the visible text fragments of a parsed table cell."""
+    return " ".join(cell["parts"]).strip()
+
+
+def program_day(cell: dict[str, Any]) -> dict[str, Any]:
+    """Build one program day from a header cell such as Tuesday / 8 September."""
+    parts = cell["parts"]
+    return {
+        "day": parts[0] if parts else "",
+        "date": " ".join(parts[1:]),
+        "entries": [],
+    }
+
+
+def program_time_range(start_label: str, end_label: str) -> str:
+    """Combine the first and final half-hour labels covered by a row-spanned event."""
+    if start_label.casefold() == "evening":
+        return "Evening"
+    start = re.split(r"[\-–—]", start_label, maxsplit=1)[0].strip()
+    end = re.split(r"[\-–—]", end_label)[-1].strip()
+    return f"{start}–{end}"
+
+
+def program_category(classes: list[str]) -> str:
+    """Return the semantic category encoded in a program table cell's CSS classes."""
+    categories = ("main", "keynote", "workshop", "tutorial", "phd", "poster", "panel", "special", "break", "social")
+    return next((category for category in categories if category in classes), "other")
+
+
+def refresh_tracks(
+    existing_tracks: list[dict[str, Any]],
+    pages: dict[str, list[str]],
+    has_tentative_program: bool = False,
+) -> list[dict[str, Any]]:
     """Refresh track statuses and accepted papers while preserving known commands."""
     existing_by_id = {track["id"]: track for track in existing_tracks}
     refreshed = []
@@ -191,7 +346,11 @@ def refresh_tracks(existing_tracks: list[dict[str, Any]], pages: dict[str, list[
         accepted_papers = extract_accepted_papers(lines, definition["name"]) if lines else []
         if not accepted_papers and old.get("acceptedPapers"):
             accepted_papers = old["acceptedPapers"]
-        status = track_status(definition["name"], accepted_papers) if lines else old.get("status", "")
+        status = (
+            track_status(definition["name"], accepted_papers, has_tentative_program)
+            if lines
+            else old.get("status", "")
+        )
         refreshed.append(
             {
                 **old,
@@ -516,8 +675,14 @@ def program_status(conference: dict[str, Any]) -> str:
     """Build a status line from the currently refreshed data."""
     papers = sum(len(track["acceptedPapers"]) for track in conference["tracks"])
     sessions = len(conference["sessions"])
+    program_days = conference.get("program", {}).get("days", [])
     if sessions:
         return f"The conference data includes {papers} accepted papers and {sessions} timed sessions."
+    if program_days:
+        return (
+            f"The conference data includes {papers} accepted papers and the tentative program-at-a-glance "
+            "timetable. Rooms and individual paper-to-session assignments are not available yet."
+        )
     if papers:
         return (
             f"The conference data includes {papers} accepted papers. Timed sessions, rooms, "
@@ -526,12 +691,22 @@ def program_status(conference: dict[str, Any]) -> str:
     return "The conference data includes dates, tracks, and venue information. Timed sessions are not available yet."
 
 
-def track_status(track_name: str, accepted_papers: list[dict[str, Any]]) -> str:
+def track_status(
+    track_name: str,
+    accepted_papers: list[dict[str, Any]],
+    has_tentative_program: bool = False,
+) -> str:
     """Build a track-specific status line."""
     if accepted_papers:
+        timing_status = (
+            "Tentative session blocks are published in the program at a glance; rooms and individual "
+            "paper-to-session assignments are not available yet."
+            if has_tentative_program
+            else "Timed sessions and rooms are not published in this data file yet."
+        )
         return (
             f"{len(accepted_papers)} accepted papers are published for {track_name}. "
-            "Timed sessions and rooms are not published in this data file yet."
+            f"{timing_status}"
         )
     return "Track page is available. Program timing is not published in this data file yet."
 

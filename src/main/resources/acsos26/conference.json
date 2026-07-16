@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 27 accepted papers. Timed sessions, rooms, and paper-to-session assignments are not available in this data file yet.",
+    "programStatus": "The conference data includes 27 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -107,7 +107,7 @@
         "command": "maintrack",
         "name": "Main Track",
         "url": "https://2026.acsos.org/track/acsos-2026-papers",
-        "status": "27 accepted papers are published for Main Track. Timed sessions and rooms are not published in this data file yet.",
+        "status": "27 accepted papers are published for Main Track. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
         "summary": "Research, experience, short, and vision papers for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -655,6 +655,311 @@
         "affiliation": "University of Turin, Italy Italy",
         "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
       }
-    ]
+    ],
+    "program": {
+      "title": "Program at a Glance",
+      "url": "https://2026.acsos.org/info/program-at-a-glance",
+      "status": "Tentative schedule, SUBJECT TO CHANGE! Rooms and individual paper details will be provided in the official program",
+      "notes": [
+        "NOTE: Additional social events (Tuesday, Thursday, and Friday evening) are not included in the conference registration. Participants who wish to attend may purchase them separately",
+        "Rough overview based on the tentative ACSOS 2026 timetable. Session names and timings may change."
+      ],
+      "days": [
+        {
+          "day": "Monday",
+          "date": "7 September",
+          "entries": [
+            {
+              "time": "09:00\u201310:30",
+              "title": "Workshops",
+              "details": "SaSSO4 \u00b7 AI4AS",
+              "category": "workshop"
+            },
+            {
+              "time": "10:30\u201311:00",
+              "title": "Coffee break",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "11:00\u201313:00",
+              "title": "Workshops",
+              "details": "SaSSO4 \u00b7 AI4AS",
+              "category": "workshop"
+            },
+            {
+              "time": "13:00\u201314:00",
+              "title": "Lunch",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "14:00\u201315:30",
+              "title": "Tutorials 1 & 2",
+              "details": "",
+              "category": "tutorial"
+            },
+            {
+              "time": "15:30\u201316:00",
+              "title": "Coffee break",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "16:00\u201318:00",
+              "title": "Tutorials 3 & 4",
+              "details": "",
+              "category": "tutorial"
+            },
+            {
+              "time": "Evening",
+              "title": "Welcome Reception",
+              "details": "",
+              "category": "social"
+            }
+          ]
+        },
+        {
+          "day": "Tuesday",
+          "date": "8 September",
+          "entries": [
+            {
+              "time": "09:00\u201310:30",
+              "title": "Opening & Keynote",
+              "details": "Valeria Cardellini",
+              "category": "keynote"
+            },
+            {
+              "time": "10:30\u201311:00",
+              "title": "Coffee break",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "11:00\u201313:00",
+              "title": "Main-track session",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "13:00\u201314:00",
+              "title": "Lunch",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "14:00\u201315:00",
+              "title": "Keynote",
+              "details": "Carlo Ghezzi",
+              "category": "keynote"
+            },
+            {
+              "time": "15:00\u201315:30",
+              "title": "PhD flash talks",
+              "details": "",
+              "category": "phd"
+            },
+            {
+              "time": "15:30\u201316:00",
+              "title": "Poster flash talks",
+              "details": "",
+              "category": "poster"
+            },
+            {
+              "time": "16:00\u201316:30",
+              "title": "Coffee break & Posters",
+              "details": "",
+              "category": "poster"
+            },
+            {
+              "time": "16:30\u201318:00",
+              "title": "Main-track session",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "Evening",
+              "title": "[To be confirmed] Additional SE: Wine Tasting & Dinner in Bertinoro",
+              "details": "",
+              "category": "social"
+            }
+          ]
+        },
+        {
+          "day": "Wednesday",
+          "date": "9 September",
+          "entries": [
+            {
+              "time": "09:00\u201310:30",
+              "title": "Keynote",
+              "details": "Marco Dorigo",
+              "category": "keynote"
+            },
+            {
+              "time": "10:30\u201311:00",
+              "title": "Coffee break & Posters",
+              "details": "",
+              "category": "poster"
+            },
+            {
+              "time": "11:00\u201313:00",
+              "title": "Main-track session",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "13:00\u201314:00",
+              "title": "Lunch & Posters",
+              "details": "",
+              "category": "poster"
+            },
+            {
+              "time": "14:00\u201316:00",
+              "title": "Main-track session",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "16:00\u201316:30",
+              "title": "Coffee break & Posters",
+              "details": "",
+              "category": "poster"
+            },
+            {
+              "time": "16:30\u201317:30",
+              "title": "ACSOS in Practice / Doctoral Symposium breakouts",
+              "details": "",
+              "category": "panel"
+            },
+            {
+              "time": "17:30\u201318:00",
+              "title": "Malatestiana library visit",
+              "details": "",
+              "category": "special"
+            },
+            {
+              "time": "Evening",
+              "title": "Banquet at Teatro Verdi",
+              "details": "",
+              "category": "social"
+            }
+          ]
+        },
+        {
+          "day": "Thursday",
+          "date": "10 September",
+          "entries": [
+            {
+              "time": "09:00\u201310:30",
+              "title": "Keynote",
+              "details": "Ivona Brandic",
+              "category": "keynote"
+            },
+            {
+              "time": "10:30\u201311:00",
+              "title": "Coffee break & Posters",
+              "details": "",
+              "category": "poster"
+            },
+            {
+              "time": "11:00\u201313:00",
+              "title": "Main-track session",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "13:00\u201314:00",
+              "title": "Lunch",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "14:00\u201316:00",
+              "title": "Main-track session",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "16:00\u201316:30",
+              "title": "Coffee break & Posters",
+              "details": "",
+              "category": "poster"
+            },
+            {
+              "time": "16:30\u201317:30",
+              "title": "Expert Panel / Doctoral Symposium breakouts",
+              "details": "",
+              "category": "panel"
+            },
+            {
+              "time": "17:30\u201318:00",
+              "title": "Closing",
+              "details": "",
+              "category": "special"
+            },
+            {
+              "time": "Evening",
+              "title": "[To be confirmed] Additional SE: Kart Race in Riccione & Dinner in Rimini",
+              "details": "",
+              "category": "social"
+            }
+          ]
+        },
+        {
+          "day": "Friday",
+          "date": "11 September",
+          "entries": [
+            {
+              "time": "09:00\u201310:30",
+              "title": "Workshops",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "category": "workshop"
+            },
+            {
+              "time": "10:30\u201311:30",
+              "title": "Coffee Break",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "11:30\u201313:00",
+              "title": "Workshops",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "category": "workshop"
+            },
+            {
+              "time": "13:00\u201314:00",
+              "title": "Lunch",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "14:00\u201315:30",
+              "title": "Workshops",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "category": "workshop"
+            },
+            {
+              "time": "15:30\u201316:30",
+              "title": "Break",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "16:30\u201318:00",
+              "title": "Workshops",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "category": "workshop"
+            },
+            {
+              "time": "Evening",
+              "title": "[To be confirmed] Additional SE: Visit to Cesenatico & Fish Dinner on the beach",
+              "details": "",
+              "category": "social"
+            }
+          ]
+        }
+      ]
+    }
   }
 }
