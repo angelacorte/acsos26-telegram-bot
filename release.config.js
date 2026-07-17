@@ -1,5 +1,5 @@
 var verifyConditionsCmd = `
-echo "$DOCKER_PASSWORD" | docker login -u angelacorte --password-stdin || exit 1
+echo "$DOCKER_PASSWORD" | docker login -u angelacortecchia --password-stdin || exit 1
 `
 var publishCmd = `
 git tag -a -f \${nextRelease.version} \${nextRelease.version} -F CHANGELOG.md || exit 1
