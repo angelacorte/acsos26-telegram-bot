@@ -1,5 +1,7 @@
+var verifyConditionsCmd = `
+echo "$DOCKER_PASSWORD" | docker login -u angelacorte --password-stdin || exit 1
+`
 var publishCmd = `
-echo "$DOCKER_PASSWORD" | docker login -u angelacorte --password-stdin
 git tag -a -f \${nextRelease.version} \${nextRelease.version} -F CHANGELOG.md || exit 1
 git push --force origin \${nextRelease.version} || exit 2
 docker build -t angelacorte/acsos26-telegram-bot:\${nextRelease.version} . || exit 3
@@ -12,6 +14,7 @@ config.plugins.push(
     [
         "@semantic-release/exec",
         {
+            "verifyConditionsCmd": verifyConditionsCmd,
             "publishCmd": publishCmd,
         }
     ],

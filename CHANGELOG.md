@@ -1,24 +1,3 @@
-## [1.1.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.0.0...1.1.0) (2026-07-17)
-
-### Features
-
-* add max concurrent asks limit and new commands for conference bot ([0aa9489](https://github.com/angelacorte/acsos26-telegram-bot/commit/0aa9489bd56a10a24b848bf5648fd470a63ed8a4))
-* bot answer to direct tag ([b21cf25](https://github.com/angelacorte/acsos26-telegram-bot/commit/b21cf2505775115229efa4985ea74fcfd700545a))
-* enhance bot response handling for replies and mentions ([d6f7b1e](https://github.com/angelacorte/acsos26-telegram-bot/commit/d6f7b1e14407bb6b3ac1c6915c7342049fa56488))
-* enhance Docker configuration with security, logging, and resource limits ([b8567df](https://github.com/angelacorte/acsos26-telegram-bot/commit/b8567df3af8b86799015ec3dc9cbf6baa1ef3fe6))
-* enhance LLM response handling ([3d4db8e](https://github.com/angelacorte/acsos26-telegram-bot/commit/3d4db8e6fe93b9e76202bf93abdb2c7f5a110f0b))
-* implement chat rate limiting and enhance group reply handling ([096e76c](https://github.com/angelacorte/acsos26-telegram-bot/commit/096e76c7c7520998f401ecaf5465907122cfd8e1))
-* update bot commands and add service configuration for Docker ([d74baa4](https://github.com/angelacorte/acsos26-telegram-bot/commit/d74baa4c4f51d99fcc414266ca674490e85ed35a))
-* update bot to better support llm interaction (via Gemini) ([8fb0e3a](https://github.com/angelacorte/acsos26-telegram-bot/commit/8fb0e3af8345f8954d02846db3e5d1621ec625db))
-
-### General maintenance
-
-* refresh conference data ([42ab811](https://github.com/angelacorte/acsos26-telegram-bot/commit/42ab8114cdebafea9b157068def5a44f3669f1b9))
-
-### Style improvements
-
-* remove excessive returns ([53b1e7d](https://github.com/angelacorte/acsos26-telegram-bot/commit/53b1e7dded54e0be242a62e02e620e485f4bf541))
-
 ## 1.0.0 (2026-07-14)
 
 ### Features
