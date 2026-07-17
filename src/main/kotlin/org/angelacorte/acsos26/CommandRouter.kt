@@ -48,11 +48,13 @@ internal class CommandRouter(
         addressed: Boolean = false,
     ): Boolean {
         val trimmed = message.trim()
-        if (trimmed.isBlank()) return false
         val command = TelegramCommand.parse(trimmed, botUsername)
-        if (command != null) return command.name == "ask" && command.argument.isNotBlank()
-        if (trimmed.startsWith("/")) return false
-        return chatType.isPrivateChat() || trimmed.mentions(botUsername) || addressed
+        return when {
+            trimmed.isBlank() -> false
+            command != null -> command.name == "ask" && command.argument.isNotBlank()
+            trimmed.startsWith("/") -> false
+            else -> chatType.isPrivateChat() || trimmed.mentions(botUsername) || addressed
+        }
     }
 
     private fun commandAnswer(
@@ -224,14 +226,19 @@ internal class CommandRouter(
      */
     private fun resolveTrack(query: String): Track? {
         val normalized = query.trim().lowercase()
-        if (normalized.isBlank()) return null
-        conference.tracks.firstOrNull { it.id == normalized || it.command == normalized }?.let { return it }
-        TRACK_SYNONYMS[normalized]?.let { id ->
-            conference.tracks.firstOrNull { it.id == id }?.let { return it }
-        }
-        if (normalized.length < 3) return null
+        val exactMatch = conference.tracks.firstOrNull { it.id == normalized || it.command == normalized }
+        val synonymMatch =
+            TRACK_SYNONYMS[normalized]?.let { id ->
+                conference.tracks.firstOrNull { it.id == id }
+            }
         val stem = normalized.stripPlural()
-        return conference.tracks.firstOrNull { it.matchesLoosely(normalized, stem) }
+        return when {
+            normalized.isBlank() -> null
+            exactMatch != null -> exactMatch
+            synonymMatch != null -> synonymMatch
+            normalized.length < 3 -> null
+            else -> conference.tracks.firstOrNull { it.matchesLoosely(normalized, stem) }
+        }
     }
 
     private fun sessions(): String =
