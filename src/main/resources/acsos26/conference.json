@@ -121,6 +121,7 @@
             "title": "Approved Too Late: Verdict Staleness in LLM-Guarded Self-Adaptive Systems",
             "authors": [
               "Ilai Shraga",
+              "Roei Eshel",
               "Lior Goldberg"
             ]
           },
@@ -128,7 +129,9 @@
             "title": "Automated Orchestration in a Real-World Self-Organizing Manufacturing Cell",
             "authors": [
               "Oliver Kosak",
+              "Manuel Hartwig",
               "Christian Lehner",
+              "Marco M\u00fcller",
               "Hella Ponsar",
               "Wolfgang Reif"
             ]
@@ -138,19 +141,25 @@
             "authors": [
               "Federica Filippini",
               "Michele Ciavotta",
-              "Marco Savi"
+              "Marco Savi",
+              "Fabio Villa"
             ]
           },
           {
             "title": "A Vision for Semantic Resource Elasticity in Autonomic Cyber-Physical Edge Systems",
             "authors": [
-              "Timothy Wood"
+              "Deng Pan",
+              "Alekya Kowta",
+              "Enoch Nemili",
+              "Timothy Wood",
+              "Samer Hamdar"
             ]
           },
           {
             "title": "Calibrating Quadruped Startup Variance for Reliable Anomaly Detection and Self-Adaptation",
             "authors": [
               "Logan Quirk",
+              "Eric Iniguez",
               "Rose Gamble"
             ]
           },
@@ -167,7 +176,10 @@
           {
             "title": "CoAdapt: An LLM-based Framework for Adaptive Collaborative Perception in IIoT Robotic Swarms",
             "authors": [
-              "Houssam Hajj Hassan"
+              "Houssam Hajj Hassan",
+              "Antonia Maria Masucci",
+              "Lynda Zitoune",
+              "Salah Eddine Elayoubi"
             ]
           },
           {
@@ -188,7 +200,8 @@
           {
             "title": "Decentralized Multi-agent Reinforcement Learning for Resilient Critical Infrastructures",
             "authors": [
-              "Evangelos Pournaras"
+              "Evangelos Pournaras",
+              "Minghui Ding"
             ]
           },
           {
@@ -203,6 +216,7 @@
             "title": "Elliptical patterns in swarmalator systems",
             "authors": [
               "Udo Schilcher",
+              "Kevin O'Keeffe",
               "Christian Bettstetter"
             ]
           },
@@ -220,6 +234,7 @@
           {
             "title": "HASKI: Hallucination-Aware Agentic Self-Adaptive Knowledge Injection via Reinforcement Learning in Large Language Models",
             "authors": [
+              "Chen Yao",
               "Farhoud Jafari Kaleibar",
               "Marin Litoiu"
             ]
@@ -245,6 +260,8 @@
           {
             "title": "LoftNN: Distributed Training of Deep Learning Models in the Edge-Cloud-Space Continuum",
             "authors": [
+              "Maximilian Maresch",
+              "Andrija Stanisic",
               "Stefan Nastic"
             ]
           },
@@ -256,6 +273,7 @@
               "Raffaela Mirandola",
               "Nicol\u00e1s Cardozo",
               "Ivana Dusparic",
+              "Marin Litoiu",
               "Ralf Reussner",
               "Gabriel Tamura"
             ]
@@ -273,7 +291,12 @@
           {
             "title": "OPA - Observe, Preprocess, and Act: A Multi-Agent Framework for Data Preprocessing and Predictive Intelligence",
             "authors": [
-              "Frederico Gadelha Guimar\u00e3es"
+              "Lucas Astore",
+              "Luisa Marques Laboissiere",
+              "Hellena Almeida Canuto",
+              "Adriano Veloso",
+              "Frederico Gadelha Guimar\u00e3es",
+              "Antonio Alfredo Ferreira Loureiro"
             ]
           },
           {
@@ -287,7 +310,12 @@
             "title": "Self-Aware Scientific Workflow Orchestration based on a Blackboard Architecture",
             "authors": [
               "Samuel Kounev",
+              "David Linke",
+              "David Dingel",
+              "Nicola Ferger",
+              "Lorenz Gruber",
               "Nikolas Herbst",
+              "Maximilian Schwinger",
               "Kyle Chard",
               "Ian Foster"
             ]
@@ -322,7 +350,10 @@
           {
             "title": "Who Is Responsible? Self-Adaptation Under Multiple Concurrent Failures With Unknown Faults in Complex Robotic Systems",
             "authors": [
-              "Alwin Hoffmann"
+              "Andreas Wiedholz",
+              "Rafael Paintner",
+              "Alwin Hoffmann",
+              "Tobias Huber"
             ]
           }
         ]
@@ -530,7 +561,7 @@
       {
         "name": "Jenna Kline",
         "role": "Community Building Chair",
-        "affiliation": "The Ohio State University, USA United States",
+        "affiliation": "Massachusetts Institute of Technology, USA United States",
         "url": "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
       },
       {
