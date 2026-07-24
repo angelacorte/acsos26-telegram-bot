@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 44 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
+    "programStatus": "The conference data includes 45 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -98,7 +98,7 @@
         "command": "doctoral",
         "name": "Doctoral Symposium",
         "url": "https://2026.acsos.org/track/acsos-2026-doctoral-symposium",
-        "status": "17 accepted papers are published for Doctoral Symposium. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
+        "status": "18 accepted papers are published for Doctoral Symposium. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
         "summary": "Doctoral Symposium information for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -159,6 +159,12 @@
             "title": "Extending Rule-Based Approaches Towards Unanticipated Failures for Self-Healing Robots",
             "authors": [
               "Andreas Wiedholz"
+            ]
+          },
+          {
+            "title": "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
+            "authors": [
+              "Lucas Astore"
             ]
           },
           {
