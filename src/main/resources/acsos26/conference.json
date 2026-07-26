@@ -412,7 +412,8 @@
             "title": "Runtime Stability-Aware Adaptation for Self-Adaptive Systems using Symbiotic Simulation: A Cloud Architecture Evaluation",
             "authors": [
               "Maria Salama",
-              "Rami Bahsoon"
+              "Rami Bahsoon",
+              "Rajkumar Buyya"
             ]
           },
           {
@@ -520,31 +521,31 @@
         "title": "Wine, Views, and Dinner on Romagna\u2019s Balcony",
         "whenText": "Tuesday, September 8",
         "whereText": "Bertinoro",
-        "fee": "\u20ac119",
+        "fee": "\u20ac89",
         "capacity": "minimum 30 participants, maximum 50 participants",
         "includes": "transportation, wine tasting, dinner",
         "restaurant": "",
-        "body": "Fee: \u20ac119 Capacity: minimum 30 participants, maximum 50 participants Includes: transportation, wine tasting, dinner Join us for a special ACSOS evening in Bertinoro , the renowned \u201cTerrazza della Romagna\u201d \u2014 Romagna\u2019s balcony \u2014 combining local wine, traditional cuisine, panoramic views, and informal conversation with the conference community. The evening begins with a wine tasting at Tenuta La Viola :"
+        "body": "Fee: \u20ac89 Capacity: minimum 30 participants, maximum 50 participants Includes: transportation, wine tasting, dinner Join us for a special ACSOS evening in Bertinoro , the renowned \u201cTerrazza della Romagna\u201d \u2014 Romagna\u2019s balcony \u2014 combining local wine, traditional cuisine, panoramic views, and informal conversation with the conference community. The evening begins with a wine tasting at Tenuta La Viola :"
       },
       {
         "title": "ACSOS GP on the Riviera: Racing & Dinner",
         "whenText": "Thursday, September 10",
         "whereText": "Riccione and Rimini",
-        "fee": "\u20ac129 kart race + dinner / \u20ac99 dinner only",
+        "fee": "\u20ac119 kart race + dinner / \u20ac79 dinner only",
         "capacity": "minimum 30 participants, maximum 50 participants",
         "includes": "transportation, karting option, Riccione walk option, dinner",
         "restaurant": "",
-        "body": "Fee: \u20ac129 kart race + dinner / \u20ac99 dinner only Capacity: minimum 30 participants, maximum 50 participants Includes: transportation, karting option, Riccione walk option, dinner Karting capacity: minimum 14 drivers, maximum 32 drivers Join us for a special ACSOS evening on the Romagna Riviera , combining go-kart racing, seaside atmosphere, and an informal dinner with the conference community. The event begins at Riccione Circuit , a go-kart track located a short walk from the beach in Riccione:"
+        "body": "Fee: \u20ac119 kart race + dinner / \u20ac79 dinner only Capacity: minimum 30 participants, maximum 50 participants Includes: transportation, karting option, Riccione walk option, dinner Karting capacity: minimum 14 drivers, maximum 32 drivers Join us for a special ACSOS evening on the Romagna Riviera , combining go-kart racing, seaside atmosphere, and an informal dinner with the conference community. The event begins at Riccione Circuit , a go-kart track located a short walk from the beach in Riccione:"
       },
       {
         "title": "Along Leonardo\u2019s Canal: Cesenatico and Fish Dinner",
         "whenText": "Friday September 11",
         "whereText": "Cesenatico",
-        "fee": "\u20ac129",
+        "fee": "\u20ac119",
         "capacity": "",
         "includes": "transportation, guided museum visit, guided city-centre walk, fish dinner",
         "restaurant": "to be confirmed",
-        "body": "Fee: \u20ac129 Includes: transportation, guided museum visit, guided city-centre walk, fish dinner Restaurant: to be confirmed Join us for a special ACSOS evening in Cesenatico , combining maritime history, a guided walk through one of the most distinctive town centres on the Romagna coast, and a fish dinner with the conference community. The event begins with a guided visit to the Museo della Marineria , located along Cesenatico\u2019s Porto Canale Leonardesco :"
+        "body": "Fee: \u20ac119 Includes: transportation, guided museum visit, guided city-centre walk, fish dinner Restaurant: to be confirmed Join us for a special ACSOS evening in Cesenatico , combining maritime history, a guided walk through one of the most distinctive town centres on the Romagna coast, and a fish dinner with the conference community. The event begins with a guided visit to the Museo della Marineria , located along Cesenatico\u2019s Porto Canale Leonardesco :"
       }
     ],
     "sessions": [],
