@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 45 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
+    "programStatus": "The conference data includes 52 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -216,7 +216,7 @@
         "command": "maintrack",
         "name": "Main Track",
         "url": "https://2026.acsos.org/track/acsos-2026-papers",
-        "status": "27 accepted papers are published for Main Track. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
+        "status": "34 accepted papers are published for Main Track. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
         "summary": "Research, experience, short, and vision papers for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -224,6 +224,16 @@
             "authors": [
               "Tom Beyer",
               "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "A Multi-Objective Swarm-Inspired Approach for Intelligent Electric Vehicle Charging",
+            "authors": [
+              "Khalil Alrahman Youssefi Darmian",
+              "Mika Auer",
+              "Walter Stefanutti",
+              "Fabian Schober",
+              "Melanie Schranz"
             ]
           },
           {
@@ -357,6 +367,14 @@
             ]
           },
           {
+            "title": "In search of \u201cnormality\u201d: producing relevant counterfactual explanations for complex behaviors",
+            "authors": [
+              "Samuel Reyd",
+              "Ada Diaconescu",
+              "Jean-Louis Dessalles"
+            ]
+          },
+          {
             "title": "Large Language Models for Self-Adaptive Systems: Feedback-Loop Integration and Agentic Adaptation",
             "authors": [
               "Kerem Kara",
@@ -417,6 +435,24 @@
             ]
           },
           {
+            "title": "Self-Adaptation Using Emotional Conditioning",
+            "authors": [
+              "Pandelis Kriadis",
+              "Simos Gerasimou"
+            ]
+          },
+          {
+            "title": "Self-adaptive Distributed Runtime Monitoring for Autonomous Systems",
+            "authors": [
+              "Thomas Wright",
+              "Morten Haahr Kristensen",
+              "Mirgita Frasheri",
+              "Peter Larsen",
+              "Lukas Esterle",
+              "Claudio Gomes"
+            ]
+          },
+          {
             "title": "Self-Aware Scientific Workflow Orchestration based on a Blackboard Architecture",
             "authors": [
               "Samuel Kounev",
@@ -431,12 +467,29 @@
             ]
           },
           {
+            "title": "Stacking-Based Meta-Learning for Runtime Model Selection in Self-Adaptive Systems",
+            "authors": [
+              "Ehsan Elahi",
+              "Ruiqi Gao",
+              "Matteo Camilli",
+              "Raffaela Mirandola"
+            ]
+          },
+          {
             "title": "The Many Facets of Uncertainty Reduction",
             "authors": [
               "Raquel S\u00e1nchez Salas",
               "Radu Calinescu",
               "Javier Troya",
               "Javier Camara"
+            ]
+          },
+          {
+            "title": "The Optimisation Trilemma: Efficiency, Comfort and Fairness in Decentralised Multi-agent Coordination",
+            "authors": [
+              "Jovan Nikolic",
+              "Maciej Zuziak",
+              "Evangelos Pournaras"
             ]
           },
           {
@@ -455,6 +508,15 @@
               "Mahsa Nikmard",
               "Patrizio Pelliccione",
               "Gianlorenzo D'Angelo"
+            ]
+          },
+          {
+            "title": "When the Swarm Changes Its Mind: Learning-Based Anomaly Detection in Decentralized AUV Missions",
+            "authors": [
+              "Wiebke Frenkel",
+              "Tim Nolte",
+              "Sven Tomforde",
+              "Bernd-Christian Renner"
             ]
           },
           {
@@ -569,9 +631,9 @@
       {
         "speaker": "Valeria Cardellini",
         "affiliation": "Tor Vergata University of Rome",
-        "title": "",
+        "title": "Adaptive Serverless Computing Across the Cloud-Edge Continuum",
         "kind": "Main keynote",
-        "abstract": "coming soon.",
+        "abstract": "Serverless computing, particularly the Function-as-a-Service (FaaS) model, has transformed application deployment through event-driven execution and automatic scaling. As workloads increasingly span the heterogeneous Cloud-Edge continuum, however, traditional cloud-centric platforms struggle to cope with dynamic node availability, fluctuating network conditions, data locality constraints, and energy budgets. This keynote explores the paradigm of adaptive serverless computing, where function scheduling, execution offloading, and resource management continuously adapt to changes in infrastructure, workload, and user requirements. We discuss how context-aware orchestration make decentralized runtime decisions that balance performance, cost, and sustainability across heterogeneous cloud and edge resources. As a case study, we present Serverledge, a decentralized, open-source FaaS platform for distributed continuum environments, showing how adaptive execution enables efficient, resilient, and low-latency serverless performance without centralized control. Finally, we highlight emerging research challenges and outline a vision for autonomous serverless platforms that leverage self-adaptation and self-organization to orchestrate next-generation workloads across future continuum systems.",
         "url": "https://2026.acsos.org/info/keynotes"
       },
       {
