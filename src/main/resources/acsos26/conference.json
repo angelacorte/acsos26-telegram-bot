@@ -584,10 +584,10 @@
         "whenText": "Tuesday, September 8",
         "whereText": "Bertinoro",
         "fee": "\u20ac89",
-        "capacity": "minimum 30 participants, maximum 50 participants",
+        "capacity": "maximum 50 participants",
         "includes": "transportation, wine tasting, dinner",
         "restaurant": "",
-        "body": "Fee: \u20ac89 Capacity: minimum 30 participants, maximum 50 participants Includes: transportation, wine tasting, dinner Join us for a special ACSOS evening in Bertinoro , the renowned \u201cTerrazza della Romagna\u201d \u2014 Romagna\u2019s balcony \u2014 combining local wine, traditional cuisine, panoramic views, and informal conversation with the conference community. The evening begins with a wine tasting at Tenuta La Viola :"
+        "body": "Fee: \u20ac89 Capacity: maximum 50 participants Includes: transportation, wine tasting, dinner Join us for a special ACSOS evening in Bertinoro , the renowned \u201cTerrazza della Romagna\u201d \u2014 Romagna\u2019s balcony \u2014 combining local wine, traditional cuisine, panoramic views, and informal conversation with the conference community. The evening begins with a wine tasting at Tenuta La Viola :"
       },
       {
         "title": "ACSOS GP on the Riviera: Racing & Dinner",
@@ -605,9 +605,9 @@
         "whereText": "Cesenatico",
         "fee": "\u20ac119",
         "capacity": "",
-        "includes": "transportation, guided museum visit, guided city-centre walk, fish dinner",
-        "restaurant": "to be confirmed",
-        "body": "Fee: \u20ac119 Includes: transportation, guided museum visit, guided city-centre walk, fish dinner Restaurant: to be confirmed Join us for a special ACSOS evening in Cesenatico , combining maritime history, a guided walk through one of the most distinctive town centres on the Romagna coast, and a fish dinner with the conference community. The event begins with a guided visit to the Museo della Marineria , located along Cesenatico\u2019s Porto Canale Leonardesco :"
+        "includes": "transportation, guided museum visit, guided city-centre walk, fish dinner (alternative menus available)",
+        "restaurant": "La Baia",
+        "body": "Fee: \u20ac119 Includes: transportation, guided museum visit, guided city-centre walk, fish dinner (alternative menus available) Restaurant: La Baia Join us for a special ACSOS evening in Cesenatico , combining maritime history, a guided walk through one of the most distinctive town centres on the Romagna coast, and a fish dinner with the conference community. The event begins with a guided visit to the Museo della Marineria , located along Cesenatico\u2019s Porto Canale Leonardesco :"
       }
     ],
     "sessions": [],
@@ -986,7 +986,7 @@
             },
             {
               "time": "Evening",
-              "title": "[To be confirmed] Additional SE: Wine Tasting & Dinner in Bertinoro",
+              "title": "Additional SE: Wine Tasting & Dinner in Bertinoro",
               "details": "",
               "category": "social"
             }
@@ -1106,7 +1106,7 @@
             },
             {
               "time": "Evening",
-              "title": "[To be confirmed] Additional SE: Kart Race in Riccione & Dinner in Rimini",
+              "title": "Additional SE: Kart Race in Riccione & Dinner in Rimini",
               "details": "",
               "category": "social"
             }
@@ -1160,7 +1160,7 @@
             },
             {
               "time": "Evening",
-              "title": "[To be confirmed] Additional SE: Visit to Cesenatico & Fish Dinner on the beach",
+              "title": "Additional SE: Visit to Cesenatico & Fish Dinner on the beach",
               "details": "",
               "category": "social"
             }
