@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 52 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
+    "programStatus": "The conference data includes 57 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -216,7 +216,7 @@
         "command": "maintrack",
         "name": "Main Track",
         "url": "https://2026.acsos.org/track/acsos-2026-papers",
-        "status": "34 accepted papers are published for Main Track. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
+        "status": "39 accepted papers are published for Main Track. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
         "summary": "Research, experience, short, and vision papers for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -359,6 +359,23 @@
             ]
           },
           {
+            "title": "Hero: Hybrid Edge Routing for In-Browser Small Language Models",
+            "authors": [
+              "Philip Kehl",
+              "Fabian H\u00fcni",
+              "Basile Lewandowski",
+              "Lydia Chen"
+            ]
+          },
+          {
+            "title": "How Does Your Swarm Scale? Finite-Size Scaling Diagnostics for Self-Organizing System",
+            "authors": [
+              "Alexander Chepizhko",
+              "Melanie Schranz",
+              "P\u00e9ter Forg\u00e1cs"
+            ]
+          },
+          {
             "title": "Information-Driven Adaptation and Entropy-Regularised Planning under Non-Stationarity",
             "authors": [
               "Joshua Thompson",
@@ -416,6 +433,14 @@
             ]
           },
           {
+            "title": "NorMAL: Self-Adaptive Norm Learning and Objective Optimization in Decentralized Multi-Agent Systems",
+            "authors": [
+              "Louise O'Sullivan",
+              "Maha Riad",
+              "Fatemeh Golpayegani"
+            ]
+          },
+          {
             "title": "OPA - Observe, Preprocess, and Act: A Multi-Agent Framework for Data Preprocessing and Predictive Intelligence",
             "authors": [
               "Lucas Astore",
@@ -425,6 +450,10 @@
               "Frederico Gadelha Guimar\u00e3es",
               "Antonio Alfredo Ferreira Loureiro"
             ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "authors": []
           },
           {
             "title": "Runtime Stability-Aware Adaptation for Self-Adaptive Systems using Symbiotic Simulation: A Cloud Architecture Evaluation",
@@ -473,6 +502,15 @@
               "Ruiqi Gao",
               "Matteo Camilli",
               "Raffaela Mirandola"
+            ]
+          },
+          {
+            "title": "Survival of the Cheapest: Cost-Aware Hardware Adaptation for Adversarial Robustness",
+            "authors": [
+              "Charles Meyers",
+              "Mohammad Reza Saleh Sedghpour",
+              "Erik Elmroth",
+              "Tommy L\u00f6fstedt"
             ]
           },
           {
