@@ -907,8 +907,7 @@
       "url": "https://2026.acsos.org/info/program-at-a-glance",
       "status": "Tentative schedule, SUBJECT TO CHANGE! Rooms and individual paper details will be provided in the official program",
       "notes": [
-        "NOTE: Additional social events (Tuesday, Thursday, and Friday evening) are not included in the conference registration. Participants who wish to attend may purchase them separately",
-        "Rough overview based on the tentative ACSOS 2026 timetable. Session names and timings may change."
+        "NOTE: Additional social events (Tuesday, Thursday, and Friday evening) are not included in the conference registration. Participants who wish to attend may purchase them separately"
       ],
       "days": [
         {
@@ -916,19 +915,25 @@
           "date": "7 September",
           "entries": [
             {
-              "time": "09:00\u201310:30",
+              "time": "09:00\u201309:30",
+              "title": "Registration",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "09:30\u201311:00",
               "title": "Workshops",
               "details": "SaSSO4 \u00b7 AI4AS",
               "category": "workshop"
             },
             {
-              "time": "10:30\u201311:00",
+              "time": "11:00\u201311:30",
               "title": "Coffee break",
               "details": "",
               "category": "break"
             },
             {
-              "time": "11:00\u201313:00",
+              "time": "11:30\u201313:00",
               "title": "Workshops",
               "details": "SaSSO4 \u00b7 AI4AS",
               "category": "workshop"
@@ -942,7 +947,7 @@
             {
               "time": "14:00\u201315:30",
               "title": "Tutorials 1 & 2",
-              "details": "",
+              "details": "SaSSO4 also running",
               "category": "tutorial"
             },
             {
@@ -952,10 +957,16 @@
               "category": "break"
             },
             {
-              "time": "16:00\u201318:00",
+              "time": "16:00\u201317:30",
               "title": "Tutorials 3 & 4",
-              "details": "",
+              "details": "SaSSO4 also running",
               "category": "tutorial"
+            },
+            {
+              "time": "17:30\u201318:00",
+              "title": "\u2014",
+              "details": "",
+              "category": "other"
             },
             {
               "time": "Evening",
@@ -970,19 +981,25 @@
           "date": "8 September",
           "entries": [
             {
-              "time": "09:00\u201310:30",
+              "time": "09:00\u201310:00",
               "title": "Opening & Keynote",
               "details": "Valeria Cardellini",
               "category": "keynote"
             },
             {
-              "time": "10:30\u201311:00",
+              "time": "10:00\u201311:00",
+              "title": "Main-track session",
+              "details": "",
+              "category": "main"
+            },
+            {
+              "time": "11:00\u201311:30",
               "title": "Coffee break",
               "details": "",
               "category": "break"
             },
             {
-              "time": "11:00\u201313:00",
+              "time": "11:30\u201313:00",
               "title": "Main-track session",
               "details": "",
               "category": "main"
@@ -1036,28 +1053,34 @@
           "date": "9 September",
           "entries": [
             {
-              "time": "09:00\u201310:30",
+              "time": "09:00\u201310:00",
               "title": "Keynote",
               "details": "Marco Dorigo",
               "category": "keynote"
             },
             {
-              "time": "10:30\u201311:00",
-              "title": "Coffee break & Posters",
+              "time": "10:00\u201311:00",
+              "title": "Main-track session",
               "details": "",
-              "category": "poster"
+              "category": "main"
             },
             {
-              "time": "11:00\u201313:00",
+              "time": "11:00\u201311:30",
+              "title": "Coffee break",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "11:30\u201313:00",
               "title": "Main-track session",
               "details": "",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
-              "title": "Lunch & Posters",
+              "title": "Lunch",
               "details": "",
-              "category": "poster"
+              "category": "break"
             },
             {
               "time": "14:00\u201316:00",
@@ -1096,28 +1119,34 @@
           "date": "10 September",
           "entries": [
             {
-              "time": "09:00\u201310:30",
+              "time": "09:00\u201310:00",
               "title": "Keynote",
               "details": "Ivona Brandic",
               "category": "keynote"
             },
             {
-              "time": "10:30\u201311:00",
-              "title": "Coffee break & Posters",
+              "time": "10:00\u201311:00",
+              "title": "Main-track session",
               "details": "",
-              "category": "poster"
+              "category": "main"
             },
             {
-              "time": "11:00\u201313:00",
+              "time": "11:00\u201311:30",
+              "title": "Coffee break",
+              "details": "",
+              "category": "break"
+            },
+            {
+              "time": "11:30\u201313:00",
               "title": "Main-track session",
               "details": "",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
-              "title": "Lunch",
+              "title": "Lunch & Posters",
               "details": "",
-              "category": "break"
+              "category": "poster"
             },
             {
               "time": "14:00\u201316:00",
@@ -1156,14 +1185,14 @@
           "date": "11 September",
           "entries": [
             {
-              "time": "09:00\u201310:30",
+              "time": "09:00\u201311:00",
               "title": "Workshops",
               "details": "AICR-ACS \u00b7 SISSY",
               "category": "workshop"
             },
             {
-              "time": "10:30\u201311:30",
-              "title": "Coffee Break",
+              "time": "11:00\u201311:30",
+              "title": "Coffee break",
               "details": "",
               "category": "break"
             },
@@ -1186,13 +1215,13 @@
               "category": "workshop"
             },
             {
-              "time": "15:30\u201316:30",
-              "title": "Break",
+              "time": "15:30\u201316:00",
+              "title": "Coffee break",
               "details": "",
               "category": "break"
             },
             {
-              "time": "16:30\u201318:00",
+              "time": "16:00\u201318:00",
               "title": "Workshops",
               "details": "AICR-ACS \u00b7 SISSY",
               "category": "workshop"
