@@ -904,7 +904,7 @@
     "program": {
       "title": "Program at a Glance",
       "url": "https://2026.acsos.org/info/program-at-a-glance",
-      "status": "Tentative schedule, SUBJECT TO CHANGE! Rooms and individual paper details will be provided in the official program",
+      "status": "Tentative schedule, subject to change.",
       "notes": [
         "NOTE: Additional social events (Tuesday, Thursday, and Friday evening) are not included in the conference registration. Participants who wish to attend may purchase them separately"
       ],
@@ -922,43 +922,43 @@
             {
               "time": "09:30\u201311:00",
               "title": "Workshops",
-              "details": "SaSSO4 \u00b7 AI4AS",
+              "details": "SaSSO4 \u00b7 AI4AS \u00b7 SaSSO4: 2.10 \u00b7 AI4AS: 2.4",
               "category": "workshop"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "",
+              "details": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Workshops",
-              "details": "SaSSO4 \u00b7 AI4AS",
+              "details": "SaSSO4 \u00b7 AI4AS \u00b7 SaSSO4: 2.10 \u00b7 AI4AS: 2.4",
               "category": "workshop"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch",
-              "details": "",
+              "details": "Sala Polivalente",
               "category": "break"
             },
             {
               "time": "14:00\u201315:30",
               "title": "Tutorials 1 & 2",
-              "details": "SaSSO4 also running",
+              "details": "SaSSO4 also running \u00b7 T1: 2.3 \u00b7 T2: 2.4 \u00b7 SaSSO4: 2.10",
               "category": "tutorial"
             },
             {
               "time": "15:30\u201316:00",
               "title": "Coffee break",
-              "details": "",
+              "details": "2.13",
               "category": "break"
             },
             {
               "time": "16:00\u201317:30",
               "title": "Tutorials 3 & 4",
-              "details": "SaSSO4 also running",
+              "details": "SaSSO4 also running \u00b7 T3: 2.3 \u00b7 T4: 2.4 \u00b7 SaSSO4: 2.10",
               "category": "tutorial"
             },
             {
@@ -970,7 +970,7 @@
             {
               "time": "Evening",
               "title": "Welcome Reception",
-              "details": "",
+              "details": "Rocca Malatestiana",
               "category": "social"
             }
           ]
@@ -980,69 +980,75 @@
           "date": "8 September",
           "entries": [
             {
-              "time": "09:00\u201310:00",
-              "title": "Opening & Keynote",
-              "details": "Valeria Cardellini",
+              "time": "09:00\u201309:30",
+              "title": "Opening",
+              "details": "Aula Magna",
+              "category": "main"
+            },
+            {
+              "time": "09:30\u201310:00",
+              "title": "Keynote",
+              "details": "Valeria Cardellini \u00b7 Aula Magna",
               "category": "keynote"
             },
             {
               "time": "10:00\u201311:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "",
+              "details": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch",
-              "details": "",
+              "details": "Sala Polivalente",
               "category": "break"
             },
             {
               "time": "14:00\u201315:00",
               "title": "Keynote",
-              "details": "Carlo Ghezzi",
+              "details": "Carlo Ghezzi \u00b7 Aula Magna",
               "category": "keynote"
             },
             {
               "time": "15:00\u201315:30",
               "title": "PhD flash talks",
-              "details": "",
+              "details": "Aula Magna",
               "category": "phd"
             },
             {
               "time": "15:30\u201316:00",
               "title": "Poster flash talks",
-              "details": "",
+              "details": "Aula Magna",
               "category": "poster"
             },
             {
               "time": "16:00\u201316:30",
               "title": "Coffee break & Posters",
-              "details": "",
-              "category": "poster"
+              "details": "Coffee: 2.13 \u00b7 Posters: 2.3",
+              "category": "other"
             },
             {
               "time": "16:30\u201318:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "Evening",
               "title": "Additional SE: Wine Tasting & Dinner in Bertinoro",
-              "details": "",
+              "details": "Bertinoro \u00b7 off-site",
               "category": "social"
             }
           ]
@@ -1054,61 +1060,61 @@
             {
               "time": "09:00\u201310:00",
               "title": "Keynote",
-              "details": "Marco Dorigo",
+              "details": "Marco Dorigo \u00b7 Aula Magna",
               "category": "keynote"
             },
             {
               "time": "10:00\u201311:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "",
+              "details": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
-              "title": "Lunch",
-              "details": "",
-              "category": "break"
+              "title": "Lunch & Posters",
+              "details": "Lunch: Sala Polivalente \u00b7 Posters: 2.3",
+              "category": "other"
             },
             {
               "time": "14:00\u201316:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "16:00\u201316:30",
               "title": "Coffee break & Posters",
-              "details": "",
-              "category": "poster"
+              "details": "Coffee: 2.13 \u00b7 Posters: 2.3",
+              "category": "other"
             },
             {
               "time": "16:30\u201317:30",
               "title": "ACSOS in Practice / Doctoral Symposium breakouts",
-              "details": "",
+              "details": "In Practice: Aula Magna \u00b7 DS: 2.3 / 2.4",
               "category": "panel"
             },
             {
               "time": "17:30\u201318:00",
               "title": "Malatestiana library visit",
-              "details": "",
+              "details": "Biblioteca Malatestiana",
               "category": "special"
             },
             {
               "time": "Evening",
               "title": "Banquet at Teatro Verdi",
-              "details": "",
+              "details": "Teatro Verdi",
               "category": "social"
             }
           ]
@@ -1120,61 +1126,61 @@
             {
               "time": "09:00\u201310:00",
               "title": "Keynote",
-              "details": "Ivona Brandic",
+              "details": "Ivona Brandic \u00b7 Aula Magna",
               "category": "keynote"
             },
             {
               "time": "10:00\u201311:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "",
+              "details": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch & Posters",
-              "details": "",
-              "category": "poster"
+              "details": "Lunch: Sala Polivalente \u00b7 Posters: 2.3",
+              "category": "other"
             },
             {
               "time": "14:00\u201316:00",
               "title": "Main-track session",
-              "details": "",
+              "details": "Aula Magna",
               "category": "main"
             },
             {
               "time": "16:00\u201316:30",
               "title": "Coffee break & Posters",
-              "details": "",
-              "category": "poster"
+              "details": "Coffee: 2.13 \u00b7 Posters: 2.3",
+              "category": "other"
             },
             {
               "time": "16:30\u201317:30",
               "title": "Expert Panel / Doctoral Symposium breakouts",
-              "details": "",
+              "details": "Panel: Aula Magna \u00b7 DS: 2.3 / 2.4",
               "category": "panel"
             },
             {
               "time": "17:30\u201318:00",
               "title": "Closing",
-              "details": "",
-              "category": "special"
+              "details": "Aula Magna",
+              "category": "main"
             },
             {
               "time": "Evening",
               "title": "Additional SE: Kart Race in Riccione & Dinner in Rimini",
-              "details": "",
+              "details": "Riccione / Rimini \u00b7 off-site",
               "category": "social"
             }
           ]
@@ -1186,49 +1192,49 @@
             {
               "time": "09:00\u201311:00",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY",
+              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "",
+              "details": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY",
+              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch",
-              "details": "",
+              "details": "Sala Polivalente",
               "category": "break"
             },
             {
               "time": "14:00\u201315:30",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY",
+              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "15:30\u201316:00",
               "title": "Coffee break",
-              "details": "",
+              "details": "2.13",
               "category": "break"
             },
             {
               "time": "16:00\u201318:00",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY",
+              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "Evening",
               "title": "Additional SE: Visit to Cesenatico & Fish Dinner on the beach",
-              "details": "",
+              "details": "Cesenatico \u00b7 off-site",
               "category": "social"
             }
           ]
