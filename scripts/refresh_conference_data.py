@@ -76,6 +76,7 @@ INFO_PAGES = [
     },
 ]
 PROGRAM_URL = "https://2026.acsos.org/info/program-at-a-glance"
+DETAILED_PROGRAM_URL = "https://2026.acsos.org/program/program-acsos-2026/Detailed-Table"
 SOCIAL_URL = "https://2026.acsos.org/attending/social-events"
 KEYNOTES_URL = "https://2026.acsos.org/info/keynotes"
 ORGANIZING_COMMITTEE_URL = "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
@@ -123,6 +124,7 @@ class ProgramTableParser(HTMLParser):
         self.in_program_table = False
         self.current_row: list[dict[str, Any]] | None = None
         self.current_cell: dict[str, Any] | None = None
+        self.current_part_kind: str | None = None
         self.rows: list[list[dict[str, Any]]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -136,9 +138,16 @@ class ProgramTableParser(HTMLParser):
             rowspan = attributes.get("rowspan") or "1"
             self.current_cell = {
                 "parts": [],
+                "detail_parts": [],
+                "room_parts": [],
                 "classes": sorted(classes),
                 "rowspan": int(rowspan) if rowspan.isdigit() else 1,
             }
+        elif self.current_cell is not None:
+            if "room" in classes:
+                self.current_part_kind = "room"
+            elif "minor" in classes:
+                self.current_part_kind = "detail"
 
     def handle_endtag(self, tag: str) -> None:
         if not self.in_program_table:
@@ -146,6 +155,9 @@ class ProgramTableParser(HTMLParser):
         if tag in {"td", "th"} and self.current_cell is not None and self.current_row is not None:
             self.current_row.append(self.current_cell)
             self.current_cell = None
+            self.current_part_kind = None
+        elif tag == "span" and self.current_cell is not None:
+            self.current_part_kind = None
         elif tag == "tr" and self.current_row is not None:
             if self.current_row:
                 self.rows.append(self.current_row)
@@ -160,6 +172,10 @@ class ProgramTableParser(HTMLParser):
         parts = self.current_cell["parts"]
         if text and (not parts or text != parts[-1]):
             parts.append(text)
+        if self.current_part_kind is not None:
+            classified_parts = self.current_cell[f"{self.current_part_kind}_parts"]
+            if text and (not classified_parts or text != classified_parts[-1]):
+                classified_parts.append(text)
 
 
 def main() -> int:
@@ -174,6 +190,7 @@ def main() -> int:
         [
             BASE_URL,
             PROGRAM_URL,
+            DETAILED_PROGRAM_URL,
             SOCIAL_URL,
             KEYNOTES_URL,
             ORGANIZING_COMMITTEE_URL,
@@ -192,10 +209,21 @@ def main() -> int:
     program = extract_program(raw_pages.get(PROGRAM_URL, ""), pages.get(PROGRAM_URL, []))
     if program.get("days"):
         conference["program"] = program
+    detailed_html = raw_pages.get(DETAILED_PROGRAM_URL, "")
+    if detailed_html:
+        extracted_sessions = extract_detailed_sessions(detailed_html)
+        if extracted_sessions:
+            conference["sessions"] = extracted_sessions
+    has_program_rooms = any(
+        entry.get("room")
+        for day in conference.get("program", {}).get("days", [])
+        for entry in day.get("entries", [])
+    )
     conference["tracks"] = refresh_tracks(
         conference["tracks"],
         pages,
         has_tentative_program=bool(conference.get("program", {}).get("days")),
+        has_program_rooms=has_program_rooms,
     )
     conference["infoPages"] = refresh_info_pages(conference["infoPages"], pages)
     social_lines = pages.get(SOCIAL_URL, [])
@@ -280,7 +308,8 @@ def extract_program(html: str, lines: list[str]) -> dict[str, Any]:
                 {
                     "time": program_time_range(start_label, end_label),
                     "title": parts[0] if parts else "",
-                    "details": " · ".join(parts[1:]),
+                    "details": " · ".join(cell["detail_parts"]),
+                    "room": " · ".join(cell["room_parts"]),
                     "category": program_category(cell["classes"]),
                 },
             )
@@ -300,6 +329,107 @@ def extract_program(html: str, lines: list[str]) -> dict[str, Any]:
         "notes": notes,
         "days": days,
     }
+
+
+def extract_detailed_sessions(html: str) -> list[dict[str, Any]]:
+    """Extract individual paper sessions and timetable from the detailed program table."""
+    day_sections = re.split(r'<h4[^>]*class=\"[^\"]*day-header[^\"]*\"[^>]*>', html)
+    sessions: list[dict[str, Any]] = []
+
+    weekday_map = {
+        "mon": "Monday, 7 September",
+        "tue": "Tuesday, 8 September",
+        "wed": "Wednesday, 9 September",
+        "thu": "Thursday, 10 September",
+        "fri": "Friday, 11 September",
+    }
+    track_map = {
+        "main track": "main",
+        "workshops": "workshops",
+        "doctoral symposium": "doctoral",
+        "posters and demos": "posters",
+        "tutorials": "tutorials",
+        "artifacts": "artifacts",
+        "catering": "catering",
+        "social program": "social",
+    }
+
+    for section in day_sections[1:]:
+        day_match = re.search(r"<div><div>([A-Za-z]+)\s+([0-9]+\s+[A-Za-z]+)</div>", section)
+        if not day_match:
+            continue
+        day_short = day_match.group(1).lower()
+        full_day = weekday_map.get(day_short, f"{day_match.group(1)}, {day_match.group(2)}")
+
+        tables = re.findall(r"<table[^>]*>.*?</table>", section, re.DOTALL)
+        for table in tables:
+            head_match = re.search(r"<thead[^>]*>(.*?)</thead>", table, re.DOTALL)
+            head_content = head_match.group(1) if head_match else ""
+            if not head_content:
+                first_tr = re.search(r"<tr[^>]*>(.*?)</tr>", table, re.DOTALL)
+                head_content = first_tr.group(1) if first_tr else ""
+
+            time_match = re.search(r"([0-9]{2}:[0-9]{2}\s*[-–—]\s*[0-9]{2}:[0-9]{2})", head_content)
+            session_time = time_match.group(1).replace(" ", "") if time_match else ""
+
+            room_match = re.search(
+                r'at\s+<a[^>]*class=\"[^\"]*room-link[^\"]*\"[^>]*>(.*?)</a>|at\s+([^<]+?)(?:<|$)',
+                head_content,
+            )
+            room = ""
+            if room_match:
+                room = room_match.group(1) or room_match.group(2) or ""
+                room = re.sub(r"&quot;", '"', room).strip()
+                room = re.sub(r"<[^>]+>", "", room).strip()
+
+            track_match = re.search(
+                r'data-facet-track=\"([^\"]+)\"|<span class=\"pull-right\"><a[^>]*>(.*?)</a>',
+                head_content,
+            )
+            track_raw = ""
+            if track_match:
+                track_raw = track_match.group(1) or track_match.group(2) or ""
+            track_id = track_map.get(track_raw.lower().replace("acsos ", "").strip(), "main")
+
+            clean_head = re.sub(r'<span class=\"pull-right\">.*?</span>', "", head_content, flags=re.DOTALL)
+            clean_head = re.sub(r'at\s+<a[^>]*class=\"[^\"]*room-link[^\"]*\">.*?</a>', "", clean_head, flags=re.DOTALL)
+            clean_head = re.sub(r"<[^>]+>", " ", clean_head)
+            clean_head = " ".join(clean_head.split())
+            if session_time:
+                clean_head = re.sub(re.escape(session_time), "", clean_head)
+            if time_match:
+                clean_head = re.sub(re.escape(time_match.group(1)), "", clean_head)
+            if room:
+                clean_head = clean_head.replace(f"at {room}", "").replace(f'at "{room}"', "")
+            if "Speaker:" in clean_head:
+                clean_head = clean_head.split("Speaker:")[0]
+            clean_head = re.sub(r"^[-\s:]+|[-\s:]+$", "", clean_head).strip()
+            clean_head = re.sub(r"&quot;", '"', clean_head)
+            clean_head = re.sub(r"&amp;", "&", clean_head)
+            session_title = " ".join(clean_head.split())
+
+            slot_rows = re.findall(r'<tr[^>]*data-slot-id=\"[^\"]*\"[^>]*>(.*?)</tr>', table, re.DOTALL)
+            session_papers = []
+            for slot in slot_rows:
+                title_m = re.search(r'data-event-modal=\"[^\"]*\">(.*?)</a>', slot)
+                if title_m:
+                    paper_title = re.sub(r"<[^>]+>", "", title_m.group(1)).strip()
+                    paper_title = re.sub(r"&quot;", '"', paper_title)
+                    paper_title = re.sub(r"&amp;", "&", paper_title)
+                    session_papers.append(paper_title)
+
+            if session_title:
+                sessions.append(
+                    {
+                        "title": session_title,
+                        "trackId": track_id,
+                        "day": full_day,
+                        "time": session_time,
+                        "room": room,
+                        "papers": session_papers,
+                    }
+                )
+    return sessions
 
 
 def cell_text(cell: dict[str, Any]) -> str:
@@ -336,6 +466,7 @@ def refresh_tracks(
     existing_tracks: list[dict[str, Any]],
     pages: dict[str, list[str]],
     has_tentative_program: bool = False,
+    has_program_rooms: bool = False,
 ) -> list[dict[str, Any]]:
     """Refresh track statuses and accepted papers while preserving known commands."""
     existing_by_id = {track["id"]: track for track in existing_tracks}
@@ -347,7 +478,7 @@ def refresh_tracks(
         if not accepted_papers and old.get("acceptedPapers"):
             accepted_papers = old["acceptedPapers"]
         status = (
-            track_status(definition["name"], accepted_papers, has_tentative_program)
+            track_status(definition["name"], accepted_papers, has_tentative_program, has_program_rooms)
             if lines
             else old.get("status", "")
         )
@@ -676,9 +807,20 @@ def program_status(conference: dict[str, Any]) -> str:
     papers = sum(len(track["acceptedPapers"]) for track in conference["tracks"])
     sessions = len(conference["sessions"])
     program_days = conference.get("program", {}).get("days", [])
+    has_program_rooms = any(
+        entry.get("room")
+        for day in program_days
+        for entry in day.get("entries", [])
+    )
     if sessions:
         return f"The conference data includes {papers} accepted papers and {sessions} timed sessions."
     if program_days:
+        if has_program_rooms:
+            return (
+                f"The conference data includes {papers} accepted papers and the tentative program-at-a-glance "
+                "timetable, including published room information; individual paper-to-session assignments "
+                "are not available yet."
+            )
         return (
             f"The conference data includes {papers} accepted papers and the tentative program-at-a-glance "
             "timetable. Rooms and individual paper-to-session assignments are not available yet."
@@ -695,12 +837,18 @@ def track_status(
     track_name: str,
     accepted_papers: list[dict[str, Any]],
     has_tentative_program: bool = False,
+    has_program_rooms: bool = False,
 ) -> str:
     """Build a track-specific status line."""
     if accepted_papers:
         timing_status = (
-            "Tentative session blocks are published in the program at a glance; rooms and individual "
-            "paper-to-session assignments are not available yet."
+            (
+                "Tentative session blocks and room information are published in the program at a glance; "
+                "individual paper-to-session assignments are not available yet."
+                if has_program_rooms
+                else "Tentative session blocks are published in the program at a glance; rooms and individual "
+                "paper-to-session assignments are not available yet."
+            )
             if has_tentative_program
             else "Timed sessions and rooms are not published in this data file yet."
         )

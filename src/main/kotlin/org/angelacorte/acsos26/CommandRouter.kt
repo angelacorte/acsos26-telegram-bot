@@ -192,13 +192,19 @@ internal class CommandRouter(
             resolveTrack(trackIdOrCommand)
                 ?: return "I do not know that track yet. Use /tracks to see the available tracks."
         val sessions = conference.sessions.filter { it.trackId == track.id }
+        val programRooms = conference.programRoomsForTrack(track.id)
         return buildString {
             appendLine(track.name)
             appendLine(track.summary)
             appendLine()
             appendLine("Status: ${track.status}")
             if (sessions.isEmpty()) {
-                appendLine("Timed sessions and rooms are not available in the bot data yet.")
+                if (programRooms.isEmpty()) {
+                    appendLine("Timed sessions and rooms are not available in the bot data yet.")
+                } else {
+                    appendLine("Published track-level rooms: ${programRooms.joinToString()}.")
+                    appendLine("Individual paper-to-session assignments are not available yet.")
+                }
             } else {
                 appendLine("Sessions:")
                 sessions.forEach { appendLine("- ${it.summary()}") }
@@ -243,7 +249,12 @@ internal class CommandRouter(
 
     private fun sessions(): String =
         if (conference.sessions.isEmpty()) {
-            "Session times, rooms, and paper-to-session assignments are not available in the bot data yet."
+            if (conference.hasProgramRooms()) {
+                "Program-block rooms are available through /ask, but individual paper-to-session assignments " +
+                    "are not available in the bot data yet."
+            } else {
+                "Session times, rooms, and paper-to-session assignments are not available in the bot data yet."
+            }
         } else {
             conference.sessions.joinToString(prefix = "Sessions:\n", separator = "\n") { "- ${it.summary()}" }
         }
@@ -356,3 +367,47 @@ private fun String.withoutMention(botUsername: String): String =
     replace(Regex("@${Regex.escape(botUsername)}\\b", RegexOption.IGNORE_CASE), "").trim()
 
 private fun String.isPrivateChat(): Boolean = equals(PRIVATE_CHAT_TYPE, ignoreCase = true)
+
+private fun Conference.hasProgramRooms(): Boolean =
+    program?.days.orEmpty().any { day -> day.entries.any { it.room.isNotBlank() } }
+
+private fun Conference.programRoomsForTrack(trackId: String): List<String> =
+    program
+        ?.days
+        .orEmpty()
+        .flatMap { it.entries }
+        .filter { it.matchesTrack(trackId) }
+        .flatMap { it.room.roomsForTrack(trackId) }
+        .filter { it.isNotBlank() }
+        .distinct()
+
+private fun ProgramEntry.matchesTrack(trackId: String): Boolean {
+    val searchable = "$title $details".lowercase().replace(Regex("[^a-z0-9]+"), " ").trim()
+    return when (trackId) {
+        "main" -> category == "main" && "main track session" in searchable
+        "doctoral" -> category == "phd" || "doctoral symposium" in searchable
+        "posters" -> category == "poster" || "poster" in searchable
+        "tutorials" -> category == "tutorial"
+        "workshops" -> category == "workshop"
+        else -> false
+    }
+}
+
+private fun String.roomsForTrack(trackId: String): List<String> {
+    if (isBlank()) return emptyList()
+    val aliases =
+        when (trackId) {
+            "doctoral" -> setOf("doctoral symposium", "ds")
+            "posters" -> setOf("poster", "posters")
+            else -> emptySet()
+        }
+    val parts = split(Regex("\\s*·\\s*"))
+    val matched =
+        parts.mapNotNull { part ->
+            val label = part.substringBefore(":", missingDelimiterValue = "")
+            val value = part.substringAfter(":", missingDelimiterValue = "")
+            value.trim().takeIf { label.trim().lowercase() in aliases && it.isNotBlank() }
+        }
+    val unlabeled = parts.filterNot { ":" in it }.map(String::trim)
+    return matched.ifEmpty { unlabeled.ifEmpty { listOf(trim()) } }
+}

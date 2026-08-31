@@ -125,6 +125,7 @@ internal data class ProgramEntry(
     val time: String,
     val title: String,
     val details: String,
+    val room: String = "",
     val category: String,
 )
 

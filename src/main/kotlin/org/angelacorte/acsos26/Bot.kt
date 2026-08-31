@@ -9,6 +9,7 @@ import com.github.kotlintelegrambot.dispatcher.newChatMembers
 import com.github.kotlintelegrambot.dispatcher.text
 import com.github.kotlintelegrambot.entities.ChatAction
 import com.github.kotlintelegrambot.entities.ChatId
+import com.github.kotlintelegrambot.entities.ParseMode
 import com.github.kotlintelegrambot.entities.ReplyParameters
 import com.github.kotlintelegrambot.entities.User
 import com.github.kotlintelegrambot.types.TelegramBotResult
@@ -145,21 +146,39 @@ private fun Bot.sendAnswer(
     requester: User?,
 ) {
     val replyParameters = groupReplyParameters(chatType, messageId)
-    val safeText = text.telegramSafe()
-    val replyResult =
+    val htmlText = text.markdownToTelegramHtml().telegramSafe()
+    val plainSafeText = text.telegramSafe()
+
+    // 1. Try sending with HTML formatting
+    val htmlReplyResult =
         sendMessage(
             chatId,
-            text = safeText,
+            text = htmlText,
+            parseMode = ParseMode.HTML,
             messageThreadId = messageThreadId,
             replyParameters = replyParameters,
         )
-    if (!replyResult.isError || replyParameters == null) {
-        replyResult.logDeliveryError("message")
+    if (!htmlReplyResult.isError) {
         return
     }
 
-    replyResult.logDeliveryError("group reply")
-    val fallbackText = safeText.addressedTo(requester).telegramSafe()
+    // 2. If HTML reply failed, fallback to plain text with reply metadata
+    val plainReplyResult =
+        sendMessage(
+            chatId,
+            text = plainSafeText,
+            messageThreadId = messageThreadId,
+            replyParameters = replyParameters,
+        )
+    if (!plainReplyResult.isError || replyParameters == null) {
+        if (plainReplyResult.isError) {
+            plainReplyResult.logDeliveryError("message")
+        }
+        return
+    }
+
+    plainReplyResult.logDeliveryError("group reply")
+    val fallbackText = plainSafeText.addressedTo(requester).telegramSafe()
     val topicFallback = sendMessage(chatId, text = fallbackText, messageThreadId = messageThreadId)
     if (!topicFallback.isError || messageThreadId == null) {
         topicFallback.logDeliveryError("group fallback")
@@ -217,3 +236,23 @@ private fun String.telegramSafe(): String =
     } else {
         take(TELEGRAM_MESSAGE_LIMIT - TELEGRAM_TRUNCATION_SUFFIX.length) + TELEGRAM_TRUNCATION_SUFFIX
     }
+
+/**
+ * Converts standard Markdown (bold, italic, code, links) to Telegram-supported HTML.
+ */
+internal fun String.markdownToTelegramHtml(): String {
+    var escaped = replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    // Code blocks: ```lang\ncode``` or ```code```
+    escaped = escaped.replace(Regex("```(?:[a-zA-Z0-9_-]*\\n)?([\\s\\S]*?)```"), "<pre><code>$1</code></pre>")
+    // Inline code: `code`
+    escaped = escaped.replace(Regex("`([^`]+)`"), "<code>$1</code>")
+    // Links: [text](url)
+    escaped = escaped.replace(Regex("\\[([^\\]]+)\\]\\((https?://[^\\)]+)\\)"), "<a href=\"$2\">$1</a>")
+    // Bold: **text** or __text__
+    escaped = escaped.replace(Regex("\\*\\*([\\s\\S]+?)\\*\\*"), "<b>$1</b>")
+    escaped = escaped.replace(Regex("(?<!\\w)__([\\s\\S]+?)__(?!\\w)"), "<b>$1</b>")
+    // Italic: *text* or _text_
+    escaped = escaped.replace(Regex("(?<![\\w*])\\*([^\\*\\n]+?)\\*(?![\\w*])"), "<i>$1</i>")
+    escaped = escaped.replace(Regex("(?<![\\w_])_([^\\_\\n]+?)_(?![\\w_])"), "<i>$1</i>")
+    return escaped
+}

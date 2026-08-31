@@ -717,7 +717,7 @@ def candidates_from_knowledge(knowledge: Any, config: LiveSearchConfig) -> list[
                 f"{day.get('day', '')} {day.get('date', '')} "
                 + " ".join(
                     f"{entry.get('time', '')} {entry.get('title', '')} "
-                    f"{entry.get('details', '')} {entry.get('category', '')}"
+                    f"{entry.get('details', '')} {entry.get('room', '')} {entry.get('category', '')}"
                     for entry in day.get("entries", [])
                 )
                 for day in program.get("days", [])

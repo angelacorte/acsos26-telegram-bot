@@ -90,6 +90,52 @@ def test_extract_agent_answer_skips_reasoning_blocks() -> None:
     assert extract_agent_answer(result) == "The keynote is by Marco Dorigo."
 
 
+def test_extract_agent_answer_ignores_human_messages_and_prompts() -> None:
+    """Human/user prompt messages must never be returned as the assistant's answer."""
+    human_result = {
+        "messages": [
+            SimpleNamespace(type="human", content="Answer this ACSOS question... Question: Where is SISSY?"),
+        ],
+    }
+    assert extract_agent_answer(human_result) == ""
+
+
+def test_extract_agent_answer_cleans_think_tags() -> None:
+    """Reasoning models outputting <think>...</think> tags must have them stripped."""
+    think_result = {
+        "messages": [
+            SimpleNamespace(
+                type="ai",
+                content="<think>Let me look up the location of SISSY.</think>SISSY will be in room 2.4.",
+            ),
+        ],
+    }
+    assert extract_agent_answer(think_result) == "SISSY will be in room 2.4."
+
+
+def test_extract_agent_answer_finds_last_assistant_message_with_content() -> None:
+    """Intermediate tool or empty messages must be skipped to find the final assistant answer."""
+    multi_step_result = {
+        "messages": [
+            SimpleNamespace(type="human", content="Where is SISSY?"),
+            SimpleNamespace(type="ai", content=""),
+            SimpleNamespace(type="tool", content="SISSY: room 2.4"),
+            SimpleNamespace(type="ai", content="SISSY is in room 2.4."),
+        ],
+    }
+    assert extract_agent_answer(multi_step_result) == "SISSY is in room 2.4."
+
+
+def test_extract_agent_answer_never_returns_str_of_raw_dict() -> None:
+    """When no text can be extracted, the function must return empty string, never str(dict)."""
+    empty_result = {
+        "messages": [
+            SimpleNamespace(type="tool", content="raw tool data"),
+        ],
+    }
+    assert extract_agent_answer(empty_result) == ""
+
+
 def test_deep_agent_receives_bounded_analysis_tools(
     monkeypatch: pytest.MonkeyPatch,
     knowledge: ConferenceKnowledge,
@@ -122,3 +168,26 @@ def test_create_agent_returns_none_when_disabled(monkeypatch: pytest.MonkeyPatch
     """The generative responder must be disabled entirely when the operator asks."""
     monkeypatch.setenv("DISABLE_LLM", "1")
     assert create_agent(knowledge) is None
+
+
+def test_create_agent_can_use_gemini_without_initializing_ollama(
+    monkeypatch: pytest.MonkeyPatch,
+    knowledge: ConferenceKnowledge,
+) -> None:
+    """Gemini-only deployments must not construct an Ollama client."""
+    gemini_model = object()
+    monkeypatch.delenv("DISABLE_LLM", raising=False)
+    monkeypatch.delenv("DISABLE_DEEPAGENTS", raising=False)
+    monkeypatch.setenv("OLLAMA_ENABLED", "false")
+    monkeypatch.setenv("GEMINI_API_KEY", "google-key")
+    monkeypatch.setattr(agents, "create_gemini_chat_model", lambda api_key: gemini_model)
+
+    def fail_if_called(model_name: str) -> object:
+        raise AssertionError(f"Ollama must stay disabled, got {model_name}")
+
+    monkeypatch.setattr(agents, "create_chat_model", fail_if_called)
+
+    created = create_agent(knowledge)
+
+    assert isinstance(created, DirectChatAgent)
+    assert created.model is gemini_model

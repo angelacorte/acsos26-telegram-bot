@@ -35,16 +35,24 @@ class CommandRouterTest :
             router.answer("/group") shouldContain "not configured"
         }
 
-        "program reports tentative blocks without inventing paper assignments" {
+        "program reports program status" {
             val answer = router.answer("/program")
-            answer shouldContain "tentative program-at-a-glance timetable"
-            answer shouldContain "individual paper-to-session assignments are not available"
+            answer shouldContain "57 accepted papers"
+            answer shouldContain "78 timed sessions"
         }
 
         "main track command shows accepted papers" {
             val answer = router.answer("/maintrack")
             answer shouldContain "Main Track"
+            answer shouldContain "Sessions:"
             answer shouldContain "A Multi-Agent LLM Architecture"
+        }
+
+        "doctoral command shows sessions and accepted papers" {
+            val answer = router.answer("/doctoral")
+            answer shouldContain "Doctoral Symposium"
+            answer shouldContain "Sessions:"
+            answer shouldContain "Doctoral Symposium breakouts"
         }
 
         "program resolves track names tolerantly" {

@@ -64,8 +64,9 @@ Site analysis notes for `https://2026.acsos.org`:
 
 The refresh script also parses the official tentative Program at a Glance into
 structured `program.days[].entries`, including each block's day, time, title,
-details, and category. Individual paper assignments and rooms are not published
-yet; once they are available, they can be imported into `sessions`.
+details, room, and category. Room information is read from the program table on
+every refresh. Individual paper-to-session assignments are not published yet;
+once they are available, they can be imported into `sessions`.
 
 ## Run the Kotlin bot
 
@@ -120,46 +121,32 @@ into the prompt, and the model is instructed to answer only from those sources
 or to say the information is not available yet. The assistant answers **only
 ACSOS 2026 questions in English**; off-topic questions get a fixed refusal. The
 full accepted-paper list is always included in the prompt so the model can answer
-topic filters ("papers about AI") by meaning rather than exact wording. The
-default model is `DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct` — a small, fast
-instruct model that fits in RAM on a CPU-only host. Set `USE_DEEPAGENTS=1` to
-switch to the tool-calling Deep Agent (which also gets a `list_accepted_papers`
-tool for semantic paper filtering), and set `DISABLE_LLM=true` (or the legacy
-`DISABLE_DEEPAGENTS=true`) to run deterministic retrieval only.
+topic filters ("papers about AI") by meaning rather than exact wording. Set
+`USE_DEEPAGENTS=1` to switch to the tool-calling Deep Agent (which also gets a
+`list_accepted_papers` tool for semantic paper filtering), and set
+`DISABLE_LLM=true` (or the legacy `DISABLE_DEEPAGENTS=true`) to run deterministic
+retrieval only.
 
-Set `GEMINI_API_KEY` to use Gemini as the primary model. The default is the stable
-`GEMINI_MODEL=gemini-2.5-flash`; if the key is absent the service uses Ollama, and
-if a Gemini request fails it retries the same grounded request through Ollama.
-`GEMINI_TIMEOUT_SECONDS=10` leaves time for that local retry inside the overall
-generation deadline.
+The Docker Compose deployment is Gemini-only: set `GEMINI_API_KEY` to the key
+created in Google AI Studio. The default model is
+`GEMINI_MODEL=gemini-2.5-flash`, and `OLLAMA_ENABLED=false` prevents construction
+of a local model client. If Gemini is unavailable, the service falls back to
+deterministic answers from the conference data rather than another LLM.
+
 With `USE_DEEPAGENTS=1`, agents also receive bounded arithmetic and JSON/CSV
 analysis tools. These tools do not expose Python execution, the shell, files, or
 the network.
-
-**Pick a model that fits in host memory.** On a CPU-only host, a model that is too
-large is killed by the OS while loading — Ollama logs `llama-server process has
-terminated: signal: killed` and returns HTTP 500, so the bot silently falls back
-to deterministic answers. This is a memory problem, not a timeout. Rough CPU RAM
-needs (q4): `3b` ~3 GB, `7b` ~6 GB, `14b` ~10 GB, `gpt-oss:20b` ~14 GB. Use the
-largest model that comfortably fits (or a GPU host), e.g.
-`DEEPAGENTS_MODEL=ollama:qwen2.5:7b-instruct` with `OLLAMA_MODEL=qwen2.5:7b-instruct`.
-`OLLAMA_NUM_CTX=4096` and `OLLAMA_NUM_PREDICT=512` bound memory and latency.
 
 Latency and reliability defaults:
 
 - `LLM_GENERATION_TIMEOUT_SECONDS=30` caps how long one answer may take
   server-side, so a slow generation falls back instead of hanging the request.
 - `LLM_FAILURE_COOLDOWN_SECONDS=60` backs off after a *hard* backend failure
-  (e.g. the model cannot load); it is short so the assistant recovers quickly.
+  (e.g. a provider error); it is short so the assistant recovers quickly.
 - `LLM_TIMEOUT_COOLDOWN_SECONDS=20` is a brief back-off after a slow generation.
-- `OLLAMA_KEEP_ALIVE=30m` keeps the model warm between rare requests.
 - `LLM_TEMPERATURE=0.1` keeps answers deterministic.
 
-The assistant answers in English only. Pull the model before first use:
-
-```bash
-ollama pull qwen2.5:3b-instruct
-```
+The assistant answers in English only.
 
 ### Live ACSOS website retrieval
 
@@ -222,15 +209,13 @@ BOT_ACCESS_KEY=<private-user-access-key>
 TELEGRAM_GROUP_INVITE_URL=https://telegram.me/+29z6KbEXBdlkYmE0
 TELEGRAM_STARTUP_GREETING="Hello! The ACSOS 2026 bot is back online."
 LLM_API_KEY=<service-to-service-key>
-DEEPAGENTS_MODEL=ollama:qwen2.5:3b-instruct
-GEMINI_API_KEY=
+GEMINI_API_KEY=<google-ai-studio-key>
 GEMINI_MODEL=gemini-2.5-flash
 GEMINI_TIMEOUT_SECONDS=10
-OLLAMA_MODEL=qwen2.5:3b-instruct
+OLLAMA_ENABLED=false
 LLM_FAILURE_COOLDOWN_SECONDS=60
 LLM_TIMEOUT_COOLDOWN_SECONDS=20
 LLM_GENERATION_TIMEOUT_SECONDS=30
-OLLAMA_KEEP_ALIVE=30m
 LLM_TEMPERATURE=0.1
 ACSOS_LIVE_SEARCH_ENABLED=true
 ```
@@ -245,25 +230,17 @@ If the LLM service logs `Unsupported upgrade request` and `/ask` returns a 422
 empty-body error, rebuild the bot image. The Kotlin client is pinned to HTTP/1.1
 to avoid cleartext HTTP/2 upgrade attempts against Uvicorn.
 
-If `ollama pull` says a model requires a newer Ollama version, recreate the
-Ollama container. The compose file pins `ollama/ollama:0.31.1`, which is new
-enough for the default `qwen2.5:3b-instruct` and for GPT-OSS model manifests.
-
-Docker Compose also starts an `ollama-pull` one-shot service. It waits for
-Ollama, pulls `OLLAMA_MODEL`, and only then lets the LLM service start. If the
-model is already in the `ollama` volume, this step is effectively a no-op.
-
 ```bash
 export BOT_TOKEN=<telegram-token>
 export BOT_ACCESS_KEY=<private-user-access-key>
 export LLM_API_KEY=<service-to-service-key>
+export GEMINI_API_KEY=<google-ai-studio-key>
 docker compose up --build
 ```
 
-The compose stack starts the Kotlin bot, the Python service, Ollama, and the
-one-shot model puller. If the model cannot run because the host is out of memory,
-the Python service falls back to deterministic answers from `conference.json`
-without exposing backend error details to Telegram users.
+The compose stack starts only the Kotlin bot and the Python service. If Gemini
+cannot answer, the Python service falls back to deterministic answers from
+`conference.json` without exposing backend error details to Telegram users.
 
 The default `json-file` logging driver works on both Docker Desktop for macOS and
 Linux. The supplied production systemd unit overrides it with `journald`.

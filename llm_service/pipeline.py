@@ -75,11 +75,7 @@ class AnswerService:
         """Run one bounded answer pipeline for an already-validated question."""
         local_chunks = self.knowledge.search(question)
         direct_answer = self.knowledge.high_confidence_answer(question)
-        if direct_answer is not None and not asks_for_live_verification(question):
-            return direct_answer
         live_result = await self.live_retriever.retrieve(question, local_chunks)
-        if direct_answer is not None and not live_result.chunks:
-            return direct_answer
         if self.agent is None or self._llm_is_temporarily_disabled():
             return self._fallback_answer(question, direct_answer, local_chunks, live_result)
         return await self._generate_answer(question, direct_answer, local_chunks, live_result)
@@ -103,8 +99,11 @@ class AnswerService:
                 asyncio.to_thread(self.agent.invoke, {"messages": [{"role": "user", "content": prompt}]}),
                 timeout=generation_timeout_seconds(),
             )
+            answer = extract_agent_answer(result)
+            if not answer:
+                raise ValueError("LLM returned empty or invalid answer")
             return AskResponse(
-                answer=extract_agent_answer(result),
+                answer=answer,
                 sources=source_urls(local_chunks, live_result, self.website),
                 mode="llm",
             )
@@ -207,8 +206,8 @@ def build_context_prompt(
         "If the sources do not contain the answer, reply only that the information is not available "
         "in the ACSOS 2026 data yet and suggest checking https://2026.acsos.org/ ; do not improvise.\n"
         "Reply in English.\n"
-        "Keep the answer to at most three short sentences and stay strictly on the asked topic.\n"
-        "End with a short 'Sources:' list containing only URLs you actually used.\n\n"
+        "Format your answer in clean, schematic Markdown (e.g. use bullet points, bold timestamps, and structured fields like Title, Track, Authors, Session, Schedule, Room where applicable).\n"
+        "Keep the answer direct, well-structured, and concise without adding filler or redundant trailing 'Sources:' sections.\n\n"
         f"{live_note}\n\n"
         f"Question: {question}\n\n"
         f"Sources:\n{context}{catalog_section}"

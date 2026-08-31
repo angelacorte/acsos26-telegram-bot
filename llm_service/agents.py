@@ -12,8 +12,10 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from typing import Any
 
+from llm_service.config import parse_bool_env
 from llm_service.formatting import social_event_summary
 from llm_service.knowledge import ConferenceKnowledge
 from llm_service.models import DEFAULT_MODEL, create_chat_model, create_gemini_chat_model
@@ -33,11 +35,24 @@ DIRECT_SYSTEM_PROMPT = (
     "(for example 'papers about AI'), select every matching item from the provided list by meaning, "
     "not just by exact wording. If the question is not about ACSOS 2026, reply exactly: "
     f"'{OFF_TOPIC_REPLY}'. If the answer is not in the sources, say the information is not available "
-    "in the ACSOS 2026 data yet. Always answer in English, in at most three short sentences, and "
-    "never add unrelated information."
+    "in the ACSOS 2026 data yet. Always answer in English. Format your answers in clean, schematic "
+    "Markdown: use bullet points, bold timestamps/names/rooms, and structured fields (e.g. Title, Track, "
+    "Authors, Session, Schedule, Room) when presenting papers or program events. "
+    "Keep answers direct, well-structured, and concise without adding filler commentary."
 )
 
 _TRUE_FLAGS = {"1", "true", "yes"}
+
+
+_NON_TEXT_BLOCK_TYPES = {
+    "thinking",
+    "reasoning",
+    "redacted_thinking",
+    "thought",
+    "tool_use",
+    "tool_result",
+}
+_NON_ASSISTANT_ROLES = {"human", "user", "system", "tool", "function"}
 
 
 class DirectChatAgent:
@@ -56,8 +71,13 @@ class DirectChatAgent:
         """Answer using the provided messages, returning a Deep-Agents-compatible result."""
         messages: list[tuple[str, str]] = [("system", self.system_prompt)]
         for message in payload.get("messages", []):
-            role = message.get("role", "user")
-            messages.append(("user" if role not in {"system", "assistant"} else role, message.get("content", "")))
+            if isinstance(message, dict):
+                role = message.get("role", "user")
+                content = message.get("content", "")
+            else:
+                role = getattr(message, "type", None) or getattr(message, "role", "user")
+                content = getattr(message, "content", "")
+            messages.append(("user" if role not in {"system", "assistant"} else role, content))
         result = self.model.invoke(messages)
         return {"messages": [result]}
 
@@ -78,46 +98,111 @@ class FallbackAgent:
             return self.fallback.invoke(payload)
 
 
-def extract_agent_answer(result: Any) -> str:
-    """Extract the final user-facing text from a Deep Agents invocation result."""
-    if isinstance(result, dict) and result.get("messages"):
-        last_message = result["messages"][-1]
-        content = getattr(last_message, "content", None)
-        if content is None and isinstance(last_message, dict):
-            content = last_message.get("content")
-        text = message_content_text(content)
-        if text:
-            return text
-    return str(result)
-
-
-# Reasoning/redacted blocks carry no user-facing answer and must never be surfaced.
-_NON_TEXT_BLOCK_TYPES = {"thinking", "reasoning", "redacted_thinking", "tool_use", "tool_result"}
+def clean_model_output(text: str) -> str:
+    """Clean model generation artifacts such as think tags."""
+    if not text:
+        return ""
+    cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    cleaned = re.sub(r"<think>.*$", "", cleaned, flags=re.DOTALL)
+    return cleaned.strip()
 
 
 def message_content_text(content: Any) -> str:
     """Flatten a chat message's ``content`` into plain text.
 
-    Backends return ``content`` either as a plain string or as a list of content
-    blocks (e.g. a ``{"type": "text", "text": ...}`` block alongside a signed
-    reasoning block). Concatenate only the textual blocks so signatures and
+    Backends return ``content`` either as a plain string, a dict, an object with text,
+    or a list of content blocks (e.g. a ``{"type": "text", "text": ...}`` block alongside
+    a reasoning block). Concatenate only the user-facing textual blocks so signatures and
     reasoning metadata never leak into the answer.
     """
     if content is None:
         return ""
     if isinstance(content, str):
-        return content.strip()
+        return clean_model_output(content)
     if isinstance(content, dict):
-        return str(content.get("text", "")).strip()
+        b_type = content.get("type")
+        if b_type in _NON_TEXT_BLOCK_TYPES:
+            return ""
+        return clean_model_output(str(content.get("text", "")))
+    if hasattr(content, "text") and not isinstance(content, type):
+        b_type = getattr(content, "type", None)
+        if b_type in _NON_TEXT_BLOCK_TYPES:
+            return ""
+        return clean_model_output(str(getattr(content, "text", "")))
     if isinstance(content, (list, tuple)):
         parts: list[str] = []
         for block in content:
             if isinstance(block, str):
-                parts.append(block)
-            elif isinstance(block, dict) and block.get("type") not in _NON_TEXT_BLOCK_TYPES and block.get("text"):
-                parts.append(str(block["text"]))
+                cleaned = clean_model_output(block)
+                if cleaned:
+                    parts.append(cleaned)
+            elif isinstance(block, dict):
+                b_type = block.get("type")
+                if b_type not in _NON_TEXT_BLOCK_TYPES and block.get("text"):
+                    cleaned = clean_model_output(str(block["text"]))
+                    if cleaned:
+                        parts.append(cleaned)
+            elif hasattr(block, "text") and not isinstance(block, type):
+                b_type = getattr(block, "type", None)
+                if b_type not in _NON_TEXT_BLOCK_TYPES:
+                    cleaned = clean_model_output(str(getattr(block, "text", "")))
+                    if cleaned:
+                        parts.append(cleaned)
         return "\n".join(part for part in parts if part).strip()
-    return str(content).strip()
+    return clean_model_output(str(content))
+
+
+def extract_agent_answer(result: Any) -> str:
+    """Extract the final user-facing text from an LLM or Deep Agents invocation result.
+
+    Never falls back to stringifying raw dicts or returning user/human prompt messages.
+    Returns an empty string if no valid assistant response is found.
+    """
+    if isinstance(result, str):
+        return clean_model_output(result)
+
+    # Check if result itself is an assistant message object
+    if hasattr(result, "content") and not isinstance(result, type):
+        msg_type = getattr(result, "type", None) or getattr(result, "role", None)
+        if msg_type in _NON_ASSISTANT_ROLES:
+            return ""
+        return message_content_text(getattr(result, "content", None))
+
+    # Look inside dicts or objects with a messages list
+    messages = None
+    if isinstance(result, dict):
+        messages = result.get("messages")
+    elif hasattr(result, "messages"):
+        messages = getattr(result, "messages")
+
+    if isinstance(messages, (list, tuple)):
+        for msg in reversed(messages):
+            role = None
+            if isinstance(msg, dict):
+                role = msg.get("role") or msg.get("type")
+                content = msg.get("content")
+            else:
+                role = getattr(msg, "type", None) or getattr(msg, "role", None)
+                content = getattr(msg, "content", None)
+
+            if role in _NON_ASSISTANT_ROLES:
+                continue
+
+            text = message_content_text(content)
+            if text:
+                return text
+
+    if isinstance(result, dict):
+        if "output" in result:
+            text = message_content_text(result["output"])
+            if text:
+                return text
+        if "answer" in result:
+            text = message_content_text(result["answer"])
+            if text:
+                return text
+
+    return ""
 
 
 def llm_disabled_by_env() -> bool:
@@ -135,7 +220,11 @@ def create_agent(knowledge: ConferenceKnowledge) -> Any | None:
     """
     if llm_disabled_by_env():
         return None
-    ollama_model = create_chat_model(os.getenv("DEEPAGENTS_MODEL", DEFAULT_MODEL))
+    ollama_model = (
+        create_chat_model(os.getenv("DEEPAGENTS_MODEL", DEFAULT_MODEL))
+        if parse_bool_env("OLLAMA_ENABLED", True)
+        else None
+    )
     gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
     gemini_model = create_gemini_chat_model(gemini_key) if gemini_key else None
     use_deepagents = os.getenv("USE_DEEPAGENTS", "").lower() in _TRUE_FLAGS
@@ -220,11 +309,18 @@ def _build_tools(knowledge: ConferenceKnowledge) -> list[Any]:
             return "No matching accepted paper was found in the ACSOS 2026 data."
         paper = match["paper"]
         track = match["track"]
+        rooms = knowledge.published_rooms_for_track(track)
+        room_line = (
+            f"Published track-level rooms: {', '.join(rooms)}\n"
+            if rooms
+            else "Published track-level rooms: not available\n"
+        )
         return (
             f"Title: {paper['title']}\n"
             f"Track: {track['name']}\n"
             f"Authors: {', '.join(paper['authors'])}\n"
-            "Schedule: day, time, session, and room are not available in the data yet.\n"
+            f"{room_line}"
+            "Schedule: the exact day, time, and session are not available in the data yet.\n"
             f"Source: {track['url']}"
         )
 

@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 57 accepted papers and the tentative program-at-a-glance timetable. Rooms and individual paper-to-session assignments are not available yet.",
+    "programStatus": "The conference data includes 57 accepted papers and 78 timed sessions.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -98,7 +98,7 @@
         "command": "doctoral",
         "name": "Doctoral Symposium",
         "url": "https://2026.acsos.org/track/acsos-2026-doctoral-symposium",
-        "status": "18 accepted papers are published for Doctoral Symposium. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
+        "status": "18 accepted papers are published for Doctoral Symposium. Tentative session blocks and room information are published in the program at a glance; individual paper-to-session assignments are not available yet.",
         "summary": "Doctoral Symposium information for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -216,7 +216,7 @@
         "command": "maintrack",
         "name": "Main Track",
         "url": "https://2026.acsos.org/track/acsos-2026-papers",
-        "status": "39 accepted papers are published for Main Track. Tentative session blocks are published in the program at a glance; rooms and individual paper-to-session assignments are not available yet.",
+        "status": "39 accepted papers are published for Main Track. Tentative session blocks and room information are published in the program at a glance; individual paper-to-session assignments are not available yet.",
         "summary": "Research, experience, short, and vision papers for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -648,7 +648,745 @@
         "body": "Fee: \u20ac119 Includes: transportation, guided museum visit, guided city-centre walk, fish dinner (alternative menus available) Restaurant: La Baia Join us for a special ACSOS evening in Cesenatico , combining maritime history, a guided walk through one of the most distinctive town centres on the Romagna coast, and a fish dinner with the conference community. The event begins with a guided visit to the Museo della Marineria , located along Cesenatico\u2019s Porto Canale Leonardesco :"
       }
     ],
-    "sessions": [],
+    "sessions": [
+      {
+        "title": "SASSO4 - Registration and welcome coffee",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "09:00-09:20",
+        "room": "",
+        "papers": []
+      },
+      {
+        "title": "SASSO4 - Openning Remarks and Workshop introduction",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "09:20-09:30",
+        "room": "2.10",
+        "papers": []
+      },
+      {
+        "title": "AI4AS - Opening",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "09:20-09:30",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "SASSO4 - Keynote",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "09:30-10:15",
+        "room": "2.10",
+        "papers": []
+      },
+      {
+        "title": "AI4AS - Paper Session 1",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "09:30-11:00",
+        "room": "2.4",
+        "papers": [
+          "Adaptive Incremental Learning for Anomaly Detection under Domain Shift: An Additive Manufacturing Case Study",
+          "Discovering Collaboration from Novelty: Random Network Distillation for Clustered Federated Learning",
+          "3NLM: A Normative Logic Framework for Expectation-Driven Self-Adaptive Explanations",
+          "S3Eval: A Three-Layer Pipeline for Automated Evaluation of PDDL-Encoded Attack Paths"
+        ]
+      },
+      {
+        "title": "SASSO4 - Session 1",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "10:15-11:15",
+        "room": "2.10",
+        "papers": [
+          "Self-Fulfilling Expectations: Evolutionary Game Theory with Endogenous Social Fields",
+          "Theory of Mind-inspired Reflective AI for Sustainable Small Language Model Orchestration"
+        ]
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Monday, 7 September",
+        "time": "11:00-11:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "AI4AS - Keynote",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "11:15-12:15",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "SASSO4 - Session 2",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "11:30-12:30",
+        "room": "2.10",
+        "papers": [
+          "Rule-Based Self-Governance for Green-Claim Control in AI Retail Recommendations",
+          "School-Meal Menu Planning: A Self-Organised, Sustainable and Scalable Approach"
+        ]
+      },
+      {
+        "title": "AI4AS - Paper Session 2",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "12:15-12:55",
+        "room": "2.4",
+        "papers": [
+          "Towards Autonomous Surface Vessels: A World-Model-Centric Approach",
+          "Perception Risk for Path Planning in Autonomous Rover Navigation"
+        ]
+      },
+      {
+        "title": "AI4AS - Closing",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "12:55-13:00",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "Lunch",
+        "trackId": "catering",
+        "day": "Monday, 7 September",
+        "time": "13:00-14:00",
+        "room": "Sala Polivalente",
+        "papers": []
+      },
+      {
+        "title": "SASSO4 - Session 3",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "13:30-14:00",
+        "room": "2.10",
+        "papers": [
+          "Macro-to-micro behavioral mappings in distributed systems: a characterization on event structures"
+        ]
+      },
+      {
+        "title": "Discussion Panel",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "14:00-14:45",
+        "room": "2.10",
+        "papers": []
+      },
+      {
+        "title": "Causal Foundations and Methods for Autonomic Systems",
+        "trackId": "tutorials",
+        "day": "Monday, 7 September",
+        "time": "14:00-15:30",
+        "room": "2.3",
+        "papers": [
+          "Causal Foundations and Methods for Autonomic Systems: A Tutorial"
+        ]
+      },
+      {
+        "title": "Simulating Runtime Decisions for Cloud Self-Adaptive Systems",
+        "trackId": "tutorials",
+        "day": "Monday, 7 September",
+        "time": "14:00-15:30",
+        "room": "2.4",
+        "papers": [
+          "Simulating Runtime Decisions for Cloud Self-Adaptive Systems: A Tutorial"
+        ]
+      },
+      {
+        "title": "Breakout Groups: Future Research Directions & Collaboration Opportunities",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "15:00-15:45",
+        "room": "2.10",
+        "papers": []
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Monday, 7 September",
+        "time": "15:30-16:00",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "Plenary Report from Breakout Groups & Discussion",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "15:45-16:15",
+        "room": "2.10",
+        "papers": []
+      },
+      {
+        "title": "Complex systems, self-organisation, and simulation",
+        "trackId": "tutorials",
+        "day": "Monday, 7 September",
+        "time": "16:00-18:00",
+        "room": "2.3",
+        "papers": [
+          "Complex systems, self-organisation, and simulation"
+        ]
+      },
+      {
+        "title": "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum",
+        "trackId": "tutorials",
+        "day": "Monday, 7 September",
+        "time": "16:00-18:00",
+        "room": "2.4",
+        "papers": [
+          "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum"
+        ]
+      },
+      {
+        "title": "Closing Remarks",
+        "trackId": "workshops",
+        "day": "Monday, 7 September",
+        "time": "16:15-16:30",
+        "room": "2.10",
+        "papers": []
+      },
+      {
+        "title": "Welcome Reception https://2026.acsos.org/attending/welcome-reception",
+        "trackId": "main",
+        "day": "Monday, 7 September",
+        "time": "18:00-21:00",
+        "room": "Off-site",
+        "papers": []
+      },
+      {
+        "title": "Registration",
+        "trackId": "main",
+        "day": "Tuesday, 8 September",
+        "time": "08:30-09:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Conference Opening",
+        "trackId": "main",
+        "day": "Tuesday, 8 September",
+        "time": "09:00-09:10",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Keynote: Valeria Cardellini",
+        "trackId": "main",
+        "day": "Tuesday, 8 September",
+        "time": "09:10-10:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "LLMs and Agentic Self-Adaptation",
+        "trackId": "main",
+        "day": "Tuesday, 8 September",
+        "time": "10:00-11:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "Large Language Models for Self-Adaptive Systems: Feedback-Loop Integration and Agentic Adaptation",
+          "HASKI: Hallucination-Aware Agentic Self-Adaptive Knowledge Injection via Reinforcement Learning in Large Language Models",
+          "OPA - Observe, Preprocess, and Act: A Multi-Agent Framework for Data Preprocessing and Predictive Intelligence",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Tuesday, 8 September",
+        "time": "11:00-11:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "Assurance, Safety and Resilience",
+        "trackId": "main",
+        "day": "Tuesday, 8 September",
+        "time": "11:30-13:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "Self-adaptive Distributed Runtime Monitoring for Autonomous Systems",
+          "Who Is Responsible? Self-Adaptation Under Multiple Concurrent Failures With Unknown Faults in Complex Robotic Systems",
+          "When Should a Robot Stop Learning and Start Reasoning?",
+          "Extending Decision Maps for Sustainable Safety and Security in Self-Adaptive Systems",
+          "Approved Too Late: Verdict Staleness in LLM-Guarded Self-Adaptive Systems",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Lunch",
+        "trackId": "catering",
+        "day": "Tuesday, 8 September",
+        "time": "13:00-14:00",
+        "room": "Sala Polivalente",
+        "papers": []
+      },
+      {
+        "title": "Doctoral Symposium Keynote: Being a researcher \u2014 in turbulent times",
+        "trackId": "doctoral",
+        "day": "Tuesday, 8 September",
+        "time": "14:00-15:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "PhD flash talks",
+        "trackId": "doctoral",
+        "day": "Tuesday, 8 September",
+        "time": "15:00-15:30",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Poster flash talks",
+        "trackId": "posters",
+        "day": "Tuesday, 8 September",
+        "time": "15:30-16:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Tuesday, 8 September",
+        "time": "16:00-16:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "Edge-Cloud-Space Continuum and Resource Management",
+        "trackId": "main",
+        "day": "Tuesday, 8 September",
+        "time": "16:30-18:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "LoftNN: Distributed Training of Deep Learning Models in the Edge-Cloud-Space Continuum",
+          "Autonomic GNN-Based Shortest-Path Routing in LEO Networks via Imitation and Transfer Learning",
+          "Dynamic, Distributed, and Optimized: Orchestrating Live Migrating Computations in the Continuum",
+          "Hero: Hybrid Edge Routing for In-Browser Small Language Models",
+          "Survival of the Cheapest: Cost-Aware Hardware Adaptation for Adversarial Robustness",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Wine Tasting & Dinner (Registration Required) https://2026.acsos.org/attending/social-events#wine-views-and-dinner-on-romagnas-balcony Register at: https://serinarpayments.it/acsos-2026/",
+        "trackId": "social",
+        "day": "Tuesday, 8 September",
+        "time": "18:00-21:00",
+        "room": "Off-site",
+        "papers": []
+      },
+      {
+        "title": "Keynote: Bridging Centralized and Decentralized Control in Robot Swarms through Self-Organizing Hierarchies",
+        "trackId": "main",
+        "day": "Wednesday, 9 September",
+        "time": "09:00-10:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Collaborative Perception and Autonomous Navigation",
+        "trackId": "main",
+        "day": "Wednesday, 9 September",
+        "time": "10:00-11:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "A Multi-Agent LLM Architecture for Robust Self-Explainability in Autonomous Ferry Navigation",
+          "Collaborative Perception for Decentralised Navigation in Heterogeneous Maritime Fleets",
+          "CoAdapt: An LLM-based Framework for Adaptive Collaborative Perception in IIoT Robotic Swarms",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Wednesday, 9 September",
+        "time": "11:00-11:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "Uncertainty, Learning and Runtime Decision-Making",
+        "trackId": "main",
+        "day": "Wednesday, 9 September",
+        "time": "11:30-13:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "Information-Driven Adaptation and Entropy-Regularised Planning under Non-Stationarity",
+          "Stacking-Based Meta-Learning for Runtime Model Selection in Self-Adaptive Systems",
+          "Runtime Stability-Aware Adaptation for Self-Adaptive Systems using Symbiotic Simulation: A Cloud Architecture Evaluation",
+          "The Many Facets of Uncertainty Reduction",
+          "Calibrating Quadruped Startup Variance for Reliable Anomaly Detection and Self-Adaptation",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Lunch",
+        "trackId": "catering",
+        "day": "Wednesday, 9 September",
+        "time": "13:00-14:00",
+        "room": "Sala Polivalente",
+        "papers": []
+      },
+      {
+        "title": "Self-Awareness, Cognition and Explainability",
+        "trackId": "main",
+        "day": "Wednesday, 9 September",
+        "time": "14:00-14:45",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "Self-Adaptation Using Emotional Conditioning",
+          "In search of \u201cnormality\u201d: producing relevant counterfactual explanations for complex behaviors",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Vision Papers",
+        "trackId": "main",
+        "day": "Wednesday, 9 September",
+        "time": "14:45-16:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "Decentralized Multi-agent Reinforcement Learning for Resilient Critical Infrastructures",
+          "Self-Aware Scientific Workflow Orchestration based on a Blackboard Architecture",
+          "A Vision for Semantic Resource Elasticity in Autonomic Cyber-Physical Edge Systems",
+          "Mitigating Uncertainty Interactions in GenAI-based Adaptive Systems: Vision, Challenges and Preliminary Guidelines",
+          "What the Sheep Can Teach the Shepherd: A Vision for Self-Organizing Drone Swarms Informed by Collective Animal Behavior",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Wednesday, 9 September",
+        "time": "16:00-16:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "Doctoral Symposium breakouts 1",
+        "trackId": "doctoral",
+        "day": "Wednesday, 9 September",
+        "time": "16:30-17:30",
+        "room": "2.3",
+        "papers": []
+      },
+      {
+        "title": "Doctoral Symposium breakouts 2",
+        "trackId": "doctoral",
+        "day": "Wednesday, 9 September",
+        "time": "16:30-17:30",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "Conference Banquet https://2026.acsos.org/attending/main-social-event",
+        "trackId": "social",
+        "day": "Wednesday, 9 September",
+        "time": "18:00-21:00",
+        "room": "Off-site",
+        "papers": []
+      },
+      {
+        "title": "Keynote: Bridging Classical and Quantum Computing: Lessons, Challenges, and Opportunities",
+        "trackId": "main",
+        "day": "Thursday, 10 September",
+        "time": "09:00-10:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Decentralised Coordination and Collective Learning",
+        "trackId": "main",
+        "day": "Thursday, 10 September",
+        "time": "10:00-11:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "C\u00b2FL: Clustered Continual Federated Learning under Spatial and Temporal Drift",
+          "The Optimisation Trilemma: Efficiency, Comfort and Fairness in Decentralised Multi-agent Coordination",
+          "Multi-Target Tracking via Field-Based Distributed Particle Filtering",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Thursday, 10 September",
+        "time": "11:00-11:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "Swarms and Emergent Collective Behaviour",
+        "trackId": "main",
+        "day": "Thursday, 10 September",
+        "time": "11:30-13:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "Conditional Autoencoder-based Meta-Agents for Trajectory Prediction of Boid Systems",
+          "When the Swarm Changes Its Mind: Learning-Based Anomaly Detection in Decentralized AUV Missions",
+          "Elliptical patterns in swarmalator systems",
+          "How Does Your Swarm Scale? Finite-Size Scaling Diagnostics for Self-Organizing System",
+          "NorMAL: Self-Adaptive Norm Learning and Objective Optimization in Decentralized Multi-Agent Systems",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Lunch",
+        "trackId": "catering",
+        "day": "Thursday, 10 September",
+        "time": "13:00-14:00",
+        "room": "Sala Polivalente",
+        "papers": []
+      },
+      {
+        "title": "Self-Organisation in Real-World Systems",
+        "trackId": "main",
+        "day": "Thursday, 10 September",
+        "time": "14:00-14:45",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "Automated Orchestration in a Real-World Self-Organizing Manufacturing Cell",
+          "A Multi-Objective Swarm-Inspired Approach for Intelligent Electric Vehicle Charging",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Artifacts Q&A: 15:35\u201316:00",
+        "trackId": "artifacts",
+        "day": "Thursday, 10 September",
+        "time": "14:45-16:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": [
+          "A Maneuver-Indexed Testbed for Context-Aware Adaptive Wildlife Drones",
+          "Argonaut: Interactive Visual Exploration for Distributed Optimization",
+          "BedreFlyt Artifact: A Self-Adaptive Digital Twin Software System for Hospital Resource Allocation",
+          "MARGIN-SAS: A Tool-Supported Framework for Non-Inferiority-Based Evaluation of QoS Trade-offs in Self-Adaptive Systems",
+          "Wildlife Protection Game: An Artifact for Evaluation of Antifragility for Autonomy in Adversarial Environments",
+          "Q&A and Panel Discussion"
+        ]
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Thursday, 10 September",
+        "time": "16:00-16:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "Doctoral Symposium breakouts 3",
+        "trackId": "doctoral",
+        "day": "Thursday, 10 September",
+        "time": "16:30-17:30",
+        "room": "2.3",
+        "papers": []
+      },
+      {
+        "title": "Doctoral Symposium breakouts 4",
+        "trackId": "doctoral",
+        "day": "Thursday, 10 September",
+        "time": "16:30-17:30",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "Expert Panel",
+        "trackId": "main",
+        "day": "Thursday, 10 September",
+        "time": "16:30-17:30",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Closing Session",
+        "trackId": "main",
+        "day": "Thursday, 10 September",
+        "time": "17:30-18:00",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "Kart Race & Dinner https://2026.acsos.org/attending/social-events#acsos-gp-on-the-riviera-racing-dinner Register at: https://serinarpayments.it/acsos-2026/",
+        "trackId": "social",
+        "day": "Thursday, 10 September",
+        "time": "18:00-21:00",
+        "room": "Off-site",
+        "papers": []
+      },
+      {
+        "title": "SISSY - Opening",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "09:00-09:10",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "SISSY - Self-Integration & Coordination Architectures",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "09:10-10:10",
+        "room": "2.4",
+        "papers": [
+          "Hybrid Clumping: a self-integration basis for complex structures and collective dynamics",
+          "Agency-oriented Layering of Models in Self-Integrating",
+          "Learning-enabled hybrid multi-agent coordination for resilient self-integrating systems",
+          "Human-Centred Organic Computing Systems"
+        ]
+      },
+      {
+        "title": "AICR-ACS - Opening",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "09:45-10:00",
+        "room": "2.3",
+        "papers": []
+      },
+      {
+        "title": "AICR-ACS - Keynote Keynote speech by Prof. Emiliano Casalicchio Title : Advances in self-protecting cyber-physical systems Abstract : Modern Cyber-Physical Systems (CPS)\u2014spanning industrial control, smart energy, autonomous transportation, telecommunications, and edge-cloud infrastructures\u2014are increasingly deployed in dynamic, high-threat environments. Recent cyber offensive campaigns have targeted these critical platforms to disrupt essential civil and military operations, underscoring severe vulnerabilities in static defense paradigms. This talk explores how self-protecting systems theory and practice can be leveraged to engineer secure, self-healing, and resilient CPS. We will examine key architectural paradigms and research advances that enable systems to autonomously sense, reason about, and mitigate emerging threats in real time. Finally, the session presents practical applications and real-world case studies demonstrating how autonomous resilience can be realized in complex operational environments.",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "10:00-11:00",
+        "room": "2.3",
+        "papers": []
+      },
+      {
+        "title": "SISSY - Discussion Panel: Self-Integration & Coordination Architectures",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "10:10-11:00",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Friday, 11 September",
+        "time": "11:00-11:30",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "AICR-ACS - Paper Session",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "11:30-12:45",
+        "room": "2.3",
+        "papers": [
+          "Towards a Digital-Twin Cyber Range for MTD against ML Traffic Fingerprinting in Smart Grid",
+          "Cloud-Native Smart Grids: Threat Modeling and Impact Analysis for TSO Services",
+          "Security Assurance Cases as a Runtime Compliance Check on LLM Adaptation Planning"
+        ]
+      },
+      {
+        "title": "SISSY - Architectures",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "11:30-12:30",
+        "room": "2.4",
+        "papers": [
+          "A Vision of System-level Adaptation in Digital Twin Networks",
+          "Self-Adaptive Information Sharing in Heterogeneous",
+          "Controller Architecture Variants for Robust Self-Organizing Energy Systems",
+          "Progressive MAPE-K with Simulation-in-the-Loop RL Retraining for Autonomous Robots"
+        ]
+      },
+      {
+        "title": "SISSY - Discussion Panel: Architectures",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "12:30-13:00",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "AICR-ACS - Closing Final Discussion & Closing.",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "12:45-13:00",
+        "room": "2.3",
+        "papers": []
+      },
+      {
+        "title": "Lunch",
+        "trackId": "catering",
+        "day": "Friday, 11 September",
+        "time": "13:00-14:00",
+        "room": "Sala Polivalente",
+        "papers": []
+      },
+      {
+        "title": "SISSY - Interpretability, Anomaly Detection & Causal Analysis",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "14:00-15:00",
+        "room": "2.4",
+        "papers": [
+          "Decision Interpretability for Evolutionary Rule",
+          "Perspective-Driven Anomaly Detection in Self-Organising Systems: Central, Regional, Decentral?",
+          "Interventions Matter: the Role of Sampling Distributions in Detecting Causal Emergence",
+          "Popperian Expectations for One-Shot Adaptation in Dynamic Environments"
+        ]
+      },
+      {
+        "title": "SISSY - Discussion Panel: Interpretability, Anomaly Detection & Causal Analysis",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "15:00-15:30",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "Coffee Break",
+        "trackId": "catering",
+        "day": "Friday, 11 September",
+        "time": "15:30-16:00",
+        "room": "2.13",
+        "papers": []
+      },
+      {
+        "title": "SISSY - Swarm Robotics & Multi-Robot Coordination",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "16:00-17:00",
+        "room": "2.4",
+        "papers": [
+          "Emergent Multi-Behavior Strategies in Swarm Agents from Foraging-Predator Pressures",
+          "Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms",
+          "Real-World Adaptation of a Swarm Algorithm for Different Following Formations using ROS2-based Crazyflie Drones",
+          "Distributed Online Allocation of Robot Teams for Flexible Manufacturing"
+        ]
+      },
+      {
+        "title": "SISSY - Discussion Panel: Swarm Robotics & Multi-Robot Coordination",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "17:00-17:50",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "SISSY - Closing",
+        "trackId": "workshops",
+        "day": "Friday, 11 September",
+        "time": "17:50-18:00",
+        "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "Visit to Cesenatico & Fish Dinner https://2026.acsos.org/attending/social-events#along-leonardos-canal-cesenatico-and-fish-dinner Register at: https://serinarpayments.it/acsos-2026/",
+        "trackId": "social",
+        "day": "Friday, 11 September",
+        "time": "18:00-21:00",
+        "room": "Off-site",
+        "papers": []
+      }
+    ],
     "keynotes": [
       {
         "speaker": "Marco Dorigo",
@@ -917,60 +1655,70 @@
               "time": "09:00\u201309:30",
               "title": "Registration",
               "details": "",
+              "room": "",
               "category": "main"
             },
             {
               "time": "09:30\u201311:00",
               "title": "Workshops",
-              "details": "SaSSO4 \u00b7 AI4AS \u00b7 SaSSO4: 2.10 \u00b7 AI4AS: 2.4",
+              "details": "SaSSO4 \u00b7 AI4AS",
+              "room": "SaSSO4: 2.10 \u00b7 AI4AS: 2.4",
               "category": "workshop"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "2.13",
+              "details": "",
+              "room": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Workshops",
-              "details": "SaSSO4 \u00b7 AI4AS \u00b7 SaSSO4: 2.10 \u00b7 AI4AS: 2.4",
+              "details": "SaSSO4 \u00b7 AI4AS",
+              "room": "SaSSO4: 2.10 \u00b7 AI4AS: 2.4",
               "category": "workshop"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch",
-              "details": "Sala Polivalente",
+              "details": "",
+              "room": "Sala Polivalente",
               "category": "break"
             },
             {
               "time": "14:00\u201315:30",
               "title": "Tutorials 1 & 2",
-              "details": "SaSSO4 also running \u00b7 T1: 2.3 \u00b7 T2: 2.4 \u00b7 SaSSO4: 2.10",
+              "details": "SaSSO4 also running",
+              "room": "T1: 2.3 \u00b7 T2: 2.4 \u00b7 SaSSO4: 2.10",
               "category": "tutorial"
             },
             {
               "time": "15:30\u201316:00",
               "title": "Coffee break",
-              "details": "2.13",
+              "details": "",
+              "room": "2.13",
               "category": "break"
             },
             {
               "time": "16:00\u201317:30",
               "title": "Tutorials 3 & 4",
-              "details": "SaSSO4 also running \u00b7 T3: 2.3 \u00b7 T4: 2.4 \u00b7 SaSSO4: 2.10",
+              "details": "SaSSO4 also running",
+              "room": "T3: 2.3 \u00b7 T4: 2.4 \u00b7 SaSSO4: 2.10",
               "category": "tutorial"
             },
             {
               "time": "17:30\u201318:00",
               "title": "\u2014",
               "details": "",
+              "room": "",
               "category": "other"
             },
             {
               "time": "Evening",
               "title": "Welcome Reception",
-              "details": "Rocca Malatestiana",
+              "details": "",
+              "room": "Rocca Malatestiana",
               "category": "social"
             }
           ]
@@ -982,73 +1730,85 @@
             {
               "time": "09:00\u201309:30",
               "title": "Opening",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "09:30\u201310:00",
               "title": "Keynote",
-              "details": "Valeria Cardellini \u00b7 Aula Magna",
+              "details": "Valeria Cardellini",
+              "room": "Aula Magna",
               "category": "keynote"
             },
             {
               "time": "10:00\u201311:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "2.13",
+              "details": "",
+              "room": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch",
-              "details": "Sala Polivalente",
+              "details": "",
+              "room": "Sala Polivalente",
               "category": "break"
             },
             {
               "time": "14:00\u201315:00",
               "title": "Keynote",
-              "details": "Carlo Ghezzi \u00b7 Aula Magna",
+              "details": "Carlo Ghezzi",
+              "room": "Aula Magna",
               "category": "keynote"
             },
             {
               "time": "15:00\u201315:30",
               "title": "PhD flash talks",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "phd"
             },
             {
               "time": "15:30\u201316:00",
               "title": "Poster flash talks",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "poster"
             },
             {
               "time": "16:00\u201316:30",
               "title": "Coffee break & Posters",
-              "details": "Coffee: 2.13 \u00b7 Posters: 2.3",
+              "details": "",
+              "room": "Coffee: 2.13 \u00b7 Posters: 2.3",
               "category": "other"
             },
             {
               "time": "16:30\u201318:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "Evening",
               "title": "Additional SE: Wine Tasting & Dinner in Bertinoro",
-              "details": "Bertinoro \u00b7 off-site",
+              "details": "",
+              "room": "Bertinoro \u00b7 off-site",
               "category": "social"
             }
           ]
@@ -1060,61 +1820,71 @@
             {
               "time": "09:00\u201310:00",
               "title": "Keynote",
-              "details": "Marco Dorigo \u00b7 Aula Magna",
+              "details": "Marco Dorigo",
+              "room": "Aula Magna",
               "category": "keynote"
             },
             {
               "time": "10:00\u201311:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "2.13",
+              "details": "",
+              "room": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch & Posters",
-              "details": "Lunch: Sala Polivalente \u00b7 Posters: 2.3",
+              "details": "",
+              "room": "Lunch: Sala Polivalente \u00b7 Posters: 2.3",
               "category": "other"
             },
             {
               "time": "14:00\u201316:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "16:00\u201316:30",
               "title": "Coffee break & Posters",
-              "details": "Coffee: 2.13 \u00b7 Posters: 2.3",
+              "details": "",
+              "room": "Coffee: 2.13 \u00b7 Posters: 2.3",
               "category": "other"
             },
             {
               "time": "16:30\u201317:30",
               "title": "ACSOS in Practice / Doctoral Symposium breakouts",
-              "details": "In Practice: Aula Magna \u00b7 DS: 2.3 / 2.4",
+              "details": "",
+              "room": "In Practice: Aula Magna \u00b7 DS: 2.3 / 2.4",
               "category": "panel"
             },
             {
               "time": "17:30\u201318:00",
               "title": "Malatestiana library visit",
-              "details": "Biblioteca Malatestiana",
+              "details": "",
+              "room": "Biblioteca Malatestiana",
               "category": "special"
             },
             {
               "time": "Evening",
               "title": "Banquet at Teatro Verdi",
-              "details": "Teatro Verdi",
+              "details": "",
+              "room": "Teatro Verdi",
               "category": "social"
             }
           ]
@@ -1126,61 +1896,71 @@
             {
               "time": "09:00\u201310:00",
               "title": "Keynote",
-              "details": "Ivona Brandic \u00b7 Aula Magna",
+              "details": "Ivona Brandic",
+              "room": "Aula Magna",
               "category": "keynote"
             },
             {
               "time": "10:00\u201311:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "2.13",
+              "details": "",
+              "room": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch & Posters",
-              "details": "Lunch: Sala Polivalente \u00b7 Posters: 2.3",
+              "details": "",
+              "room": "Lunch: Sala Polivalente \u00b7 Posters: 2.3",
               "category": "other"
             },
             {
               "time": "14:00\u201316:00",
               "title": "Main-track session",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "16:00\u201316:30",
               "title": "Coffee break & Posters",
-              "details": "Coffee: 2.13 \u00b7 Posters: 2.3",
+              "details": "",
+              "room": "Coffee: 2.13 \u00b7 Posters: 2.3",
               "category": "other"
             },
             {
               "time": "16:30\u201317:30",
               "title": "Expert Panel / Doctoral Symposium breakouts",
-              "details": "Panel: Aula Magna \u00b7 DS: 2.3 / 2.4",
+              "details": "",
+              "room": "Panel: Aula Magna \u00b7 DS: 2.3 / 2.4",
               "category": "panel"
             },
             {
               "time": "17:30\u201318:00",
               "title": "Closing",
-              "details": "Aula Magna",
+              "details": "",
+              "room": "Aula Magna",
               "category": "main"
             },
             {
               "time": "Evening",
               "title": "Additional SE: Kart Race in Riccione & Dinner in Rimini",
-              "details": "Riccione / Rimini \u00b7 off-site",
+              "details": "",
+              "room": "Riccione / Rimini \u00b7 off-site",
               "category": "social"
             }
           ]
@@ -1192,49 +1972,57 @@
             {
               "time": "09:00\u201311:00",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "room": "AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "11:00\u201311:30",
               "title": "Coffee break",
-              "details": "2.13",
+              "details": "",
+              "room": "2.13",
               "category": "break"
             },
             {
               "time": "11:30\u201313:00",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "room": "AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "13:00\u201314:00",
               "title": "Lunch",
-              "details": "Sala Polivalente",
+              "details": "",
+              "room": "Sala Polivalente",
               "category": "break"
             },
             {
               "time": "14:00\u201315:30",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "room": "AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "15:30\u201316:00",
               "title": "Coffee break",
-              "details": "2.13",
+              "details": "",
+              "room": "2.13",
               "category": "break"
             },
             {
               "time": "16:00\u201318:00",
               "title": "Workshops",
-              "details": "AICR-ACS \u00b7 SISSY \u00b7 AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
+              "details": "AICR-ACS \u00b7 SISSY",
+              "room": "AICR-ACS: 2.3 \u00b7 SISSY: 2.4",
               "category": "workshop"
             },
             {
               "time": "Evening",
               "title": "Additional SE: Visit to Cesenatico & Fish Dinner on the beach",
-              "details": "Cesenatico \u00b7 off-site",
+              "details": "",
+              "room": "Cesenatico \u00b7 off-site",
               "category": "social"
             }
           ]

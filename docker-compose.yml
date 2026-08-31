@@ -51,22 +51,17 @@ services:
       dockerfile: llm_service/Dockerfile
     environment:
       CONFERENCE_DATA: /app/conference.json
-      DEEPAGENTS_MODEL: ${DEEPAGENTS_MODEL:-ollama:qwen2.5:3b-instruct}
-      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?Set GEMINI_API_KEY in .env}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
       GEMINI_TIMEOUT_SECONDS: ${GEMINI_TIMEOUT_SECONDS:-10}
+      OLLAMA_ENABLED: ${OLLAMA_ENABLED:-false}
       USE_DEEPAGENTS: ${USE_DEEPAGENTS:-}
       LLM_FAILURE_COOLDOWN_SECONDS: ${LLM_FAILURE_COOLDOWN_SECONDS:-60}
       LLM_TIMEOUT_COOLDOWN_SECONDS: ${LLM_TIMEOUT_COOLDOWN_SECONDS:-20}
       LLM_GENERATION_TIMEOUT_SECONDS: ${LLM_GENERATION_TIMEOUT_SECONDS:-30}
       LLM_MAX_CONCURRENT_ASKS: ${LLM_MAX_CONCURRENT_ASKS:-2}
-      OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-4096}
-      OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-512}
-      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-30m}
       LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.1}
       LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
-      OLLAMA_HOST: http://ollama:11434
-      OLLAMA_BASE_URL: http://ollama:11434
       ACSOS_BASE_URL: ${ACSOS_BASE_URL:-https://2026.acsos.org}
       ACSOS_LIVE_SEARCH_ENABLED: ${ACSOS_LIVE_SEARCH_ENABLED:-true}
       ACSOS_MAX_SEARCH_RESULTS: ${ACSOS_MAX_SEARCH_RESULTS:-5}
@@ -81,14 +76,8 @@ services:
       ACSOS_USER_AGENT: ${ACSOS_USER_AGENT:-acsos26-telegram-bot/1.0 (+https://2026.acsos.org)}
       ACSOS_PAGE_CACHE: /var/cache/acsos/pages.json
       HOME: /tmp
-    depends_on:
-      ollama:
-        condition: service_healthy
-      ollama-pull:
-        condition: service_completed_successfully
     networks:
       - bot-internal
-      - model-internal
       - llm-egress
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=128m
@@ -111,65 +100,8 @@ services:
     stop_grace_period: 30s
     restart: unless-stopped
 
-  ollama:
-    <<: *container-security
-    image: ollama/ollama:0.31.1
-    environment:
-      OLLAMA_HOST: 0.0.0.0:11434
-    volumes:
-      - ollama:/root/.ollama
-    networks:
-      - model-internal
-      - model-egress
-    tmpfs:
-      - /tmp:rw,nosuid,size=1g
-    healthcheck:
-      # The Ollama CLI's list command calls GET /api/tags without adding curl to the image.
-      test: ["CMD-SHELL", "OLLAMA_HOST=http://127.0.0.1:11434 ollama list >/dev/null 2>&1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 15s
-    cpus: ${OLLAMA_CPUS:-4.0}
-    mem_limit: ${OLLAMA_MEMORY_LIMIT:-5g}
-    mem_reservation: ${OLLAMA_MEMORY_RESERVATION:-3g}
-    pids_limit: 512
-    logging: *container-logging
-    stop_grace_period: 60s
-    restart: unless-stopped
-
-  ollama-pull:
-    <<: *container-security
-    image: ollama/ollama:0.31.1
-    environment:
-      OLLAMA_HOST: http://ollama:11434
-      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b-instruct}
-    volumes:
-      - ollama:/root/.ollama
-    networks:
-      - model-internal
-    tmpfs:
-      - /tmp:rw,nosuid,size=128m
-    depends_on:
-      ollama:
-        condition: service_healthy
-    entrypoint: ["/bin/sh", "-c"]
-    command: ["ollama pull \"$${OLLAMA_MODEL}\""]
-    cpus: ${OLLAMA_PULL_CPUS:-1.0}
-    mem_limit: ${OLLAMA_PULL_MEMORY_LIMIT:-512m}
-    mem_reservation: ${OLLAMA_PULL_MEMORY_RESERVATION:-128m}
-    pids_limit: 128
-    logging: *container-logging
-    restart: "no"
-
-volumes:
-  ollama:
-
 networks:
   bot-internal:
     internal: true
-  model-internal:
-    internal: true
   bot-egress:
   llm-egress:
-  model-egress:

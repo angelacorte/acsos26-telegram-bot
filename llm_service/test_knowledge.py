@@ -79,10 +79,11 @@ def test_paper_count_questions_are_answered_deterministically(knowledge: Confere
     """'How many papers' questions must be counted, not sent to the model or mismatched."""
     overall = knowledge.deterministic_answer("how many accepted papers")
     assert overall.mode == "deterministic"
-    assert "27 accepted papers" in overall.answer
+    assert f"{len(knowledge.accepted_papers())} accepted papers" in overall.answer
 
     main = knowledge.deterministic_answer("how many papers are accepted in main track?")
-    assert main.answer == "Main Track: 27 accepted paper(s)."
+    main_track = next(track for track in knowledge.data["tracks"] if track["id"] == "main")
+    assert main.answer == f"Main Track: {len(main_track['acceptedPapers'])} accepted paper(s)."
 
     workshops = knowledge.deterministic_answer("how many papers in the workshops track?")
     assert workshops.answer == "Workshops: 0 accepted paper(s)."
@@ -108,9 +109,8 @@ def test_tuesday_timetable_returns_main_track_instead_of_social_event(
     assert answer.sources == ["https://2026.acsos.org/info/program-at-a-glance"]
     assert "Tentative Main Track timetable" in answer.answer
     assert "Tuesday, 8 September" in answer.answer
-    assert "11:00–13:00: Main-track session" in answer.answer
-    assert "16:30–18:00: Main-track session" in answer.answer
-    assert "Individual paper assignments and rooms are not published yet" in answer.answer
+    assert "Main-track session — Room: Aula Magna" in answer.answer
+    assert "Individual paper assignments are not published yet" in answer.answer
     assert "Wine, Views, and Dinner" not in answer.answer
     assert "Bertinoro" not in answer.answer
     assert knowledge.social_event_answer(question) is None
@@ -139,17 +139,22 @@ def test_paper_catalog_lists_every_accepted_paper(knowledge: ConferenceKnowledge
     papers = knowledge.accepted_papers()
     catalog = knowledge.paper_catalog_text()
 
-    assert len(papers) == 27
+    expected_count = sum(len(track["acceptedPapers"]) for track in knowledge.data["tracks"])
+    assert len(papers) == expected_count
     assert catalog.count("\n") == len(papers) - 1
     assert "Multi-Target Tracking via Field-Based Distributed Particle Filtering" in catalog
     # Every catalog line carries the paper's track for grounding.
     assert "(Main Track)" in catalog
 
 
-def test_paper_location_question_reports_missing_schedule(knowledge: ConferenceKnowledge) -> None:
-    """Paper schedule questions should not be mistaken for venue questions."""
+def test_paper_location_question_reports_scheduled_session(
+    knowledge: ConferenceKnowledge,
+) -> None:
+    """Paper questions should report the scheduled session and room when available."""
     answer = knowledge.high_confidence_answer("where is Angela Cortecchia's paper?")
     assert answer is not None
     assert answer.mode == "deterministic"
     assert "University of Bologna" not in answer.answer
-    assert "does not include their day, time, session name, or room yet" in answer.answer
+    assert "Decentralised Coordination and Collective Learning" in answer.answer
+    assert "Aula Magna" in answer.answer
+    assert "Thursday, 10 September" in answer.answer

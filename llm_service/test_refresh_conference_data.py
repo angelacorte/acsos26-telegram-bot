@@ -22,6 +22,7 @@ def test_extract_program_reconstructs_row_spanned_day_entries() -> None:
           <td class="event workshop" rowspan="3">Workshops</td>
           <td class="event keynote" rowspan="3">
             Opening &amp; Keynote <span class="minor">Valeria Cardellini</span>
+            <span class="room">Aula Magna</span>
           </td>
         </tr>
         <tr><td class="time">09:30 - 10:00</td></tr>
@@ -34,7 +35,9 @@ def test_extract_program_reconstructs_row_spanned_day_entries() -> None:
         <tr>
           <td class="time">11:00 - 11:30</td>
           <td class="event workshop" rowspan="4">Workshops</td>
-          <td class="event main" rowspan="4">Main-track session</td>
+          <td class="event main" rowspan="4">
+            Main-track session <span class="room">Aula Magna</span>
+          </td>
         </tr>
         <tr><td class="time">11:30 - 12:00</td></tr>
         <tr><td class="time">12:00 - 12:30</td></tr>
@@ -58,18 +61,21 @@ def test_extract_program_reconstructs_row_spanned_day_entries() -> None:
             "time": "09:00–10:30",
             "title": "Opening & Keynote",
             "details": "Valeria Cardellini",
+            "room": "Aula Magna",
             "category": "keynote",
         },
         {
             "time": "10:30–11:00",
             "title": "Coffee break",
             "details": "",
+            "room": "",
             "category": "break",
         },
         {
             "time": "11:00–13:00",
             "title": "Main-track session",
             "details": "",
+            "room": "Aula Magna",
             "category": "main",
         },
     ]
