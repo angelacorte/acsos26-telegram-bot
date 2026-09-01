@@ -235,7 +235,7 @@ export BOT_TOKEN=<telegram-token>
 export BOT_ACCESS_KEY=<private-user-access-key>
 export LLM_API_KEY=<service-to-service-key>
 export GEMINI_API_KEY=<google-ai-studio-key>
-docker compose up --build
+docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
 ```
 
 The compose stack starts only the Kotlin bot and the Python service. If Gemini

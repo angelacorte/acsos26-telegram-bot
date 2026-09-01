@@ -4,10 +4,11 @@ build/
 .vscode
 bin
 .env
+example.env
+node_modules/
 /.gradle-cache/
 .DS_Store
 **/__pycache__/
 .pytest_cache/
 *.pyc
 .venv/
-
