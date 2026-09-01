@@ -8,7 +8,8 @@ x-container-security: &container-security
 x-container-logging: &container-logging
   driver: ${CONTAINER_LOG_DRIVER:-json-file}
   options:
-    tag: "{{.Name}}"
+    max-size: "${CONTAINER_LOG_MAX_SIZE:-10m}"
+    max-file: "${CONTAINER_LOG_MAX_FILE:-3}"
 
 services:
   bot:

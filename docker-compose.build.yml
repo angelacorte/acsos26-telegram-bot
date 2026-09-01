@@ -1,0 +1,8 @@
+services:
+  bot:
+    build: .
+
+  llm:
+    build:
+      context: .
+      dockerfile: llm_service/Dockerfile
