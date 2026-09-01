@@ -158,35 +158,31 @@ private fun Bot.sendAnswer(
             messageThreadId = messageThreadId,
             replyParameters = replyParameters,
         )
-    if (!htmlReplyResult.isError) {
-        return
-    }
-
-    // 2. If HTML reply failed, fallback to plain text with reply metadata
-    val plainReplyResult =
-        sendMessage(
-            chatId,
-            text = plainSafeText,
-            messageThreadId = messageThreadId,
-            replyParameters = replyParameters,
-        )
-    if (!plainReplyResult.isError || replyParameters == null) {
-        if (plainReplyResult.isError) {
-            plainReplyResult.logDeliveryError("message")
+    if (htmlReplyResult.isError) {
+        // 2. If HTML reply failed, fallback to plain text with reply metadata
+        val plainReplyResult =
+            sendMessage(
+                chatId,
+                text = plainSafeText,
+                messageThreadId = messageThreadId,
+                replyParameters = replyParameters,
+            )
+        if (!plainReplyResult.isError || replyParameters == null) {
+            if (plainReplyResult.isError) {
+                plainReplyResult.logDeliveryError("message")
+            }
+        } else {
+            plainReplyResult.logDeliveryError("group reply")
+            val fallbackText = plainSafeText.addressedTo(requester).telegramSafe()
+            val topicFallback = sendMessage(chatId, text = fallbackText, messageThreadId = messageThreadId)
+            if (!topicFallback.isError || messageThreadId == null) {
+                topicFallback.logDeliveryError("group fallback")
+            } else {
+                topicFallback.logDeliveryError("topic fallback")
+                sendMessage(chatId, text = fallbackText).logDeliveryError("unthreaded fallback")
+            }
         }
-        return
     }
-
-    plainReplyResult.logDeliveryError("group reply")
-    val fallbackText = plainSafeText.addressedTo(requester).telegramSafe()
-    val topicFallback = sendMessage(chatId, text = fallbackText, messageThreadId = messageThreadId)
-    if (!topicFallback.isError || messageThreadId == null) {
-        topicFallback.logDeliveryError("group fallback")
-        return
-    }
-
-    topicFallback.logDeliveryError("topic fallback")
-    sendMessage(chatId, text = fallbackText).logDeliveryError("unthreaded fallback")
 }
 
 private fun String.addressedTo(user: User?): String =
