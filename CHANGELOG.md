@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.4.0...1.4.1) (2026-09-01)
+
+### Bug Fixes
+
+* configure logging and local image builds ([9b15dd3](https://github.com/angelacorte/acsos26-telegram-bot/commit/9b15dd373d8c4a385c8682d40311f47a1b635d00))
+
 ## [1.4.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.3.0...1.4.0) (2026-09-01)
 
 ### Features
