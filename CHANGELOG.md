@@ -1,3 +1,31 @@
+## [1.2.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.1.0...1.2.0) (2026-09-01)
+
+### Features
+
+* adjust LLMs interactions ([3298fb8](https://github.com/angelacorte/acsos26-telegram-bot/commit/3298fb8939cde81a5e14e1e8cc758d3c6fee31c0))
+
+### Bug Fixes
+
+* improve fallback logic for message delivery in Bot.kt ([61cde49](https://github.com/angelacorte/acsos26-telegram-bot/commit/61cde497bc5b8ba32ed740103cbf88679847bf63))
+
+### General maintenance
+
+* refresh conference data ([3938bae](https://github.com/angelacorte/acsos26-telegram-bot/commit/3938bae975822a603e2c9a16671b2a31c6c06d6f))
+* refresh conference data ([3a4d869](https://github.com/angelacorte/acsos26-telegram-bot/commit/3a4d869c98b4cfa71b66f77569c888fb8e982d3c))
+* refresh conference data ([f4693e7](https://github.com/angelacorte/acsos26-telegram-bot/commit/f4693e723fc1d3c2135e0be1f1cf4bc091eb5d0f))
+* refresh conference data ([1b47db2](https://github.com/angelacorte/acsos26-telegram-bot/commit/1b47db28f7db9e719cb69dc5986012e3b39587c9))
+* refresh conference data ([a91f5b0](https://github.com/angelacorte/acsos26-telegram-bot/commit/a91f5b0babc1674206e563079fd943552cf17e05))
+* refresh conference data ([21511f7](https://github.com/angelacorte/acsos26-telegram-bot/commit/21511f742d0aac67d2ac0a15a06bde995ef8f30b))
+* refresh conference data ([00ba271](https://github.com/angelacorte/acsos26-telegram-bot/commit/00ba271738640f393b41cce9b89b2ab0d0bb712e))
+* refresh conference data ([d0af295](https://github.com/angelacorte/acsos26-telegram-bot/commit/d0af295046905e91cf3f5cda97f0caa24764bf5a))
+* refresh conference data ([a49f00a](https://github.com/angelacorte/acsos26-telegram-bot/commit/a49f00aa28de7710074076dd15789453a3f5796d))
+* refresh conference data ([c2e2f1a](https://github.com/angelacorte/acsos26-telegram-bot/commit/c2e2f1aa73e48c54d0707a093ba16de4395559e7))
+* refresh conference data ([44aabbe](https://github.com/angelacorte/acsos26-telegram-bot/commit/44aabbef6882bba0f994e1b2bc0f5cfec3e65f33))
+* refresh conference data ([bf8e9b4](https://github.com/angelacorte/acsos26-telegram-bot/commit/bf8e9b46663d5be72b5b6194af5d7cd987379989))
+* refresh conference data ([b6861ea](https://github.com/angelacorte/acsos26-telegram-bot/commit/b6861ea67c605ee7f30ea8ad18c461b9c93b9c55))
+* refresh conference data ([f7958b1](https://github.com/angelacorte/acsos26-telegram-bot/commit/f7958b1860724f377e2a8725bcc3fa8f124f3ac4))
+* refresh conference data ([55c517f](https://github.com/angelacorte/acsos26-telegram-bot/commit/55c517f0f18126dc5bdd61c6bebb6ce85048c009))
+
 ## [1.1.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.0.0...1.1.0) (2026-07-17)
 
 ### Features
