@@ -1,7 +1,19 @@
 name: CI/CD Process
 on:
   workflow_call:
+    inputs:
+      release_version:
+        description: Existing semantic version to republish
+        required: false
+        type: string
+        default: ''
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: Existing tag to publish again, for example 1.3.0
+        required: false
+        type: string
+        default: ''
 
 jobs:
   build:
@@ -43,6 +55,8 @@ jobs:
           --tag "${{ matrix.image }}:ci"
           .
   release:
+    outputs:
+      version: ${{ steps.release-version.outputs.value }}
     permissions:
       contents: write
     concurrency:
@@ -63,6 +77,7 @@ jobs:
         uses: actions/checkout@v7.0.0
         with:
           token: ${{ github.token }}
+          fetch-depth: 0
       - name: Find the version of Node from package.json
         id: node-version
         run: echo "version=$(jq -r .engines.node package.json)" >> $GITHUB_OUTPUT
@@ -73,19 +88,86 @@ jobs:
           cache: npm
       - name: Install release dependencies
         run: npm ci
+      - name: Create semantic release
+        id: semantic-release
+        if: inputs.release_version == ''
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Restore an existing GitHub release
+        if: inputs.release_version != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.release_version }}
+        run: |
+          if ! git rev-parse --verify --quiet "refs/tags/$RELEASE_VERSION"; then
+            echo "Tag $RELEASE_VERSION does not exist" >&2
+            exit 1
+          fi
+          if ! gh release view "$RELEASE_VERSION" >/dev/null 2>&1; then
+            gh release create "$RELEASE_VERSION" \
+              --verify-tag \
+              --generate-notes \
+              --title "$RELEASE_VERSION"
+          fi
+      - name: Resolve release version
+        id: release-version
+        env:
+          AUTOMATIC_VERSION: ${{ steps.semantic-release.outputs.version }}
+          MANUAL_VERSION: ${{ inputs.release_version }}
+        run: |
+          version="${MANUAL_VERSION:-$AUTOMATIC_VERSION}"
+          if [ -n "$version" ]; then
+            if ! printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$'; then
+              echo "Invalid release version: $version" >&2
+              exit 1
+            fi
+          fi
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+  publish-images:
+    permissions:
+      contents: read
+    needs:
+      - release
+    if: needs.release.outputs.version != ''
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        include:
+          - name: bot
+            dockerfile: Dockerfile
+            image: angelacortecchia/acsos26-telegram-bot
+          - name: llm
+            dockerfile: llm_service/Dockerfile
+            image: angelacortecchia/acsos26-telegram-bot-llm
+    steps:
+      - name: Checkout release ${{ needs.release.outputs.version }}
+        uses: actions/checkout@v7.0.0
+        with:
+          ref: ${{ needs.release.outputs.version }}
       - name: Login to Docker Hub
         uses: docker/login-action@v4
         with:
           username: angelacortecchia
           password: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKER_PASSWORD }}
-      - name: Create GitHub release and publish Docker images
-        run: npx semantic-release
+      - name: Publish ${{ matrix.name }} image
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          DOCKERFILE: ${{ matrix.dockerfile }}
+          IMAGE: ${{ matrix.image }}
+          RELEASE_VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          docker build \
+            --file "$DOCKERFILE" \
+            --tag "$IMAGE:$RELEASE_VERSION" \
+            --tag "$IMAGE:latest" \
+            .
+          docker push "$IMAGE:$RELEASE_VERSION"
+          docker push "$IMAGE:latest"
   success:
     runs-on: ubuntu-24.04
     needs:
       - release
+      - publish-images
       - build
     if: >-
       always() && (

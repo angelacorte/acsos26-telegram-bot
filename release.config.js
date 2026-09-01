@@ -1,33 +1,18 @@
-const dockerHubNamespace = "angelacortecchia";
-const publishCmd = `
-set -eu
-
-publish_image() {
-    image="$1"
-    dockerfile="$2"
-    docker build \
-        --file "$dockerfile" \
-        --tag "$image:\${nextRelease.version}" \
-        --tag "$image:latest" \
-        .
-    docker push "$image:\${nextRelease.version}"
-    docker push "$image:latest"
-}
-
-publish_image "${dockerHubNamespace}/acsos26-telegram-bot" Dockerfile
-publish_image "${dockerHubNamespace}/acsos26-telegram-bot-llm" llm_service/Dockerfile
+const exportReleaseCmd = `
+echo "published=true" >> "$GITHUB_OUTPUT"
+echo "version=\${nextRelease.version}" >> "$GITHUB_OUTPUT"
 `;
 
 const config = require("semantic-release-preconfigured-conventional-commits");
 config.plugins.push(
+    "@semantic-release/github",
+    "@semantic-release/git",
     [
         "@semantic-release/exec",
         {
-            publishCmd,
+            successCmd: exportReleaseCmd,
         },
     ],
-    "@semantic-release/github",
-    "@semantic-release/git",
 );
 
 module.exports = config;

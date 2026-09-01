@@ -12,6 +12,12 @@ on:
       - 'renovate.json'
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: Existing tag to publish again, for example 1.3.0
+        required: false
+        type: string
+        default: ''
 
 jobs:
   dispatcher:
@@ -28,4 +34,6 @@ jobs:
     needs:
       - dispatcher
     uses: ./.github/workflows/build-and-deploy.yml
+    with:
+      release_version: ${{ inputs.release_version }}
     secrets: inherit
