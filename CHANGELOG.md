@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.3.0...1.4.0) (2026-09-01)
+
+### Features
+
+* enhance CI/CD workflow with release version handling and Docker image publishing ([2b701b2](https://github.com/angelacorte/acsos26-telegram-bot/commit/2b701b2d184fa243be59c5dea59aacd0713c172a))
+* update Docker configuration and improve build process ([cc6da81](https://github.com/angelacorte/acsos26-telegram-bot/commit/cc6da811156e3fe7f1797b346672bcc5012f1f98))
+
 ## [1.3.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.2.0...1.3.0) (2026-09-01)
 
 ### Features
