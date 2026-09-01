@@ -24,8 +24,8 @@ node_modules
 
 # Secrets and local-only config (never bake into an image)
 .env
-.env.*
-!.env.example
+example.env
+!example.env
 
 # Docs are not needed inside runtime images
 *.md

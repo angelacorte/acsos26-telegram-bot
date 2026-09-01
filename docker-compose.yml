@@ -33,12 +33,15 @@ services:
       - bot-egress
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=64m
-    cpus: ${BOT_CPUS:-1.0}
-    mem_limit: ${BOT_MEMORY_LIMIT:-512m}
-    mem_reservation: ${BOT_MEMORY_RESERVATION:-256m}
-    pids_limit: 128
     deploy:
       replicas: 1
+      resources:
+        limits:
+          cpus: 1.0
+          memory: ${BOT_MEMORY_LIMIT:-512m}
+          pids: 128
+        reservations:
+          memory: ${BOT_MEMORY_RESERVATION:-256m}
     logging: *container-logging
     stop_grace_period: 30s
     restart: unless-stopped
@@ -92,10 +95,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
-    cpus: ${LLM_CPUS:-2.0}
-    mem_limit: ${LLM_MEMORY_LIMIT:-1g}
-    mem_reservation: ${LLM_MEMORY_RESERVATION:-512m}
-    pids_limit: 256
+    deploy:
+      resources:
+        limits:
+          cpus: 2.0
+          memory: ${LLM_MEMORY_LIMIT:-1g}
+          pids: 256
+        reservations:
+          memory: ${LLM_MEMORY_RESERVATION:-512m}
     logging: *container-logging
     stop_grace_period: 30s
     restart: unless-stopped
