@@ -26,8 +26,7 @@ services:
       LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
       HOME: /tmp
     depends_on:
-      llm:
-        condition: service_healthy
+      - llm
     networks:
       - bot-internal
       - bot-egress
