@@ -1,3 +1,14 @@
+## [1.3.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.2.0...1.3.0) (2026-09-01)
+
+### Features
+
+* update Docker configuration with resource limits and example.env handling ([be58e0c](https://github.com/angelacorte/acsos26-telegram-bot/commit/be58e0c8f39bc38a11698b37fe8db0b9b35a3a4b))
+
+### Bug Fixes
+
+* Services.bot.depends_on must be a list ([d240b5a](https://github.com/angelacorte/acsos26-telegram-bot/commit/d240b5a22779c641d443404a742d0840232385a6))
+* update CPU limits in docker-compose.yml to use string format ([66e30ed](https://github.com/angelacorte/acsos26-telegram-bot/commit/66e30ed14a74976164b3248f23425a7967a54128))
+
 ## [1.2.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.1.0...1.2.0) (2026-09-01)
 
 ### Features
