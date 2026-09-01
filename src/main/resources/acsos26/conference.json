@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 57 accepted papers and 78 timed sessions.",
+    "programStatus": "The conference data includes 57 accepted papers and 80 timed sessions.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -658,7 +658,15 @@
         "papers": []
       },
       {
-        "title": "SASSO4 - Openning Remarks and Workshop introduction",
+        "title": "Registration",
+        "trackId": "main",
+        "day": "Monday, 7 September",
+        "time": "09:00-09:20",
+        "room": "Aula Magna \"Carmen Tura\"",
+        "papers": []
+      },
+      {
+        "title": "SaSSO4 - Opening",
         "trackId": "workshops",
         "day": "Monday, 7 September",
         "time": "09:20-09:30",
@@ -677,7 +685,7 @@
         "title": "SASSO4 - Keynote",
         "trackId": "workshops",
         "day": "Monday, 7 September",
-        "time": "09:30-10:15",
+        "time": "09:30-10:30",
         "room": "2.10",
         "papers": []
       },
@@ -695,13 +703,12 @@
         ]
       },
       {
-        "title": "SASSO4 - Session 1",
+        "title": "SaSSO4 - Paper Session 1",
         "trackId": "workshops",
         "day": "Monday, 7 September",
-        "time": "10:15-11:15",
+        "time": "10:30-11:00",
         "room": "2.10",
         "papers": [
-          "Self-Fulfilling Expectations: Evolutionary Game Theory with Endogenous Social Fields",
           "Theory of Mind-inspired Reflective AI for Sustainable Small Language Model Orchestration"
         ]
       },
@@ -722,14 +729,15 @@
         "papers": []
       },
       {
-        "title": "SASSO4 - Session 2",
+        "title": "SaSSO4 - Paper Session 2",
         "trackId": "workshops",
         "day": "Monday, 7 September",
-        "time": "11:30-12:30",
+        "time": "11:30-13:00",
         "room": "2.10",
         "papers": [
-          "Rule-Based Self-Governance for Green-Claim Control in AI Retail Recommendations",
-          "School-Meal Menu Planning: A Self-Organised, Sustainable and Scalable Approach"
+          "Self-Fulfilling Expectations: Evolutionary Game Theory with Endogenous Social Fields",
+          "School-Meal Menu Planning: A Self-Organised, Sustainable and Scalable Approach",
+          "Rule-Based Self-Governance for Green-Claim Control in AI Retail Recommendations"
         ]
       },
       {
@@ -760,22 +768,14 @@
         "papers": []
       },
       {
-        "title": "SASSO4 - Session 3",
+        "title": "SaSSO4 - Paper Session 3",
         "trackId": "workshops",
         "day": "Monday, 7 September",
-        "time": "13:30-14:00",
+        "time": "14:00-14:30",
         "room": "2.10",
         "papers": [
           "Macro-to-micro behavioral mappings in distributed systems: a characterization on event structures"
         ]
-      },
-      {
-        "title": "Discussion Panel",
-        "trackId": "workshops",
-        "day": "Monday, 7 September",
-        "time": "14:00-14:45",
-        "room": "2.10",
-        "papers": []
       },
       {
         "title": "Causal Foundations and Methods for Autonomic Systems",
@@ -798,10 +798,10 @@
         ]
       },
       {
-        "title": "Breakout Groups: Future Research Directions & Collaboration Opportunities",
+        "title": "SaSSO4 - Discussion Live Q&A with all speakers.",
         "trackId": "workshops",
         "day": "Monday, 7 September",
-        "time": "15:00-15:45",
+        "time": "14:30-15:30",
         "room": "2.10",
         "papers": []
       },
@@ -814,10 +814,10 @@
         "papers": []
       },
       {
-        "title": "Plenary Report from Breakout Groups & Discussion",
+        "title": "SaSSO4 - Breakout Groups Future Research Directions & Collaboration Opportunities 16:00\u201316:45: Breakout groups 16:45\u201317:15: Plenary report from breakout groups & discussion",
         "trackId": "workshops",
         "day": "Monday, 7 September",
-        "time": "15:45-16:15",
+        "time": "16:00-17:15",
         "room": "2.10",
         "papers": []
       },
@@ -842,10 +842,10 @@
         ]
       },
       {
-        "title": "Closing Remarks",
+        "title": "SaSSO4 - Closing Closing Remarks.",
         "trackId": "workshops",
         "day": "Monday, 7 September",
-        "time": "16:15-16:30",
+        "time": "17:15-17:30",
         "room": "2.10",
         "papers": []
       },
@@ -1084,10 +1084,26 @@
         "papers": []
       },
       {
+        "title": "Malatestiana Library Visit - Part 1",
+        "trackId": "social",
+        "day": "Wednesday, 9 September",
+        "time": "18:00-19:00",
+        "room": "Off-site",
+        "papers": []
+      },
+      {
+        "title": "Malatestiana Library Visit - Part 2",
+        "trackId": "social",
+        "day": "Wednesday, 9 September",
+        "time": "19:00-20:00",
+        "room": "Off-site",
+        "papers": []
+      },
+      {
         "title": "Conference Banquet https://2026.acsos.org/attending/main-social-event",
         "trackId": "social",
         "day": "Wednesday, 9 September",
-        "time": "18:00-21:00",
+        "time": "19:00-23:00",
         "room": "Off-site",
         "papers": []
       },
