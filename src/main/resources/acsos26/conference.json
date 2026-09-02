@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 57 accepted papers and 80 timed sessions.",
+    "programStatus": "The conference data includes 57 accepted papers and 81 timed sessions.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -287,7 +287,7 @@
             "authors": [
               "Davide Domini",
               "Gianluca Aguzzi",
-              "Lorenzo Bettini",
+              "Lorenzo Pellegrini",
               "Mirko Viroli",
               "Lukas Esterle"
             ]
@@ -788,13 +788,13 @@
         ]
       },
       {
-        "title": "Simulating Runtime Decisions for Cloud Self-Adaptive Systems",
+        "title": "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum",
         "trackId": "tutorials",
         "day": "Monday, 7 September",
         "time": "14:00-15:30",
         "room": "2.4",
         "papers": [
-          "Simulating Runtime Decisions for Cloud Self-Adaptive Systems: A Tutorial"
+          "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum"
         ]
       },
       {
@@ -825,20 +825,20 @@
         "title": "Complex systems, self-organisation, and simulation",
         "trackId": "tutorials",
         "day": "Monday, 7 September",
-        "time": "16:00-18:00",
+        "time": "16:00-17:30",
         "room": "2.3",
         "papers": [
           "Complex systems, self-organisation, and simulation"
         ]
       },
       {
-        "title": "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum",
+        "title": "Simulating Runtime Decisions for Cloud Self-Adaptive Systems",
         "trackId": "tutorials",
         "day": "Monday, 7 September",
-        "time": "16:00-18:00",
+        "time": "16:30-17:30",
         "room": "2.4",
         "papers": [
-          "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum"
+          "Simulating Runtime Decisions for Cloud Self-Adaptive Systems: A Tutorial"
         ]
       },
       {
@@ -1081,6 +1081,14 @@
         "day": "Wednesday, 9 September",
         "time": "16:30-17:30",
         "room": "2.4",
+        "papers": []
+      },
+      {
+        "title": "Main Session",
+        "trackId": "main",
+        "day": "Wednesday, 9 September",
+        "time": "16:30-17:30",
+        "room": "Aula Magna \"Carmen Tura\"",
         "papers": []
       },
       {
