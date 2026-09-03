@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 57 accepted papers and 81 timed sessions.",
+    "programStatus": "The conference data includes 57 accepted papers and 80 timed sessions.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -650,14 +650,6 @@
     ],
     "sessions": [
       {
-        "title": "SASSO4 - Registration and welcome coffee",
-        "trackId": "workshops",
-        "day": "Monday, 7 September",
-        "time": "09:00-09:20",
-        "room": "",
-        "papers": []
-      },
-      {
         "title": "Registration",
         "trackId": "main",
         "day": "Monday, 7 September",
@@ -882,7 +874,7 @@
         "papers": []
       },
       {
-        "title": "LLMs and Agentic Self-Adaptation",
+        "title": "LLMs and Agentic Self-Adaptation Chair(s): Marin Litoiu York University, Canada",
         "trackId": "main",
         "day": "Tuesday, 8 September",
         "time": "10:00-11:00",
@@ -903,7 +895,7 @@
         "papers": []
       },
       {
-        "title": "Assurance, Safety and Resilience",
+        "title": "Assurance, Safety and Resilience Chair(s): Houssam Hajj Hassan Orange Innovation",
         "trackId": "main",
         "day": "Tuesday, 8 September",
         "time": "11:30-13:00",
@@ -958,7 +950,7 @@
         "papers": []
       },
       {
-        "title": "Edge-Cloud-Space Continuum and Resource Management",
+        "title": "Edge-Cloud-Space Continuum and Resource Management Chair(s): Timothy Wood George Washington University",
         "trackId": "main",
         "day": "Tuesday, 8 September",
         "time": "16:30-18:00",
@@ -989,7 +981,7 @@
         "papers": []
       },
       {
-        "title": "Collaborative Perception and Autonomous Navigation",
+        "title": "Collaborative Perception and Autonomous Navigation Chair(s): Nathan Lloyd Ontario Tech University",
         "trackId": "main",
         "day": "Wednesday, 9 September",
         "time": "10:00-11:00",
@@ -1010,7 +1002,7 @@
         "papers": []
       },
       {
-        "title": "Uncertainty, Learning and Runtime Decision-Making",
+        "title": "Uncertainty, Learning and Runtime Decision-Making Chair(s): Nelly Bencomo Durham University",
         "trackId": "main",
         "day": "Wednesday, 9 September",
         "time": "11:30-13:00",
@@ -1033,7 +1025,7 @@
         "papers": []
       },
       {
-        "title": "Self-Awareness, Cognition and Explainability",
+        "title": "Self-Awareness, Cognition and Explainability Chair(s): Astrid Nie\u00dfe Universit\u00e4t Oldenburg",
         "trackId": "main",
         "day": "Wednesday, 9 September",
         "time": "14:00-14:45",
@@ -1045,7 +1037,7 @@
         ]
       },
       {
-        "title": "Vision Papers",
+        "title": "Vision Papers Chair(s): Mirko Viroli Alma Mater Studiorum - Universit\u00e0 di Bologna",
         "trackId": "main",
         "day": "Wednesday, 9 September",
         "time": "14:45-16:00",
@@ -1084,7 +1076,7 @@
         "papers": []
       },
       {
-        "title": "Main Session",
+        "title": "When Systems Decide: Can We Trust Autonomy in Production? As technical systems increasingly observe, decide, adapt, and act with minimal human oversight, the question of trust becomes critical. This panel brings together practitioners to explore what autonomy truly means in real-world production environments, going beyond conceptual models. Through concrete system examples, panelists will examine the gap between theory and practice, discuss where to draw the line between automation and human control, and share evidence-based approaches for verifying correct behavior. They will also candidly address failure modes, uncomfortable trade-offs, and hard-earned lessons that the ACSOS research community should not overlook. Join us for an honest conversation about what makes autonomous systems worthy of our trust\u2014and what keeps practitioners up at night.",
         "trackId": "main",
         "day": "Wednesday, 9 September",
         "time": "16:30-17:30",
@@ -1124,7 +1116,7 @@
         "papers": []
       },
       {
-        "title": "Decentralised Coordination and Collective Learning",
+        "title": "Decentralised Coordination and Collective Learning Chair(s): Lukas Esterle Aarhus University",
         "trackId": "main",
         "day": "Thursday, 10 September",
         "time": "10:00-11:00",
@@ -1145,7 +1137,7 @@
         "papers": []
       },
       {
-        "title": "Swarms and Emergent Collective Behaviour",
+        "title": "Swarms and Emergent Collective Behaviour Chair(s): Roberto Casadei University of Bologna, Italy",
         "trackId": "main",
         "day": "Thursday, 10 September",
         "time": "11:30-13:00",
@@ -1168,7 +1160,7 @@
         "papers": []
       },
       {
-        "title": "Self-Organisation in Real-World Systems",
+        "title": "Self-Organisation in Real-World Systems Chair(s): Phyllis Nelson California State Polytechnic University Pomona",
         "trackId": "main",
         "day": "Thursday, 10 September",
         "time": "14:00-14:45",
@@ -1180,7 +1172,7 @@
         ]
       },
       {
-        "title": "Artifacts Q&A: 15:35\u201316:00",
+        "title": "Artifacts Chair(s): Gianluca Aguzzi Alma Mater Studiorum - Universit\u00e0 di Bologna Q&A: 15:35\u201316:00",
         "trackId": "artifacts",
         "day": "Thursday, 10 September",
         "time": "14:45-16:00",
