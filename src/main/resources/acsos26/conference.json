@@ -1065,7 +1065,13 @@
         "day": "Wednesday, 9 September",
         "time": "16:30-17:30",
         "room": "2.3",
-        "papers": []
+        "papers": [
+          "Contrastive Explanations for Multi-objective Policies in Reinforcement Learning",
+          "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
+          "Self-Organizing Federated Learning in Collective Adaptive Systems",
+          "Toward Practical and Adaptive Machine Learning for Sustainable In-Situ Monitoring in LPBF",
+          "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front"
+        ]
       },
       {
         "title": "Doctoral Symposium breakouts 2",
@@ -1073,7 +1079,13 @@
         "day": "Wednesday, 9 September",
         "time": "16:30-17:30",
         "room": "2.4",
-        "papers": []
+        "papers": [
+          "Autonomic and Decentralized Infrastructure Management Framework for the Continuum",
+          "Co-Simulating Regional Energy and EV ChargingFutures under Deep Uncertainty",
+          "Enabling Flexible Assembly in Self-Organizing Manufacturing Systems",
+          "Enabling Industrial Autonomy: Digital Transformation of Automation Systems into Autonomous Cyber-Physical Systems",
+          "Time-Limited Adaptation Loops for Electrical Flexibility in Data Centers"
+        ]
       },
       {
         "title": "When Systems Decide: Can We Trust Autonomy in Production? As technical systems increasingly observe, decide, adapt, and act with minimal human oversight, the question of trust becomes critical. This panel brings together practitioners to explore what autonomy truly means in real-world production environments, going beyond conceptual models. Through concrete system examples, panelists will examine the gap between theory and practice, discuss where to draw the line between automation and human control, and share evidence-based approaches for verifying correct behavior. They will also candidly address failure modes, uncomfortable trade-offs, and hard-earned lessons that the ACSOS research community should not overlook. Join us for an honest conversation about what makes autonomous systems worthy of our trust\u2014and what keeps practitioners up at night.",
@@ -1200,7 +1212,12 @@
         "day": "Thursday, 10 September",
         "time": "16:30-17:30",
         "room": "2.3",
-        "papers": []
+        "papers": [
+          "Engineering Trustworthiness into Self-Adaptive Robotic Systems",
+          "Extending Rule-Based Approaches Towards Unanticipated Failures for Self-Healing Robots",
+          "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations",
+          "Towards Collective Robotic Operating Systems through Aggregate Computing"
+        ]
       },
       {
         "title": "Doctoral Symposium breakouts 4",
@@ -1208,7 +1225,12 @@
         "day": "Thursday, 10 September",
         "time": "16:30-17:30",
         "room": "2.4",
-        "papers": []
+        "papers": [
+          "A Self-Adaptive Coordination Framework for Multi-Agent Transportation Systems in Sustainable Industrial Symbiosis Networks",
+          "Can LLM-Based Agents Have Self-Knowledge? A Dialogue Between Philosophy and Artificial Intelligence",
+          "Decentralized Propagation for Heterogeneous Multi-Agent Systems Situational Awareness",
+          "Self-Adaptive Coordination for Heterogeneous Multi- objective Multi-Agent Systems in an Uncertain Dynamic Environment"
+        ]
       },
       {
         "title": "Expert Panel",
