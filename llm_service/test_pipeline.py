@@ -193,3 +193,30 @@ async def test_service_falls_back_when_agent_returns_only_human_messages(knowled
     assert response.mode == "fallback"
     assert "messages" not in response.answer
     assert "HumanMessage" not in response.answer
+
+
+@pytest.mark.anyio
+async def test_the_model_path_does_not_build_the_fallback_answer(
+    knowledge: ConferenceKnowledge,
+) -> None:
+    """Hand-written answers are the degraded path only; the normal path must not compute them."""
+    calls: list[str] = []
+    original = knowledge.high_confidence_answer
+
+    def counted(question: str):
+        calls.append(question)
+        return original(question)
+
+    class Agent:
+        def invoke(self, _payload: dict) -> dict:
+            return {"messages": [{"role": "assistant", "content": "grounded answer"}]}
+
+    knowledge.high_confidence_answer = counted  # type: ignore[method-assign]
+    try:
+        service = AnswerService(knowledge, _StubLiveRetriever(_no_live()), Agent())
+        answer = await service.answer("what is ACSOS?")
+    finally:
+        knowledge.high_confidence_answer = original  # type: ignore[method-assign]
+
+    assert answer.mode == "llm"
+    assert calls == []

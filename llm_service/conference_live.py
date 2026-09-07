@@ -105,10 +105,28 @@ DEFAULT_CATALOG_SEEDS = (
     ("https://2026.acsos.org/dates", "Important Dates", "dynamic", "deadlines notifications camera ready dates"),
     ("https://2026.acsos.org/news", "News Items", "dynamic", "latest news newsletter updates"),
     (
+        "https://2026.acsos.org/program/program-acsos-2026/Detailed-Table",
+        "Detailed Program Table",
+        "dynamic",
+        "program schedule timetable sessions rooms talks day by day monday tuesday wednesday thursday friday",
+    ),
+    (
         "https://2026.acsos.org/info/program-at-a-glance",
         "Program at a Glance",
         "dynamic",
-        "tentative timetable schedule main track sessions monday tuesday wednesday thursday friday",
+        "timetable schedule overview main track sessions monday tuesday wednesday thursday friday",
+    ),
+    (
+        "https://2026.acsos.org/track/acsos-2026-acsos-in-practice",
+        "ACSOS In Practice",
+        "dynamic",
+        "in practice industry panel practitioners production",
+    ),
+    (
+        "https://2026.acsos.org/track/acsos-2026-social-program",
+        "Social Program",
+        "dynamic",
+        "social program reception banquet excursion",
     ),
     ("https://2026.acsos.org/attending/Registration", "Registration", "dynamic", "registration fees cvent author registration"),
     ("https://2026.acsos.org/attending/main-social-event", "Main Social Event", "dynamic", "social dinner event"),
@@ -809,6 +827,8 @@ def ttl_for_category(category: str, config: LiveSearchConfig) -> float:
         return config.cache_ttl_dynamic_seconds
     if category == "static":
         return config.cache_ttl_static_seconds
+    if category == "home":
+        return config.cache_ttl_dynamic_seconds
     return config.cache_ttl_standard_seconds
 
 

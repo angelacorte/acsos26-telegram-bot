@@ -1,7 +1,13 @@
 package org.angelacorte.acsos26
 
-private const val MAX_PAPERS_IN_COMMAND_REPLY = 8
+import java.time.LocalDate
+import java.time.ZoneId
+
 private const val PRIVATE_CHAT_TYPE = "private"
+private const val CATERING_TRACK_ID = "catering"
+private const val ASSISTANT_UNAVAILABLE_MESSAGE =
+    "The conference assistant is not available right now. Please try again in a moment, " +
+        "or use /program, /tracks, /venue and /registration in the meantime."
 private const val COMMUNITY_LINKS_URL = "https://linktr.ee/acsosconf"
 private const val PRIVATE_ACCESS_REQUIRED_MESSAGE =
     "This bot is private. Send /start <access-key> to enable it in this chat."
@@ -18,6 +24,7 @@ internal class CommandRouter(
     private val llmClient: LlmClient,
     private val accessControl: AccessControl = AccessControl.disabled(),
     private val groupInviteUrl: String = "",
+    private val today: () -> LocalDate = { LocalDate.now(ZoneId.of(conference.timezone)) },
 ) {
     /**
      * Returns the answer for a message, or null when the bot should stay silent.
@@ -81,7 +88,7 @@ internal class CommandRouter(
             "group" -> groupInviteUrl.ifBlank { GROUP_LINK_NOT_CONFIGURED_MESSAGE }
             "tracks" -> tracks()
             "program" -> program(command.argument)
-            "sessions" -> sessions()
+            "sessions" -> program(command.argument)
             "social" -> social()
             "venue" -> page("venue")
             "registration" -> page("registration")
@@ -97,6 +104,8 @@ internal class CommandRouter(
             "posters" -> track("posters")
             "tutorials" -> track("tutorials")
             "workshops" -> track("workshops")
+            "inpractice" -> track("inpractice")
+            "socialprogram" -> track("social")
             else -> null
         }
 
@@ -168,60 +177,103 @@ internal class CommandRouter(
             "- ${it.name}: /${it.command}"
         }
 
+    /**
+     * Shows today's sessions by default, a named day on request ("/program wed"), and the whole
+     * week for "/program all". Anything else is treated as a track name. Session names only:
+     * rooms, papers and speakers are left to /ask, which answers them from the same data.
+     */
     private fun program(argument: String): String {
         val normalized = argument.trim().lowercase()
-        if (normalized.isBlank() || normalized == "all") {
-            return buildString {
-                appendLine("Program status")
-                appendLine(conference.programStatus)
-                appendLine()
-                appendLine("Available tracks:")
-                conference.tracks.forEach { appendLine("- ${it.name}: /${it.command}") }
-                if (conference.sessions.isNotEmpty()) {
-                    appendLine()
-                    appendLine("Sessions:")
-                    conference.sessions.forEach { appendLine("- ${it.summary()}") }
-                }
-            }.trim()
+        val scheduled = conference.scheduledSessions()
+        if (scheduled.isEmpty()) {
+            return "The program is not in the bot data. See ${conference.website} for the schedule."
         }
-        return track(normalized)
+        return when {
+            normalized == "all" -> {
+                weekProgram(scheduled)
+            }
+
+            normalized.isBlank() || normalized == "today" -> {
+                dayProgram(scheduled, today().toString()) ?: weekProgram(scheduled)
+            }
+
+            else -> {
+                resolveDate(scheduled, normalized)?.let { dayProgram(scheduled, it) } ?: track(normalized)
+            }
+        }
     }
+
+    private fun weekProgram(scheduled: List<Session>): String =
+        buildString {
+            appendLine("${conference.shortName} program - ${conference.dates}")
+            scheduled.groupBy { it.date }.toSortedMap().forEach { (_, daySessions) ->
+                appendLine()
+                appendLine(daySessions.first().day)
+                daySessions.forEach { appendLine(it.compactLine(withRoom = false)) }
+            }
+            appendLine()
+            appendLine(askHint("which papers are presented on Wednesday morning?"))
+        }.trim()
+
+    private fun dayProgram(
+        scheduled: List<Session>,
+        date: String,
+    ): String? {
+        val daySessions = scheduled.filter { it.date == date }
+        if (daySessions.isEmpty()) return null
+        val otherDays =
+            scheduled
+                .filterNot { it.date == date }
+                .distinctBy { it.date }
+                .sortedBy { it.date }
+                .map {
+                    it.day
+                        .substringBefore(",")
+                        .take(3)
+                        .lowercase()
+                }
+        return buildString {
+            appendLine("${conference.shortName} program - ${daySessions.first().day}")
+            daySessions.forEach { appendLine(it.compactLine()) }
+            appendLine()
+            if (otherDays.isNotEmpty()) {
+                appendLine("Other days: ${otherDays.joinToString(" · ") { "/program $it" }}")
+                appendLine("Whole week: /program all")
+            }
+            appendLine(askHint("what is in room 2.4 after lunch?"))
+        }.trim()
+    }
+
+    /** Resolves "mon", "monday", "wed" or an ISO date against the days that have sessions. */
+    private fun resolveDate(
+        scheduled: List<Session>,
+        token: String,
+    ): String? {
+        if (token.length < 3) return null
+        scheduled.firstOrNull { it.date == token }?.let { return it.date }
+        return scheduled.firstOrNull { it.day.lowercase().startsWith(token) }?.date
+    }
+
+    private fun askHint(example: String): String = "Details, rooms and papers: /ask $example"
 
     private fun track(trackIdOrCommand: String): String {
         val track =
             resolveTrack(trackIdOrCommand)
-                ?: return "I do not know that track yet. Use /tracks to see the available tracks."
+                ?: return "I do not know that track. Use /tracks to see the available tracks."
         val sessions = conference.sessions.filter { it.trackId == track.id }
-        val programRooms = conference.programRoomsForTrack(track.id)
         return buildString {
             appendLine(track.name)
             appendLine(track.summary)
             appendLine()
-            appendLine("Status: ${track.status}")
-            if (sessions.isEmpty()) {
-                if (programRooms.isEmpty()) {
-                    appendLine("Timed sessions and rooms are not available in the bot data yet.")
-                } else {
-                    appendLine("Published track-level rooms: ${programRooms.joinToString()}.")
-                    appendLine("Individual paper-to-session assignments are not available yet.")
-                }
-            } else {
-                appendLine("Sessions:")
-                sessions.forEach { appendLine("- ${it.summary()}") }
-            }
-            if (track.acceptedPapers.isNotEmpty()) {
+            appendLine(track.status)
+            if (sessions.isNotEmpty()) {
                 appendLine()
-                appendLine("Accepted papers:")
-                track.acceptedPapers.take(MAX_PAPERS_IN_COMMAND_REPLY).forEach {
-                    appendLine("- ${it.title}")
-                }
-                val remaining = track.acceptedPapers.size - MAX_PAPERS_IN_COMMAND_REPLY
-                if (remaining > 0) {
-                    appendLine("...and $remaining more. Ask /ask about a specific paper title.")
-                }
+                appendLine("Sessions:")
+                sessions.forEach { appendLine("${it.shortDay()}, ${it.time}  ${it.title} - ${it.room}") }
             }
             appendLine()
             appendLine("Details: ${track.url}")
+            appendLine(askHint("which papers are in ${track.name}?"))
         }.trim()
     }
 
@@ -247,31 +299,22 @@ internal class CommandRouter(
         }
     }
 
-    private fun sessions(): String =
-        if (conference.sessions.isEmpty()) {
-            if (conference.hasProgramRooms()) {
-                "Program-block rooms are available through /ask, but individual paper-to-session assignments " +
-                    "are not available in the bot data yet."
-            } else {
-                "Session times, rooms, and paper-to-session assignments are not available in the bot data yet."
-            }
-        } else {
-            conference.sessions.joinToString(prefix = "Sessions:\n", separator = "\n") { "- ${it.summary()}" }
-        }
-
     private fun social(): String =
         if (conference.socialEvents.isEmpty()) {
-            "Social event details are not available in the bot data yet. Check ${conference.website} for updates."
+            "See ${conference.website} for the social programme."
         } else {
-            conference.socialEvents.joinToString(prefix = "Social events:\n", separator = "\n") {
-                "- ${it.summary()}"
-            }
+            buildString {
+                appendLine("Social events:")
+                conference.socialEvents.forEach { appendLine("- ${it.summary()}") }
+                appendLine()
+                appendLine(askHint("what is included in the banquet?"))
+            }.trim()
         }
 
     private fun page(id: String): String {
         val page =
             conference.infoPages.firstOrNull { it.id == id }
-                ?: return "I do not have that information yet."
+                ?: return "I do not have that page. Ask me directly with /ask, or see ${conference.website}."
         return buildString {
             appendLine(page.title)
             appendLine(page.body)
@@ -284,8 +327,9 @@ internal class CommandRouter(
         if (question.isBlank()) {
             "Please add a question after /ask."
         } else {
-            llmClient.ask(question).getOrElse {
-                "The conference assistant is not available right now. ${it.message.orEmpty()}".trim()
+            llmClient.ask(question).getOrElse { error ->
+                System.err.println("LLM request failed: ${error.message.orEmpty()}")
+                ASSISTANT_UNAVAILABLE_MESSAGE
             }
         }
 
@@ -368,46 +412,6 @@ private fun String.withoutMention(botUsername: String): String =
 
 private fun String.isPrivateChat(): Boolean = equals(PRIVATE_CHAT_TYPE, ignoreCase = true)
 
-private fun Conference.hasProgramRooms(): Boolean =
-    program?.days.orEmpty().any { day -> day.entries.any { it.room.isNotBlank() } }
-
-private fun Conference.programRoomsForTrack(trackId: String): List<String> =
-    program
-        ?.days
-        .orEmpty()
-        .flatMap { it.entries }
-        .filter { it.matchesTrack(trackId) }
-        .flatMap { it.room.roomsForTrack(trackId) }
-        .filter { it.isNotBlank() }
-        .distinct()
-
-private fun ProgramEntry.matchesTrack(trackId: String): Boolean {
-    val searchable = "$title $details".lowercase().replace(Regex("[^a-z0-9]+"), " ").trim()
-    return when (trackId) {
-        "main" -> category == "main" && "main track session" in searchable
-        "doctoral" -> category == "phd" || "doctoral symposium" in searchable
-        "posters" -> category == "poster" || "poster" in searchable
-        "tutorials" -> category == "tutorial"
-        "workshops" -> category == "workshop"
-        else -> false
-    }
-}
-
-private fun String.roomsForTrack(trackId: String): List<String> {
-    if (isBlank()) return emptyList()
-    val aliases =
-        when (trackId) {
-            "doctoral" -> setOf("doctoral symposium", "ds")
-            "posters" -> setOf("poster", "posters")
-            else -> emptySet()
-        }
-    val parts = split(Regex("\\s*·\\s*"))
-    val matched =
-        parts.mapNotNull { part ->
-            val label = part.substringBefore(":", missingDelimiterValue = "")
-            val value = part.substringAfter(":", missingDelimiterValue = "")
-            value.trim().takeIf { label.trim().lowercase() in aliases && it.isNotBlank() }
-        }
-    val unlabeled = parts.filterNot { ":" in it }.map(String::trim)
-    return matched.ifEmpty { unlabeled.ifEmpty { listOf(trim()) } }
-}
+/** Sessions that belong in the program view: everything except coffee breaks and lunches. */
+private fun Conference.scheduledSessions(): List<Session> =
+    sessions.filter { it.trackId != CATERING_TRACK_ID && it.title.isNotBlank() }

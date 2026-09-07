@@ -19,7 +19,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-private const val TELEGRAM_MESSAGE_LIMIT = 4096
+internal const val TELEGRAM_MESSAGE_LIMIT = 4096
 private const val TELEGRAM_TRUNCATION_SUFFIX = "\n\n[message truncated]"
 private const val RATE_LIMIT_MESSAGE = "Please wait a few seconds before asking another question."
 private const val STARTUP_GREETING_ENV = "TELEGRAM_STARTUP_GREETING"
@@ -212,11 +212,13 @@ internal fun groupReplyParameters(
 private fun User.displayName(): String =
     username?.let { "@$it" } ?: listOfNotNull(firstName, lastName).joinToString(" ")
 
+private val UPTIME_QUESTION = Regex("\\b(up|uptime|alive)\\b", RegexOption.IGNORE_CASE)
+
 private fun uptimeAnswer(
     message: String,
     botUsername: String,
 ): String? =
-    if (message.mentions(botUsername) && message.contains("up", ignoreCase = true)) {
+    if (message.mentions(botUsername) && UPTIME_QUESTION.containsMatchIn(message)) {
         """
         I have been up for ${ManagementFactory.getRuntimeMXBean().uptime} ms, since ${
             ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)

@@ -73,7 +73,7 @@ def track_summary(track: dict[str, Any]) -> str:
         return f"{track['name']}: {track['status']}"
     return (
         f"{track['name']}: {track['summary']} "
-        "No accepted contributions or timed sessions are listed in the current conference data yet."
+        "No accepted contributions or timed sessions are listed for this track."
     )
 
 

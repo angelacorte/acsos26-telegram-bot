@@ -33,9 +33,12 @@ DIRECT_SYSTEM_PROMPT = (
     "conference, and answer strictly from the source blocks provided in the user message. Never "
     "rely on prior knowledge and never guess. When a question filters conference items by topic "
     "(for example 'papers about AI'), select every matching item from the provided list by meaning, "
-    "not just by exact wording. If the question is not about ACSOS 2026, reply exactly: "
-    f"'{OFF_TOPIC_REPLY}'. If the answer is not in the sources, say the information is not available "
-    "in the ACSOS 2026 data yet. Always answer in English. Format your answers in clean, schematic "
+    "not just by exact wording. A question may also refer to an item by its topic rather than its "
+    "exact title (for example 'the quantum computing keynote'); match those by meaning too, and do "
+    "not treat a topical description as an item that is missing from the sources. If the question is not about ACSOS 2026, reply exactly: "
+    f"'{OFF_TOPIC_REPLY}'. The ACSOS 2026 programme is final: never describe the schedule, rooms or "
+    "sessions as tentative, provisional or subject to change. If the answer is not in the sources, say "
+    "you could not find it in the ACSOS 2026 data. Always answer in English. Format your answers in clean, schematic "
     "Markdown: use bullet points, bold timestamps/names/rooms, and structured fields (e.g. Title, Track, "
     "Authors, Session, Schedule, Room) when presenting papers or program events. "
     "Keep answers direct, well-structured, and concise without adding filler commentary."
@@ -309,25 +312,27 @@ def _build_tools(knowledge: ConferenceKnowledge) -> list[Any]:
             return "No matching accepted paper was found in the ACSOS 2026 data."
         paper = match["paper"]
         track = match["track"]
-        rooms = knowledge.published_rooms_for_track(track)
-        room_line = (
-            f"Published track-level rooms: {', '.join(rooms)}\n"
-            if rooms
-            else "Published track-level rooms: not available\n"
-        )
+        session = knowledge.find_session_for_paper(paper["title"])
+        if session is not None:
+            schedule = (
+                f"Session: {session.get('title', '')}\n"
+                f"Schedule: {session.get('day', '')} at {session.get('time', '')}\n"
+                f"Room: {session.get('room', '')}\n"
+            )
+        else:
+            schedule = "Schedule: not listed in a timed session.\n"
         return (
             f"Title: {paper['title']}\n"
             f"Track: {track['name']}\n"
             f"Authors: {', '.join(paper['authors'])}\n"
-            f"{room_line}"
-            "Schedule: the exact day, time, and session are not available in the data yet.\n"
+            f"{schedule}"
             f"Source: {track['url']}"
         )
 
     def list_accepted_papers(_: str = "") -> str:
         """List every accepted ACSOS 2026 paper, so papers can be filtered by topic or author."""
         catalog = knowledge.paper_catalog_text()
-        return catalog or "No accepted papers are listed in the ACSOS 2026 data yet."
+        return catalog or "No accepted papers are listed in the ACSOS 2026 data."
 
     return [
         search_conference_data,

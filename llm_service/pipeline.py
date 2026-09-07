@@ -29,6 +29,9 @@ DEFAULT_LLM_TIMEOUT_COOLDOWN_SECONDS = 20.0
 # Cap how long one answer may take server-side so the request never hangs to the client timeout.
 DEFAULT_LLM_GENERATION_TIMEOUT_SECONDS = 30.0
 MAX_PROMPT_CONTEXT_CHARS = 7000
+# The accepted-paper catalog is appended after the source blocks, so it needs its own bound:
+# without one the prompt grows past what small local models can hold in context.
+MAX_PROMPT_CATALOG_CHARS = 12000
 
 # Terms that signal the user explicitly wants recent/verified data from the live site.
 LIVE_VERIFICATION_TERMS = {
@@ -74,16 +77,14 @@ class AnswerService:
     async def answer(self, question: str) -> AskResponse:
         """Run one bounded answer pipeline for an already-validated question."""
         local_chunks = self.knowledge.search(question)
-        direct_answer = self.knowledge.high_confidence_answer(question)
         live_result = await self.live_retriever.retrieve(question, local_chunks)
         if self.agent is None or self._llm_is_temporarily_disabled():
-            return self._fallback_answer(question, direct_answer, local_chunks, live_result)
-        return await self._generate_answer(question, direct_answer, local_chunks, live_result)
+            return self._fallback_answer(question, local_chunks, live_result)
+        return await self._generate_answer(question, local_chunks, live_result)
 
     async def _generate_answer(
         self,
         question: str,
-        direct_answer: AskResponse | None,
         local_chunks: list[Chunk],
         live_result: LiveRetrievalResult,
     ) -> AskResponse:
@@ -113,17 +114,22 @@ class AnswerService:
         except Exception as error:
             LOGGER.warning("LLM agent failed; using deterministic fallback: %s", error)
             self._disable_llm_temporarily()
-        return self._fallback_answer(question, direct_answer, local_chunks, live_result)
+        return self._fallback_answer(question, local_chunks, live_result)
 
     def _fallback_answer(
         self,
         question: str,
-        direct_answer: AskResponse | None,
         local_chunks: list[Chunk],
         live_result: LiveRetrievalResult,
     ) -> AskResponse:
-        """Return the best grounded answer available without the model."""
-        fallback = direct_answer or self.knowledge.deterministic_answer(question)
+        """Return the best grounded answer available without the model.
+
+        This is the degraded path only: when the model is reachable it writes every answer.
+        The hand-written answers are built here, lazily, so the normal path never pays for them.
+        """
+        fallback = self.knowledge.high_confidence_answer(question) or self.knowledge.deterministic_answer(
+            question,
+        )
         contextual = deterministic_context_answer(question, local_chunks, live_result, fallback, self.website)
         if self.agent is None:
             return contextual
@@ -184,6 +190,8 @@ def build_context_prompt(
     context = "\n\n---\n\n".join(context_blocks)
     if len(context) > MAX_PROMPT_CONTEXT_CHARS:
         context = context[:MAX_PROMPT_CONTEXT_CHARS] + "\n[context truncated]"
+    if len(catalog) > MAX_PROMPT_CATALOG_CHARS:
+        catalog = catalog[:MAX_PROMPT_CATALOG_CHARS] + "\n[catalog truncated]"
     catalog_section = (
         "\n\nFULL LIST OF ACCEPTED PAPERS (use it to answer questions that filter papers by topic, "
         f"e.g. AI, by meaning):\n{catalog}"
@@ -202,9 +210,14 @@ def build_context_prompt(
         "Do not use any outside or prior knowledge, and do not guess.\n"
         "Prefer LIVE SOURCE blocks over LOCAL SOURCE blocks if they conflict.\n"
         "When the question filters items by topic, select every match by meaning, not just exact wording.\n"
+        "A question may also name an item by its topic rather than its exact title (for example 'the "
+        "quantum computing keynote'). Match those to the sources by meaning; a topical description is "
+        "not a missing item.\n"
         "Do not invent dates, people, events, places, session details, or registration details.\n"
-        "If the sources do not contain the answer, reply only that the information is not available "
-        "in the ACSOS 2026 data yet and suggest checking https://2026.acsos.org/ ; do not improvise.\n"
+        "The ACSOS 2026 programme is final: never describe the schedule, rooms or sessions as tentative, "
+        "provisional or subject to change.\n"
+        "If the sources do not contain the answer, reply only that you could not find it in the ACSOS 2026 "
+        "data and suggest checking https://2026.acsos.org/ ; do not improvise.\n"
         "Reply in English.\n"
         "Format your answer in clean, schematic Markdown (e.g. use bullet points, bold timestamps, and structured fields like Title, Track, Authors, Session, Schedule, Room where applicable).\n"
         "Keep the answer direct, well-structured, and concise without adding filler or redundant trailing 'Sources:' sections.\n\n"

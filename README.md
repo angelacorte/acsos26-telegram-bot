@@ -15,14 +15,20 @@ Agents mode) when configured.
 - `/group` - show the Telegram group invite link configured with
   `TELEGRAM_GROUP_INVITE_URL`.
 - `/tracks` - list ACSOS 2026 tracks.
-- `/program` - show the current program status.
+- `/program` - show **today's** session names. `/program mon|tue|wed|thu|fri` shows
+  another day, `/program all` shows the whole week. Coffee breaks and lunches are
+  omitted. Outside 7-11 September the whole week is shown.
+- `/sessions` - alias of `/program`.
 - `/program main` or `/maintrack` - show Main Track information.
-- `/artifacts`, `/doctoral`, `/posters`, `/tutorials`, `/workshops` - show track information.
-- `/sessions` - show timed sessions once they are available in the data file.
+- `/artifacts`, `/doctoral`, `/posters`, `/tutorials`, `/workshops`, `/inpractice`,
+  `/socialprogram` - show track information.
 - `/venue` - show venue information.
 - `/registration` - show the registration link.
-- `/social` - show social events once they are available in the data file.
-- `/ask <question>` - ask the optional LLM assistant. In private chats,
+- `/social` - show the social events and their fees.
+- `/ask <question>` - ask the LLM assistant. Commands are deliberately short
+  summaries; **rooms, paper titles, speakers, deadlines and anything specific are
+  answered by `/ask`**, which is grounded in the same `conference.json` plus a
+  bounded live lookup. In private chats,
   free-form messages without a slash command are also sent to the LLM assistant.
   In groups, the bot only answers LLM questions sent with `/ask` or with a
   mention, for example `@acsos_26_bot When is the main track?`. Group and
@@ -62,11 +68,52 @@ Site analysis notes for `https://2026.acsos.org`:
   low-traffic method is ranking the bounded local URL catalog discovered from
   navigation and known conference pages.
 
-The refresh script also parses the official tentative Program at a Glance into
-structured `program.days[].entries`, including each block's day, time, title,
-details, room, and category. Room information is read from the program table on
-every refresh. Individual paper-to-session assignments are not published yet;
-once they are available, they can be imported into `sessions`.
+The refresh script reads two program pages. The **detailed program table** is
+parsed into `sessions[]` - one entry per scheduled session with its `title`,
+`trackId`, `day`, ISO `date`, `time`, `room`, `papers[]` and `talks[]` (each talk
+with its time, duration, kind and speakers). Session names, rooms and tracks are
+read from the published `data-facet-*` attributes and the `session-info-in-table`
+cell, so keynote abstracts and session-chair lists never leak into a title. The
+coarser **Program at a Glance** grid is still parsed into
+`program.days[].entries` as a high-level overview.
+
+The script also captures `importantDates[]` (the deadline table),
+`workshops[]` (acronym, name, organizers, website), a structured `venue`
+(address, main room, rooms in use), `news[]`, `seminarSeries[]`,
+`communityLinks[]`, and the attending pages (travel, accommodation, visa, code of
+conduct, visit Cesena, welcome reception) as `infoPages[]`.
+
+Status strings (`programStatus`, `tracks[].status`) are **generated** from the
+sessions actually present, so they never describe the published programme as
+tentative or unavailable. Sponsors are deliberately not scraped: the home page
+still carries commented-out logos from past editions, so `/ask` answers sponsor
+questions from the live page instead.
+
+## Debug against a throwaway bot
+
+Use a second Telegram bot so you never test against the production one. Ask
+**@BotFather** for `/newbot`, then:
+
+```bash
+cp .env.debug.example .env.debug   # .env.debug is gitignored; put the token in it
+./scripts/debug-bot.sh
+```
+
+That starts the assistant on `127.0.0.1:8000` and the bot from the **current working
+tree**, and prints the `t.me` link to talk to. `Ctrl+C` stops both.
+
+```bash
+./scripts/debug-bot.sh --no-llm    # bot only; /ask reports the assistant is unavailable
+./scripts/debug-bot.sh --refresh   # re-scrape conference.json before starting
+```
+
+The script asks Telegram `getMe` and overrides `BOT_USERNAME` with whatever the token
+actually belongs to. This matters: `BOT_USERNAME` otherwise defaults to the production
+`botUsername` in `conference.json`, so a test bot would ignore `@your_test_bot` mentions
+in groups while still working in private chats - a failure that is easy to miss.
+
+Never point the debug bot at the production token: two pollers on one token make Telegram
+return `409 Conflict` to both.
 
 ## Run the Kotlin bot
 
@@ -115,11 +162,23 @@ pip install -r llm_service/requirements.txt
 uvicorn llm_service.app:app --reload --host 0.0.0.0 --port 8000
 ```
 
+**The model writes every answer.** The hand-written (`high_confidence_answer`)
+replies are the degraded path only: they are built lazily inside
+`_fallback_answer`, so a normal request never computes them, and users only ever
+see them when the model is unreachable or in cooldown. Answer quality therefore
+comes from *retrieval*, not from templates - see `ConferenceKnowledge.search`,
+which pins a named day's timetable into the context, joins each keynote to its
+scheduled session, expands info-page vocabulary (`register` -> Registration),
+and scores singular/plural stems so "robot swarms" reaches a keynote titled
+"... Robot Swarms".
+
 By default the assistant makes a **single grounded model call** rather than
 running a tool-calling agent loop: the retrieved local and live sources are put
 into the prompt, and the model is instructed to answer only from those sources
-or to say the information is not available yet. The assistant answers **only
-ACSOS 2026 questions in English**; off-topic questions get a fixed refusal. The
+or to say it could not find the answer in the ACSOS 2026 data. The prompt also
+states that the programme is final, so answers never call the schedule tentative.
+The assistant answers **only ACSOS 2026 questions in English**; off-topic
+questions get a fixed refusal. The
 full accepted-paper list is always included in the prompt so the model can answer
 topic filters ("papers about AI") by meaning rather than exact wording. Set
 `USE_DEEPAGENTS=1` to switch to the tool-calling Deep Agent (which also gets a
@@ -195,13 +254,7 @@ Examples:
 ## Docker Compose
 
 For local Docker Compose runs, put the keys in a local `.env` file at the
-repository root:
-
-```bash
-cp .env.example .env
-```
-
-Then edit `.env`:
+repository root (`.env` is gitignored):
 
 ```dotenv
 BOT_TOKEN=<telegram-token>
@@ -245,8 +298,9 @@ cannot answer, the Python service falls back to deterministic answers from
 The default `json-file` logging driver works on both Docker Desktop for macOS and
 Linux. The supplied production systemd unit overrides it with `journald`.
 
-For production hardening, boot setup, credential rotation, verification, and
-rollback procedures, see [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
+The compose stack and the systemd unit in `deploy/systemd/` cover production
+deployment. Note that the Python service reads `conference.json` once at import
+time, so a data refresh only reaches `/ask` after the container is restarted.
 
 ## Verification
 
@@ -256,3 +310,6 @@ python3 -m py_compile llm_service/app.py
 python3 -m py_compile llm_service/conference_live.py scripts/refresh_conference_catalog.py
 python3 -m pytest llm_service
 ```
+
+`detekt` currently fails on this toolchain for reasons unrelated to the sources
+(it does not recognise the JVM 25 target); `./gradlew test` is the green gate.

@@ -1,13 +1,19 @@
 package org.angelacorte.acsos26
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
+import java.time.LocalDate
 
 class CommandRouterTest :
     StringSpec({
         val conference = ConferenceRepository.load()
         val router = CommandRouter(conference, fixedLlmClient("LLM answer"))
+
+        fun todayRouter(date: LocalDate) = CommandRouter(conference, fixedLlmClient("LLM answer"), today = { date })
 
         "help lists deterministic commands" {
             val answer = router.answer("/help")
@@ -35,17 +41,103 @@ class CommandRouterTest :
             router.answer("/group") shouldContain "not configured"
         }
 
-        "program reports program status" {
-            val answer = router.answer("/program")
-            answer shouldContain "57 accepted papers"
-            answer shouldContain "78 timed sessions"
+        "program shows today when the conference is running" {
+            val answer = todayRouter(LocalDate.of(2026, 9, 9)).answer("/program")
+            answer shouldContain "Wednesday, 9 September"
+            answer shouldContain "/program all"
+            answer shouldContain "/ask"
+            // Coffee breaks and lunches are noise in a summary view.
+            answer!!.shouldNotContain("Coffee break")
         }
 
-        "main track command shows accepted papers" {
+        "program accepts a named day" {
+            val answer = todayRouter(LocalDate.of(2026, 9, 9)).answer("/program fri")
+            answer shouldContain "Friday, 11 September"
+        }
+
+        "program all lists every day" {
+            val answer = router.answer("/program all")
+            listOf("Monday, 7", "Tuesday, 8", "Wednesday, 9", "Thursday, 10", "Friday, 11").forEach {
+                answer shouldContain it
+            }
+        }
+
+        "program falls back to the week outside the conference dates" {
+            val answer = todayRouter(LocalDate.of(2026, 1, 1)).answer("/program")
+            answer shouldContain "Monday, 7 September"
+            answer shouldContain "Friday, 11 September"
+        }
+
+        "sessions is an alias of program" {
+            val date = LocalDate.of(2026, 9, 9)
+            todayRouter(date).answer("/sessions") shouldBe todayRouter(date).answer("/program")
+        }
+
+        "every command reply fits one Telegram message" {
+            val commands =
+                listOf(
+                    "/help",
+                    "/about",
+                    "/tracks",
+                    "/program",
+                    "/program all",
+                    "/sessions",
+                    "/maintrack",
+                    "/artifacts",
+                    "/doctoral",
+                    "/posters",
+                    "/tutorials",
+                    "/workshops",
+                    "/inpractice",
+                    "/socialprogram",
+                    "/venue",
+                    "/registration",
+                    "/social",
+                    "/site",
+                    "/links",
+                )
+            commands.forEach { command ->
+                val answer = router.answer(command).orEmpty()
+                withClue("$command rendered ${answer.length} chars") {
+                    answer.length shouldBeLessThan TELEGRAM_MESSAGE_LIMIT
+                }
+            }
+        }
+
+        "no command claims the program is unpublished" {
+            val commands =
+                listOf(
+                    "/program",
+                    "/program all",
+                    "/sessions",
+                    "/maintrack",
+                    "/workshops",
+                    "/doctoral",
+                    "/tutorials",
+                    "/artifacts",
+                    "/posters",
+                    "/inpractice",
+                    "/socialprogram",
+                    "/tracks",
+                    "/about",
+                    "/social",
+                )
+            commands.forEach { command ->
+                val answer = router.answer(command).orEmpty().lowercase()
+                withClue(command) {
+                    listOf("tentative", "not available yet", "not published", "subject to change")
+                        .forEach { answer.shouldNotContain(it) }
+                }
+            }
+        }
+
+        "main track command summarises the track and points at /ask" {
             val answer = router.answer("/maintrack")
             answer shouldContain "Main Track"
             answer shouldContain "Sessions:"
-            answer shouldContain "A Multi-Agent LLM Architecture"
+            answer shouldContain "accepted contributions"
+            // Paper titles are /ask territory now, so the reply stays inside one message.
+            answer shouldContain "/ask"
         }
 
         "doctoral command shows sessions and accepted papers" {

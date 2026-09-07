@@ -4,6 +4,8 @@ build/
 .vscode
 bin
 .env
+.env.debug
+.env.test
 example.env
 node_modules/
 /.gradle-cache/

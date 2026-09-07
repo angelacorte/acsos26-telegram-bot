@@ -1,5 +1,6 @@
 package org.angelacorte.acsos26
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.ConfigSpec
 import com.uchuhimo.konf.Feature
@@ -24,6 +25,9 @@ internal object ConferenceRepository {
             Config {
                 addSpec(ConferenceSpec)
                 disable(Feature.FAIL_ON_UNKNOWN_PATH)
+                // The daily data refresh may add fields the bot does not render (talk speakers,
+                // deadlines, sponsors). Ignoring them keeps a data-only change from breaking startup.
+                mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }.from.json.inputStream(input)[ConferenceSpec.conference]
         }
 }
@@ -136,9 +140,24 @@ internal data class Session(
     val time: String,
     val room: String,
     val papers: List<String>,
+    val date: String = "",
 ) {
     fun summary(): String =
         listOf(day, time, title, room)
             .filter { it.isNotBlank() }
             .joinToString(" - ")
+
+    /** One compact program line: "09:30  AI4AS - Paper Session 1 - 2.4". */
+    fun compactLine(withRoom: Boolean = true): String {
+        val start = time.substringBefore("-").trim().ifBlank { time }
+        val place = if (!withRoom || room.isBlank()) "" else " - $room"
+        return "$start  $title$place"
+    }
+
+    /** Short day label such as "Mon 7", derived from "Monday, 7 September". */
+    fun shortDay(): String {
+        val weekday = day.substringBefore(",").take(3)
+        val dayOfMonth = day.substringAfter(",", "").trim().substringBefore(" ")
+        return listOf(weekday, dayOfMonth).filter { it.isNotBlank() }.joinToString(" ")
+    }
 }

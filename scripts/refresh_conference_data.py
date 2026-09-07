@@ -7,6 +7,8 @@ import argparse
 import json
 import re
 import sys
+from datetime import date
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
@@ -57,6 +59,20 @@ TRACKS = [
         "url": "https://2026.acsos.org/track/acsos-2026-workshops",
         "summary": "Workshop information for ACSOS 2026.",
     },
+    {
+        "id": "inpractice",
+        "command": "inpractice",
+        "name": "ACSOS In Practice",
+        "url": "https://2026.acsos.org/track/acsos-2026-acsos-in-practice",
+        "summary": "Industry practitioners and applied researchers on autonomic systems in production.",
+    },
+    {
+        "id": "social",
+        "command": "socialprogram",
+        "name": "Social Program",
+        "url": "https://2026.acsos.org/track/acsos-2026-social-program",
+        "summary": "Receptions, banquet, and excursions scheduled during ACSOS 2026.",
+    },
 ]
 INFO_PAGES = [
     {
@@ -74,13 +90,83 @@ INFO_PAGES = [
         "title": "Main Social Event",
         "url": "https://2026.acsos.org/attending/main-social-event",
     },
+    {
+        "id": "travel",
+        "title": "Travel Information",
+        "url": "https://2026.acsos.org/attending/travel-information",
+    },
+    {
+        "id": "accommodation",
+        "title": "Accommodation",
+        "url": "https://2026.acsos.org/attending/accommodation",
+    },
+    {
+        "id": "visa",
+        "title": "Visa Information",
+        "url": "https://2026.acsos.org/attending/visa-information",
+    },
+    {
+        "id": "codeOfConduct",
+        "title": "Code of Conduct",
+        "url": "https://2026.acsos.org/attending/code-of-conduct",
+    },
+    {
+        "id": "visitCesena",
+        "title": "Visit Cesena",
+        "url": "https://2026.acsos.org/attending/visit-cesena",
+    },
+    {
+        "id": "welcomeReception",
+        "title": "Welcome Reception",
+        "url": "https://2026.acsos.org/attending/welcome-reception",
+    },
 ]
 PROGRAM_URL = "https://2026.acsos.org/info/program-at-a-glance"
 DETAILED_PROGRAM_URL = "https://2026.acsos.org/program/program-acsos-2026/Detailed-Table"
 SOCIAL_URL = "https://2026.acsos.org/attending/social-events"
 KEYNOTES_URL = "https://2026.acsos.org/info/keynotes"
 ORGANIZING_COMMITTEE_URL = "https://2026.acsos.org/committee/acsos-2026-organizing-committee"
+DATES_URL = "https://2026.acsos.org/dates"
+NEWS_URL = "https://2026.acsos.org/news"
+SEMINAR_SERIES_URL = "https://2026.acsos.org/info/seminar-series"
+VENUE_URL = "https://2026.acsos.org/venue/acsos-2026-venue"
+DATE_LINE_PATTERN = re.compile(r"^[A-Z][a-z]{2} \d{1,2} [A-Z][a-z]{2} \d{4}$")
+WORKSHOP_TITLE_PATTERN = re.compile(r"^(?P<name>.+?)\s+\((?P<acronym>[A-Za-z0-9][A-Za-z0-9\-]*)\)$")
+NAVIGATION_MARKERS = (
+    "Sign in Sign up",
+    "Main Track Workshops Tutorials",
+    "Malatestiana Library Visit Sponsoring",
+)
+NON_PAPER_TITLES = {
+    "Q&A and Panel Discussion",
+    "Q&A",
+    "Panel Discussion",
+    "Discussion",
+    "Closing",
+    "Opening",
+}
 USER_AGENT = "acsos26-telegram-bot-data-refresh/1.0"
+PAGE_LINKS: dict[str, list[tuple[str, str]]] = {}
+SESSION_TABLE_PATTERN = re.compile(
+    r'<table(?P<attrs>[^>]*class="[^"]*session-table[^"]*"[^>]*)>(?P<body>.*?)</table>',
+    re.DOTALL,
+)
+TRACK_IDS_BY_LABEL = {
+    "main track": "main",
+    "workshops": "workshops",
+    "doctoral symposium": "doctoral",
+    "posters and demos": "posters",
+    "tutorials": "tutorials",
+    "artifacts": "artifacts",
+    "in practice": "inpractice",
+    "social program": "social",
+    "catering": "catering",
+}
+WEEKDAY_NAMES = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+MONTH_NAMES = (
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+)
 
 
 class VisibleTextParser(HTMLParser):
@@ -194,6 +280,9 @@ def main() -> int:
             SOCIAL_URL,
             KEYNOTES_URL,
             ORGANIZING_COMMITTEE_URL,
+            DATES_URL,
+            NEWS_URL,
+            SEMINAR_SERIES_URL,
             *[track["url"] for track in TRACKS],
             *[page["url"] for page in INFO_PAGES],
         ],
@@ -214,17 +303,7 @@ def main() -> int:
         extracted_sessions = extract_detailed_sessions(detailed_html)
         if extracted_sessions:
             conference["sessions"] = extracted_sessions
-    has_program_rooms = any(
-        entry.get("room")
-        for day in conference.get("program", {}).get("days", [])
-        for entry in day.get("entries", [])
-    )
-    conference["tracks"] = refresh_tracks(
-        conference["tracks"],
-        pages,
-        has_tentative_program=bool(conference.get("program", {}).get("days")),
-        has_program_rooms=has_program_rooms,
-    )
+    conference["tracks"] = refresh_tracks(conference["tracks"], pages, conference.get("sessions", []))
     conference["infoPages"] = refresh_info_pages(conference["infoPages"], pages)
     social_lines = pages.get(SOCIAL_URL, [])
     conference["socialEvents"] = extract_social_events(social_lines) if social_lines else conference["socialEvents"]
@@ -236,6 +315,15 @@ def main() -> int:
         if committee_lines
         else conference.get("committees", [])
     )
+    workshop_lines = pages.get(next(track["url"] for track in TRACKS if track["id"] == "workshops"), [])
+    replace_if_found(conference, "workshops", extract_workshops(workshop_lines) if workshop_lines else [])
+    replace_if_found(conference, "importantDates", extract_important_dates(pages.get(DATES_URL, [])))
+    replace_if_found(conference, "news", extract_news(pages.get(NEWS_URL, [])))
+    replace_if_found(conference, "seminarSeries", extract_seminar_series(pages.get(SEMINAR_SERIES_URL, [])))
+    replace_if_found(conference, "communityLinks", extract_community_links(raw_pages.get(BASE_URL, "")))
+    venue_lines = pages.get(VENUE_URL, [])
+    if venue_lines:
+        replace_if_found(conference, "venue", extract_venue(venue_lines, conference.get("sessions", [])))
     conference["programStatus"] = program_status(conference)
 
     write_json(args.data, data)
@@ -253,12 +341,22 @@ def fetch_pages(urls: list[str]) -> tuple[dict[str, list[str]], dict[str, str]]:
             print(f"warning: could not fetch {url}: {error}", file=sys.stderr)
             pages[url] = []
             raw_pages[url] = ""
+            PAGE_LINKS[url] = []
             continue
         parser = VisibleTextParser()
         parser.feed(html)
         pages[url] = collapse_lines(parser.lines)
         raw_pages[url] = html
+        PAGE_LINKS[url] = parser.links
     return pages, raw_pages
+
+
+def replace_if_found(conference: dict[str, Any], key: str, value: Any) -> None:
+    """Store freshly scraped data, keeping the previous value when nothing was found."""
+    if value:
+        conference[key] = value
+    else:
+        conference.setdefault(key, [] if isinstance(value, list) else {})
 
 
 def fetch(url: str) -> str:
@@ -269,7 +367,7 @@ def fetch(url: str) -> str:
 
 
 def extract_program(html: str, lines: list[str]) -> dict[str, Any]:
-    """Parse the tentative five-day program table into searchable day entries."""
+    """Parse the five-day program-at-a-glance table into searchable day entries."""
     parser = ProgramTableParser()
     parser.feed(html)
     header_index = next(
@@ -315,12 +413,11 @@ def extract_program(html: str, lines: list[str]) -> dict[str, Any]:
             )
             occupied_until[day_index] = row_index + rowspan
 
-    status = first_line_matching(lines, r"^Tentative schedule") or "Tentative schedule, subject to change."
+    status = "Five-day overview of the ACSOS 2026 program."
     notes = [
         line
         for line in lines
         if line.startswith("NOTE: Additional social events")
-        or line.startswith("Rough overview based on the tentative")
     ]
     return {
         "title": "Program at a Glance",
@@ -331,105 +428,121 @@ def extract_program(html: str, lines: list[str]) -> dict[str, Any]:
     }
 
 
-def extract_detailed_sessions(html: str) -> list[dict[str, Any]]:
-    """Extract individual paper sessions and timetable from the detailed program table."""
-    day_sections = re.split(r'<h4[^>]*class=\"[^\"]*day-header[^\"]*\"[^>]*>', html)
+def extract_detailed_sessions(html_text: str) -> list[dict[str, Any]]:
+    """Extract timed sessions and their talks from the detailed program table."""
     sessions: list[dict[str, Any]] = []
-
-    weekday_map = {
-        "mon": "Monday, 7 September",
-        "tue": "Tuesday, 8 September",
-        "wed": "Wednesday, 9 September",
-        "thu": "Thursday, 10 September",
-        "fri": "Friday, 11 September",
-    }
-    track_map = {
-        "main track": "main",
-        "workshops": "workshops",
-        "doctoral symposium": "doctoral",
-        "posters and demos": "posters",
-        "tutorials": "tutorials",
-        "artifacts": "artifacts",
-        "catering": "catering",
-        "social program": "social",
-    }
-
-    for section in day_sections[1:]:
-        day_match = re.search(r"<div><div>([A-Za-z]+)\s+([0-9]+\s+[A-Za-z]+)</div>", section)
-        if not day_match:
+    for match in SESSION_TABLE_PATTERN.finditer(html_text):
+        attrs, body = match.group("attrs"), match.group("body")
+        title = session_title(body)
+        if not title:
             continue
-        day_short = day_match.group(1).lower()
-        full_day = weekday_map.get(day_short, f"{day_match.group(1)}, {day_match.group(2)}")
-
-        tables = re.findall(r"<table[^>]*>.*?</table>", section, re.DOTALL)
-        for table in tables:
-            head_match = re.search(r"<thead[^>]*>(.*?)</thead>", table, re.DOTALL)
-            head_content = head_match.group(1) if head_match else ""
-            if not head_content:
-                first_tr = re.search(r"<tr[^>]*>(.*?)</tr>", table, re.DOTALL)
-                head_content = first_tr.group(1) if first_tr else ""
-
-            time_match = re.search(r"([0-9]{2}:[0-9]{2}\s*[-–—]\s*[0-9]{2}:[0-9]{2})", head_content)
-            session_time = time_match.group(1).replace(" ", "") if time_match else ""
-
-            room_match = re.search(
-                r'at\s+<a[^>]*class=\"[^\"]*room-link[^\"]*\"[^>]*>(.*?)</a>|at\s+([^<]+?)(?:<|$)',
-                head_content,
-            )
-            room = ""
-            if room_match:
-                room = room_match.group(1) or room_match.group(2) or ""
-                room = re.sub(r"&quot;", '"', room).strip()
-                room = re.sub(r"<[^>]+>", "", room).strip()
-
-            track_match = re.search(
-                r'data-facet-track=\"([^\"]+)\"|<span class=\"pull-right\"><a[^>]*>(.*?)</a>',
-                head_content,
-            )
-            track_raw = ""
-            if track_match:
-                track_raw = track_match.group(1) or track_match.group(2) or ""
-            track_id = track_map.get(track_raw.lower().replace("acsos ", "").strip(), "main")
-
-            clean_head = re.sub(r'<span class=\"pull-right\">.*?</span>', "", head_content, flags=re.DOTALL)
-            clean_head = re.sub(r'at\s+<a[^>]*class=\"[^\"]*room-link[^\"]*\">.*?</a>', "", clean_head, flags=re.DOTALL)
-            clean_head = re.sub(r"<[^>]+>", " ", clean_head)
-            clean_head = " ".join(clean_head.split())
-            if session_time:
-                clean_head = re.sub(re.escape(session_time), "", clean_head)
-            if time_match:
-                clean_head = re.sub(re.escape(time_match.group(1)), "", clean_head)
-            if room:
-                clean_head = clean_head.replace(f"at {room}", "").replace(f'at "{room}"', "")
-            if "Speaker:" in clean_head:
-                clean_head = clean_head.split("Speaker:")[0]
-            clean_head = re.sub(r"^[-\s:]+|[-\s:]+$", "", clean_head).strip()
-            clean_head = re.sub(r"&quot;", '"', clean_head)
-            clean_head = re.sub(r"&amp;", "&", clean_head)
-            session_title = " ".join(clean_head.split())
-
-            slot_rows = re.findall(r'<tr[^>]*data-slot-id=\"[^\"]*\"[^>]*>(.*?)</tr>', table, re.DOTALL)
-            session_papers = []
-            for slot in slot_rows:
-                title_m = re.search(r'data-event-modal=\"[^\"]*\">(.*?)</a>', slot)
-                if title_m:
-                    paper_title = re.sub(r"<[^>]+>", "", title_m.group(1)).strip()
-                    paper_title = re.sub(r"&quot;", '"', paper_title)
-                    paper_title = re.sub(r"&amp;", "&", paper_title)
-                    session_papers.append(paper_title)
-
-            if session_title:
-                sessions.append(
-                    {
-                        "title": session_title,
-                        "trackId": track_id,
-                        "day": full_day,
-                        "time": session_time,
-                        "room": room,
-                        "papers": session_papers,
-                    }
-                )
+        iso_date = session_iso_date(attribute(attrs, "data-facet-date-order"))
+        talks = session_talks(body)
+        sessions.append(
+            {
+                "title": title,
+                "trackId": session_track_id(attrs, body),
+                "day": session_day_label(iso_date, attribute(attrs, "data-facet-date")),
+                "date": iso_date,
+                "time": session_time_range(body),
+                "room": unescape_text(attribute(attrs, "data-facet-room")),
+                "papers": [talk["title"] for talk in talks],
+                "talks": talks,
+            },
+        )
     return sessions
+
+
+def attribute(attrs: str, name: str) -> str:
+    """Read one attribute value out of a raw HTML start tag."""
+    match = re.search(rf'{re.escape(name)}="([^"]*)"', attrs)
+    return match.group(1) if match else ""
+
+
+def unescape_text(value: str) -> str:
+    """Decode HTML entities and collapse whitespace."""
+    return clean_text(unescape(value))
+
+
+def strip_tags(fragment: str) -> str:
+    """Drop markup and decode entities from an HTML fragment."""
+    return clean_text(unescape(re.sub(r"<[^>]+>", " ", fragment)))
+
+
+def session_title(body: str) -> str:
+    """Read the session name, excluding the track label, the room link, and any abstract."""
+    match = re.search(r'<div class="session-info-in-table">(.*?)</div>', body, re.DOTALL)
+    if not match:
+        return ""
+    fragment = re.split(r'<span class="pull-right">', match.group(1))[0]
+    fragment = re.sub(r"\s+at\s+<a[^>]*room-link.*$", "", fragment, flags=re.DOTALL)
+    return strip_tags(fragment)
+
+
+def session_time_range(body: str) -> str:
+    """Read a session slot label such as 09:30-11:00."""
+    match = re.search(r'<div class="slot-label">(.*?)</div>', body, re.DOTALL)
+    if not match:
+        return ""
+    return re.sub(r"\s*[-–—]\s*", "-", strip_tags(match.group(1)))
+
+
+def session_track_id(attrs: str, body: str) -> str:
+    """Resolve a track id from the table facet, an inner facet, or the track link."""
+    labels = [
+        attribute(attrs, "data-facet-track"),
+        *re.findall(r'data-facet-track="([^"]+)"', body),
+        *re.findall(r'<span class="pull-right"><a[^>]*>(.*?)</a>', body, re.DOTALL),
+    ]
+    for label in labels:
+        key = clean_text(strip_tags(label).casefold().replace("acsos", ""))
+        if key in TRACK_IDS_BY_LABEL:
+            return TRACK_IDS_BY_LABEL[key]
+    return "main"
+
+
+def session_iso_date(date_order: str) -> str:
+    """Convert a researchr date facet such as 260907 into 2026-09-07."""
+    if not re.fullmatch(r"\d{6}", date_order):
+        return ""
+    return f"20{date_order[:2]}-{date_order[2:4]}-{date_order[4:]}"
+
+
+def session_day_label(iso_date: str, date_facet: str) -> str:
+    """Build a 'Monday, 7 September' label, falling back to the raw date facet."""
+    try:
+        day = date.fromisoformat(iso_date)
+    except ValueError:
+        return unescape_text(date_facet)
+    return f"{WEEKDAY_NAMES[day.weekday()]}, {day.day} {MONTH_NAMES[day.month - 1]}"
+
+
+def session_talks(body: str) -> list[dict[str, Any]]:
+    """Extract the individual talks scheduled inside one session."""
+    talks: list[dict[str, Any]] = []
+    for slot in re.findall(r'<tr[^>]*data-slot-id="[^"]*"[^>]*>(.*?)</tr>', body, re.DOTALL):
+        title_match = re.search(r'data-event-modal="[^"]*">(.*?)</a>', slot, re.DOTALL)
+        if not title_match:
+            continue
+        performers = re.search(r'<div class="performers">(.*?)</div>', slot, re.DOTALL)
+        speakers = (
+            [strip_tags(anchor) for anchor in re.findall(r"<a[^>]*>(.*?)</a>", performers.group(1), re.DOTALL)]
+            if performers
+            else []
+        )
+        start = re.search(r'<div class="start-time">(.*?)</div>', slot, re.DOTALL)
+        kind = re.search(r'<div class="event-type">(.*?)</div>', slot, re.DOTALL)
+        duration = re.search(r"<strong>(\d+m)</strong>", slot)
+        talks.append(
+            {
+                "title": strip_tags(title_match.group(1)),
+                "time": strip_tags(start.group(1)) if start else "",
+                "duration": duration.group(1) if duration else "",
+                "kind": strip_tags(kind.group(1)) if kind else "",
+                "speakers": deduplicate([speaker for speaker in speakers if speaker]),
+            },
+        )
+    return talks
 
 
 def cell_text(cell: dict[str, Any]) -> str:
@@ -465,10 +578,9 @@ def program_category(classes: list[str]) -> str:
 def refresh_tracks(
     existing_tracks: list[dict[str, Any]],
     pages: dict[str, list[str]],
-    has_tentative_program: bool = False,
-    has_program_rooms: bool = False,
+    sessions: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Refresh track statuses and accepted papers while preserving known commands."""
+    """Refresh track statuses and accepted contributions while preserving known commands."""
     existing_by_id = {track["id"]: track for track in existing_tracks}
     refreshed = []
     for definition in TRACKS:
@@ -477,16 +589,12 @@ def refresh_tracks(
         accepted_papers = extract_accepted_papers(lines, definition["name"]) if lines else []
         if not accepted_papers and old.get("acceptedPapers"):
             accepted_papers = old["acceptedPapers"]
-        status = (
-            track_status(definition["name"], accepted_papers, has_tentative_program, has_program_rooms)
-            if lines
-            else old.get("status", "")
-        )
+        track_sessions = [session for session in sessions if session.get("trackId") == definition["id"]]
         refreshed.append(
             {
                 **old,
                 **definition,
-                "status": status,
+                "status": track_status(definition["name"], accepted_papers, track_sessions),
                 "acceptedPapers": accepted_papers,
             },
         )
@@ -497,7 +605,14 @@ def extract_accepted_papers(lines: list[str], track_name: str) -> list[dict[str,
     """Extract accepted paper titles and authors from a track page."""
     section = section_between(
         lines,
-        start_patterns=[r"^Accepted Papers$", r"^Accepted Contributions$"],
+        start_patterns=[
+            r"^Accepted Papers$",
+            r"^Accepted Contributions$",
+            r"^Accepted Workshop Papers$",
+            r"^Accepted Tutorials$",
+            r"^Accepted Artifacts$",
+            r"^Accepted Posters/Demos$",
+        ],
         end_patterns=[
             r"^Camera Ready",
             r"^Call for",
@@ -505,6 +620,7 @@ def extract_accepted_papers(lines: list[str], track_name: str) -> list[dict[str,
             r"^Submission",
             r"^Program Chairs$",
             r"^Track Chairs$",
+            r"^Accepted Workshops$",
         ],
     )
     if not section:
@@ -531,7 +647,164 @@ def extract_accepted_papers(lines: list[str], track_name: str) -> list[dict[str,
         index += 1
     if pending_title:
         papers.append({"title": pending_title, "authors": deduplicate(pending_authors)})
+    papers = [paper for paper in papers if paper["title"] not in NON_PAPER_TITLES]
     return deduplicate_papers(papers)
+
+
+def extract_important_dates(lines: list[str]) -> list[dict[str, str]]:
+    """Extract the deadline table as (date, track, what) rows."""
+    start = content_heading_index(lines, [r"^Important Dates$"])
+    if start is None:
+        return []
+    section = lines[start + 1 : content_end_index(lines, start + 1)]
+    header = next_index(section, "What", 0)
+    rows: list[dict[str, str]] = []
+    index = header + 1 if header < len(section) else 0
+    while index + 2 < len(section) + 1:
+        chunk = section[index : index + 3]
+        if len(chunk) < 3 or not DATE_LINE_PATTERN.match(chunk[0]):
+            break
+        rows.append({"date": chunk[0], "track": chunk[1], "what": chunk[2]})
+        index += 3
+    return rows
+
+
+def extract_venue(lines: list[str], sessions: list[dict[str, Any]]) -> dict[str, Any]:
+    """Extract the venue name, postal address, and the rooms actually in use."""
+    start = content_heading_index(lines, [r"^Venue: ", r"^Location$"])
+    address: list[str] = []
+    if start is not None:
+        location = next_index(lines, "Location", start)
+        if location < len(lines):
+            end = min(next_index(lines, "Rooms", location), content_end_index(lines, location))
+            address = lines[location + 1 : end]
+    rooms = sorted({session["room"] for session in sessions if session.get("room")})
+    return {
+        "name": "University of Bologna, Cesena Campus",
+        "address": ", ".join(address),
+        "mainRoom": 'Aula Magna "Carmen Tura" (Room 3.4), first floor',
+        "rooms": rooms,
+        "url": VENUE_URL,
+    }
+
+
+def extract_workshops(lines: list[str]) -> list[dict[str, Any]]:
+    """Extract the accepted workshops with their organizers and websites."""
+    start = content_heading_index(lines, [r"^Accepted Workshops$"])
+    if start is None:
+        return []
+    section = lines[start + 1 : content_end_index(lines, start + 1)]
+    repeated = {line for line in section if section.count(line) > 1}
+    block_starts = [
+        index
+        for index, line in enumerate(section)
+        if line in repeated and WORKSHOP_TITLE_PATTERN.match(line)
+    ]
+    latest: dict[str, int] = {}
+    for index in block_starts:
+        latest[section[index]] = index
+    ordered = sorted(latest.items(), key=lambda item: item[1])
+    workshops = []
+    for position, (line, block_start) in enumerate(ordered):
+        block_end = ordered[position + 1][1] if position + 1 < len(ordered) else len(section)
+        block = section[block_start + 1 : block_end]
+        organizers_at = next_index(block, "Workshop organizers:", 0)
+        if organizers_at >= len(block):
+            continue
+        website_at = next(
+            (index for index, item in enumerate(block) if item.startswith("More information")),
+            len(block),
+        )
+        site = block[website_at + 1] if website_at + 1 < len(block) else ""
+        match = WORKSHOP_TITLE_PATTERN.match(line)
+        workshops.append(
+            {
+                "name": match.group("name").strip(),
+                "acronym": match.group("acronym"),
+                "summary": clean_text(" ".join(block[:organizers_at]))[:700],
+                "organizers": deduplicate(block[organizers_at + 1 : website_at]),
+                "site": site if site.startswith("http") else "",
+                "url": next(track["url"] for track in TRACKS if track["id"] == "workshops"),
+            },
+        )
+    return workshops
+
+
+def extract_news(lines: list[str]) -> list[dict[str, str]]:
+    """Extract news items as title, date, and summary."""
+    start = content_heading_index(lines, [r"^News Items$"])
+    if start is None:
+        return []
+    section = lines[start + 1 : content_end_index(lines, start + 1)]
+    news = []
+    for index, line in enumerate(section):
+        if index + 1 >= len(section):
+            break
+        date_match = re.fullmatch(r"\((?P<date>[A-Z][a-z]{2} \d{1,2} [A-Z][a-z]{2} \d{4})\)", section[index + 1])
+        if not date_match:
+            continue
+        body = []
+        for follower in section[index + 2 :]:
+            if follower.startswith("Submitted ") or re.fullmatch(r"\(.*\)", follower):
+                break
+            body.append(follower)
+        news.append(
+            {
+                "title": line,
+                "date": date_match.group("date"),
+                "summary": clean_text(" ".join(body))[:500],
+                "url": NEWS_URL,
+            },
+        )
+    return news
+
+
+def extract_seminar_series(lines: list[str]) -> list[dict[str, str]]:
+    """Extract the seminar series talks listed in the summary table."""
+    start = content_heading_index(lines, [r"^Seminar series$"])
+    if start is None:
+        return []
+    section = lines[start + 1 : content_end_index(lines, start + 1)]
+    header = next_index(section, "Date", 0)
+    seminars = []
+    index = header + 1 if header < len(section) else 0
+    while index + 2 < len(section) + 1:
+        chunk = section[index : index + 3]
+        if len(chunk) < 3 or not re.search(r"\(.+\)$", chunk[0]):
+            break
+        speaker, _, affiliation = chunk[0].rpartition("(")
+        seminars.append(
+            {
+                "speaker": speaker.strip(),
+                "affiliation": affiliation.rstrip(")").strip(),
+                "title": chunk[1],
+                "whenText": chunk[2],
+                "url": SEMINAR_SERIES_URL,
+            },
+        )
+        index += 3
+    return seminars
+
+
+def extract_community_links(html_text: str) -> list[dict[str, str]]:
+    """Pick the official ACSOS community and social media links from the home page."""
+    wanted = [
+        ("linktr.ee", "Linktree"),
+        ("github.com/acsos", "GitHub"),
+        ("twitter.com/acsosconf", "X (Twitter)"),
+        ("linkedin.com/company/acsos", "LinkedIn"),
+        ("instagram.com/acsos", "Instagram"),
+        ("youtube.com/@acsosconf", "YouTube"),
+        ("facebook.com/profile", "Facebook"),
+    ]
+    hrefs = re.findall(r'href="(https?://[^"]+)"', html_text)
+    found: dict[str, str] = {}
+    for needle, name in wanted:
+        for href in hrefs:
+            if needle in href.casefold() and name not in found:
+                found[name] = href
+                break
+    return [{"name": name, "url": url} for name, url in found.items()]
 
 
 def refresh_info_pages(existing_pages: list[dict[str, Any]], pages: dict[str, list[str]]) -> list[dict[str, str]]:
@@ -548,7 +821,13 @@ def refresh_info_pages(existing_pages: list[dict[str, Any]], pages: dict[str, li
 
 def extract_page_body(lines: list[str], title: str) -> str:
     """Extract a compact body from a generic conference page."""
-    title_patterns = [rf"^{re.escape(title)}$", rf"^{re.escape(title.replace('Venue: ', ''))}$"]
+    bare_title = title.replace("Venue: ", "")
+    # researchr renders some headings as "ACSOS 2026 <title>", so accept that prefix too.
+    title_patterns = [
+        rf"^{re.escape(title)}$",
+        rf"^{re.escape(bare_title)}$",
+        rf"^ACSOS 2026 {re.escape(bare_title)}$",
+    ]
     start = content_heading_index(lines, title_patterns)
     if start is None:
         return ""
@@ -559,7 +838,9 @@ def extract_page_body(lines: list[str], title: str) -> str:
             break
     section = lines[start + 1 : end]
     content = [line for line in section if not line.startswith("Image:") and not line.startswith("Photo ")]
-    return " ".join(content[:14]).strip()
+    body = " ".join(content[:20]).strip()
+    # A heading matched inside the navigation or footer yields the menu, not the page: reject it.
+    return "" if any(marker in body for marker in NAVIGATION_MARKERS) else body
 
 
 def content_heading_index(lines: list[str], title_patterns: list[str]) -> int | None:
@@ -660,6 +941,7 @@ def extract_keynotes(lines: list[str]) -> list[dict[str, str]]:
             abstract_start = index + 2
             biosketch_index = next_index(section, "Biosketch:", abstract_start)
             abstract = " ".join(section[abstract_start:biosketch_index]).strip()
+            biosketch_end = next_biosketch_end(section, biosketch_index + 1)
             keynotes.append(
                 {
                     "speaker": speaker,
@@ -667,6 +949,7 @@ def extract_keynotes(lines: list[str]) -> list[dict[str, str]]:
                     "title": title,
                     "kind": current_kind,
                     "abstract": abstract,
+                    "biosketch": clean_text(" ".join(section[biosketch_index + 1 : biosketch_end]))[:1200],
                     "url": KEYNOTES_URL,
                 },
             )
@@ -674,6 +957,16 @@ def extract_keynotes(lines: list[str]) -> list[dict[str, str]]:
             continue
         index += 1
     return keynotes
+
+
+def next_biosketch_end(section: list[str], start: int) -> int:
+    """Find where a keynote biosketch stops: at the next keynote heading or section end."""
+    for index in range(start, len(section)):
+        if index + 1 < len(section) and section[index + 1] == "Abstract:":
+            return index
+        if section[index] == "Doctoral Symposium keynote:":
+            return index
+    return len(section)
 
 
 def parse_keynote_heading(line: str) -> tuple[str, str, str]:
@@ -805,58 +1098,47 @@ def extract_description(lines: list[str]) -> str | None:
 def program_status(conference: dict[str, Any]) -> str:
     """Build a status line from the currently refreshed data."""
     papers = sum(len(track["acceptedPapers"]) for track in conference["tracks"])
-    sessions = len(conference["sessions"])
-    program_days = conference.get("program", {}).get("days", [])
-    has_program_rooms = any(
-        entry.get("room")
-        for day in program_days
-        for entry in day.get("entries", [])
-    )
+    sessions = conference.get("sessions", [])
+    talks = sum(len(session.get("papers", [])) for session in sessions)
     if sessions:
-        return f"The conference data includes {papers} accepted papers and {sessions} timed sessions."
-    if program_days:
-        if has_program_rooms:
-            return (
-                f"The conference data includes {papers} accepted papers and the tentative program-at-a-glance "
-                "timetable, including published room information; individual paper-to-session assignments "
-                "are not available yet."
-            )
         return (
-            f"The conference data includes {papers} accepted papers and the tentative program-at-a-glance "
-            "timetable. Rooms and individual paper-to-session assignments are not available yet."
+            f"The ACSOS 2026 program is published: {count_label(len(sessions), 'scheduled session')} "
+            f"with rooms, {count_label(talks, 'scheduled talk')}, and "
+            f"{count_label(papers, 'accepted contribution')}."
         )
     if papers:
-        return (
-            f"The conference data includes {papers} accepted papers. Timed sessions, rooms, "
-            "and paper-to-session assignments are not available in this data file yet."
-        )
-    return "The conference data includes dates, tracks, and venue information. Timed sessions are not available yet."
+        return f"The conference data includes {count_label(papers, 'accepted contribution')}."
+    return "The conference data includes the dates, tracks, and venue of ACSOS 2026."
+
+
+def count_label(count: int, noun: str) -> str:
+    """Format a count with a correctly pluralized noun."""
+    return f"{count} {noun}" if count == 1 else f"{count} {noun}s"
 
 
 def track_status(
     track_name: str,
     accepted_papers: list[dict[str, Any]],
-    has_tentative_program: bool = False,
-    has_program_rooms: bool = False,
+    track_sessions: list[dict[str, Any]] | None = None,
+    /,
 ) -> str:
-    """Build a track-specific status line."""
+    """Describe what is published for one track, based on the real schedule."""
+    track_sessions = track_sessions or []
+    talks = sum(len(session.get("papers", [])) for session in track_sessions)
+    facts = []
     if accepted_papers:
-        timing_status = (
-            (
-                "Tentative session blocks and room information are published in the program at a glance; "
-                "individual paper-to-session assignments are not available yet."
-                if has_program_rooms
-                else "Tentative session blocks are published in the program at a glance; rooms and individual "
-                "paper-to-session assignments are not available yet."
-            )
-            if has_tentative_program
-            else "Timed sessions and rooms are not published in this data file yet."
-        )
-        return (
-            f"{len(accepted_papers)} accepted papers are published for {track_name}. "
-            f"{timing_status}"
-        )
-    return "Track page is available. Program timing is not published in this data file yet."
+        facts.append(f"{count_label(len(accepted_papers), 'accepted contribution')}")
+    if track_sessions:
+        rooms = sorted({session["room"] for session in track_sessions if session.get("room")})
+        scheduled = count_label(len(track_sessions), "scheduled session")
+        if rooms:
+            scheduled += f" in {', '.join(rooms)}"
+        facts.append(scheduled)
+    if talks:
+        facts.append(count_label(talks, "scheduled talk"))
+    if not facts:
+        return f"{track_name} details are published on the track page."
+    return f"{track_name}: {'; '.join(facts)}."
 
 
 def section_between(

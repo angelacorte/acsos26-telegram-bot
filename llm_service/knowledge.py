@@ -12,8 +12,11 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Callable
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from llm_service.formatting import (
     keynote_summary,
@@ -28,6 +31,8 @@ from llm_service.schemas import AskResponse, Chunk
 from llm_service.text import normalize, tokenize
 
 MAX_CONTEXT_CHUNKS = 6
+CATERING_TRACK_ID = "catering"
+DATES_URL = "https://2026.acsos.org/dates"
 # Common social words that must not, on their own, pin a question to one event.
 GENERIC_SOCIAL_TERMS = {
     "activities",
@@ -71,6 +76,17 @@ PROGRAM_QUERY_TERMS = {
     "timing",
 }
 FULL_PROGRAM_TERMS = {"all", "complete", "full", "whole"}
+INFO_PAGE_SEARCH_ALIASES = {
+    "registration": "register registering fee fees cost costs price prices payment pay how much",
+    "venue": "where address location directions campus building rooms map",
+    "travel": "travel airport airports train bus car getting there transport arrive",
+    "accommodation": "hotel hotels stay sleep booking lodging where to stay",
+    "visa": "visa visas invitation letter passport embassy",
+    "codeOfConduct": "code conduct harassment",
+    "visitCesena": "visit tourism sightseeing attractions",
+    "welcomeReception": "welcome reception drinks opening evening",
+    "mainSocialEvent": "banquet dinner gala main social event evening",
+}
 SEARCH_STOPWORDS = {
     "a", "an", "the", "in", "on", "at", "to", "for", "of", "and", "or", "is", "are",
     "was", "were", "be", "been", "will", "would", "can", "could", "should", "do",
@@ -82,9 +98,10 @@ SEARCH_STOPWORDS = {
 class ConferenceKnowledge:
     """Small deterministic retrieval layer over the shared conference JSON file."""
 
-    def __init__(self, data_path: Path) -> None:
+    def __init__(self, data_path: Path, today: Callable[[], date] | None = None) -> None:
         self.data_path = data_path
         self.data = json.loads(data_path.read_text(encoding="utf-8"))["conference"]
+        self._today = today or self._conference_today
         self.chunks = self._build_chunks()
         # Terms that appear anywhere OTHER than social events. A social-event term is only
         # "distinctive" (able to trigger a social answer without a social keyword) if it is
@@ -92,12 +109,45 @@ class ConferenceKnowledge:
         self.non_social_terms = self._build_non_social_terms()
 
     def search(self, query: str, limit: int = MAX_CONTEXT_CHUNKS) -> list[Chunk]:
-        """Return the most relevant conference facts for a user query."""
+        """Return the most relevant conference facts for a user query.
+
+        Days named in the question are answered from the schedule itself rather than left to
+        lexical scoring, which otherwise ranks accepted papers that merely mention the weekday
+        above the timetable for that day.
+        """
+        day_chunks = self.day_schedule_chunks(query)
+        limit = max(limit - len(day_chunks), 1)
+        return day_chunks + self._lexical_search(query, limit)
+
+    def day_schedule_chunks(self, query: str) -> list[Chunk]:
+        """Build one schedule chunk per conference day named in the query."""
+        chunks = []
+        for date in self.find_program_days(query):
+            sessions = self.scheduled_sessions(date)
+            if not sessions:
+                continue
+            timetable = "; ".join(
+                f"{session['time']} {session['title']}"
+                + (f" in {session['room']}" if session.get("room") else "")
+                for session in sessions
+            )
+            chunks.append(
+                Chunk(
+                    f"Schedule for {sessions[0].get('day', date)}",
+                    f"Sessions on {sessions[0].get('day', date)}: {timetable}.",
+                    self.data.get("program", {}).get("url") or self.data["website"],
+                ),
+            )
+        return chunks
+
+    def _lexical_search(self, query: str, limit: int) -> list[Chunk]:
+        """Rank chunks by token overlap with the query."""
         all_terms = set(tokenize(query))
         if not all_terms:
             return self.chunks[:limit]
         substantive_terms = all_terms - SEARCH_STOPWORDS
         query_terms = substantive_terms or all_terms
+        query_stems = stems(query_terms)
         scored = []
         for chunk in self.chunks:
             title_terms = set(tokenize(chunk.title))
@@ -106,7 +156,18 @@ class ConferenceKnowledge:
             sub_text = len(query_terms & text_terms)
             all_title = len(all_terms & title_terms)
             all_text = len(all_terms & text_terms)
-            score = (5 * sub_title) + (3 * sub_text) + all_title + all_text
+            # Singular/plural only, scored below exact matches: "swarm robotics" must still reach
+            # a keynote titled "... Robot Swarms", which exact tokens never match.
+            stem_title = len(query_stems & stems(title_terms))
+            stem_text = len(query_stems & stems(text_terms))
+            score = (
+                (5 * sub_title)
+                + (3 * sub_text)
+                + all_title
+                + all_text
+                + (2 * stem_title)
+                + stem_text
+            )
             if score:
                 scored.append((score, chunk))
         if not scored:
@@ -211,91 +272,66 @@ class ConferenceKnowledge:
                 return page
         return None
 
-    def find_program_days(self, question: str) -> list[dict[str, Any]]:
-        """Find program-at-a-glance days explicitly named in a question."""
+    def _conference_today(self) -> date:
+        """Today's date in the conference time zone."""
+        return datetime.now(ZoneInfo(self.data.get("timezone", "Europe/Rome"))).date()
+
+    def find_program_days(self, question: str) -> list[str]:
+        """Find the dates of the schedule days named in a question, including today/tomorrow."""
         query_terms = set(tokenize(question))
+        scheduled_dates = {session.get("date", "") for session in self.data.get("sessions", [])}
+        matched: set[str] = set()
+        if query_terms & {"today", "tonight"}:
+            matched.add(self._today().isoformat())
+        if "tomorrow" in query_terms:
+            matched.add((self._today() + timedelta(days=1)).isoformat())
+        for session in self.data.get("sessions", []):
+            weekday = normalize(session.get("day", "").partition(",")[0])
+            if weekday and weekday in query_terms:
+                matched.add(session.get("date", ""))
+        return sorted(matched & scheduled_dates)
+
+    def scheduled_sessions(self, date: str = "", track_id: str = "") -> list[dict[str, Any]]:
+        """Return schedule sessions, excluding catering, optionally filtered by day and track."""
         return [
-            day
-            for day in self.data.get("program", {}).get("days", [])
-            if normalize(day.get("day", "")) in query_terms
+            session
+            for session in self.data.get("sessions", [])
+            if session.get("trackId") != CATERING_TRACK_ID
+            and (not date or session.get("date") == date)
+            and (not track_id or session.get("trackId") == track_id)
         ]
 
-    def published_rooms_for_track(self, track: dict[str, Any]) -> list[str]:
-        """Return rooms published for program entries belonging to a track."""
-        track_id = track.get("id", "")
-        rooms: list[str] = []
-        for day in self.data.get("program", {}).get("days", []):
-            for entry in day.get("entries", []):
-                if not program_entry_matches_track(entry, track_id):
-                    continue
-                for room in program_rooms_for_track(entry.get("room", ""), track_id):
-                    if room and room not in rooms:
-                        rooms.append(room)
-        return rooms
-
-    def published_track_rooms_summary(self, tracks: list[dict[str, Any]]) -> str:
-        """Format deduplicated, track-level room information for paper answers."""
-        summaries = []
-        seen_track_ids = set()
-        for track in tracks:
-            if track.get("id") in seen_track_ids:
-                continue
-            seen_track_ids.add(track.get("id"))
-            rooms = self.published_rooms_for_track(track)
-            if rooms:
-                summaries.append(f"{track['name']}: {', '.join(rooms)}")
-        return "; ".join(summaries)
+    def track_name(self, track_id: str) -> str:
+        """Return the display name of a track id."""
+        return next(
+            (track["name"] for track in self.data.get("tracks", []) if track.get("id") == track_id),
+            "",
+        )
 
     def program_answer(self, question: str) -> AskResponse | None:
-        """Answer tentative timetable questions from the structured program-at-a-glance data."""
+        """Answer timetable questions from the published session schedule."""
         query_terms = set(tokenize(question))
-        if not query_terms & PROGRAM_QUERY_TERMS or query_terms & EXPLICIT_SOCIAL_TERMS:
+        requested_dates = self.find_program_days(question)
+        # Naming a conference day is itself a schedule question ("what is on wednesday?"),
+        # unless the question is clearly about the social programme.
+        if not requested_dates or query_terms & EXPLICIT_SOCIAL_TERMS:
             return None
-        program = self.data.get("program", {})
-        requested_days = self.find_program_days(question)
-        if not program or not requested_days:
-            return None
-
-        requested_category = program_category_for_query(query_terms)
-        wants_full_program = bool(query_terms & FULL_PROGRAM_TERMS) or (
-            "program" in query_terms
-            and not query_terms & {"schedule", "session", "sessions", "table", "time", "times", "timetable", "timing"}
-        )
-        category = None if wants_full_program else (requested_category or "main")
-        category_name = program_category_name(category)
-        day_blocks = []
-        for day in requested_days:
-            entries = [
-                entry
-                for entry in day.get("entries", [])
-                if (category is None or entry.get("category") == category)
-                and entry.get("title", "").strip() not in {"", "—", "-"}
-            ]
-            if not entries:
+        track_id = program_track_for_query(query_terms)
+        wants_everything = bool(query_terms & FULL_PROGRAM_TERMS)
+        blocks = []
+        for date in requested_dates:
+            sessions = self.scheduled_sessions(date, "" if wants_everything else (track_id or ""))
+            if not sessions:
                 continue
-            day_label = ", ".join(part for part in [day.get("day", ""), day.get("date", "")] if part)
-            lines = "\n".join(f"- {program_entry_summary(entry)}" for entry in entries)
-            day_blocks.append(f"{day_label}:\n{lines}")
-        if not day_blocks:
+            lines = "\n".join(f"- {session_schedule_line(session)}" for session in sessions)
+            blocks.append(f"{sessions[0].get('day', date)}:\n{lines}")
+        if not blocks:
             return None
-
-        heading = f"Tentative {category_name} timetable" if category_name else "Tentative program"
-        answer = f"{heading}:\n" + "\n\n".join(day_blocks)
-        included_rooms = any(
-            entry.get("room")
-            for day in requested_days
-            for entry in day.get("entries", [])
-            if category is None or entry.get("category") == category
-        )
-        assignment_status = (
-            "Individual paper assignments are not published yet"
-            if included_rooms
-            else "Individual paper assignments and rooms are not published yet"
-        )
-        answer += f"\n\n{assignment_status}; the timetable is subject to change."
+        track_name = "" if wants_everything else self.track_name(track_id or "")
+        heading = f"{track_name} schedule" if track_name else "ACSOS 2026 schedule"
         return AskResponse(
-            answer=answer,
-            sources=[program["url"]],
+            answer=f"{heading}\n\n" + "\n\n".join(blocks),
+            sources=[self.data.get("program", {}).get("url") or self.data["website"]],
             mode="deterministic",
         )
 
@@ -310,8 +346,7 @@ class ConferenceKnowledge:
         registration_url = next(iter(re.findall(r"https?://\S+", page["body"])), page["url"])
         return AskResponse(
             answer=(
-                "Registration for ACSOS 2026 is open. "
-                f"Register here: {registration_url}. "
+                f"Register for ACSOS 2026 here: {registration_url}. "
                 "Fees are in USD and include taxes. "
                 "For registration assistance, email ieeecs-reg+ACSOS@computer.org."
             ),
@@ -345,14 +380,17 @@ class ConferenceKnowledge:
         page = self.find_info_page("Venue: University of Bologna, Cesena Campus")
         if page is None:
             return None
+        venue = self.data.get("venue", {})
+        lines = [f"ACSOS 2026 takes place at the {venue.get('name') or self.data['location']}."]
+        if venue.get("address"):
+            lines.append(f"- **Address:** {venue['address']}")
+        if venue.get("mainRoom"):
+            lines.append(f"- **Main room:** {venue['mainRoom']}")
+        if venue.get("rooms"):
+            lines.append(f"- **Rooms in use:** {', '.join(venue['rooms'])}")
         return AskResponse(
-            answer=(
-                "ACSOS 2026 takes place at the University of Bologna, Cesena Campus, "
-                "Via dell'Universita, 50, 47521 Cesena, Italy. "
-                "The listed conference room is Aula Magna \"Carmen Tura\" (Room 3.4), "
-                "on the first floor of the university building."
-            ),
-            sources=[page["url"]],
+            answer="\n".join(lines),
+            sources=[venue.get("url") or page["url"]],
             mode="deterministic",
         )
 
@@ -433,7 +471,7 @@ class ConferenceKnowledge:
             return None
         if not keynotes:
             return AskResponse(
-                answer="Keynote information is not available in the ACSOS 2026 data yet.",
+                answer="I do not have the keynote details. See https://2026.acsos.org/info/keynotes.",
                 sources=[self.data["website"]],
                 mode="deterministic",
             )
@@ -519,6 +557,24 @@ class ConferenceKnowledge:
                     return session
         return None
 
+    def find_session_for_keynote(self, keynote: dict[str, Any]) -> dict[str, Any] | None:
+        """Find the timed session hosting a keynote.
+
+        Keynote sessions carry no talk rows on the programme page, so the speaker is never
+        attached to a time and room by the scrape. The session name holds either the talk
+        title ("Keynote: Bridging Centralized ...") or the speaker ("Keynote: Valeria
+        Cardellini"), so match on both.
+        """
+        title = normalize(keynote.get("title", ""))
+        speaker = normalize(keynote.get("speaker", ""))
+        for session in self.data.get("sessions", []):
+            session_title = normalize(session.get("title", ""))
+            if "keynote" not in session_title:
+                continue
+            if (title and title in session_title) or (speaker and speaker in session_title):
+                return session
+        return None
+
     def paper_count_answer(self, question: str) -> AskResponse | None:
         """Answer 'how many papers' questions deterministically, overall or per track."""
         terms = set(tokenize(question))
@@ -590,10 +646,10 @@ class ConferenceKnowledge:
                 if session.get("room"):
                     lines.append(f"• **Room:** {session['room']}")
             else:
-                rooms = self.published_track_rooms_summary([track])
-                if rooms:
-                    lines.append(f"• **Track Rooms:** {rooms}")
-                lines.append("• **Schedule:** Exact day, time, and session not yet published.")
+                lines.append(
+                    "• **Schedule:** not listed in a timed session; "
+                    f"see {track['url']} for the track programme.",
+                )
             return AskResponse(
                 answer="\n".join(lines),
                 sources=[track["url"]],
@@ -627,10 +683,7 @@ class ConferenceKnowledge:
             answer = f"{heading}\n\n" + "\n\n".join(blocks)
             schedule_terms = {"where", "when", "room", "time", "session", "day", "present", "schedule", "timetable"}
             if set(tokenize(question)) & schedule_terms and not has_scheduled:
-                rooms = self.published_track_rooms_summary([match["track"] for match in author_matches])
-                suffix = f"\n\nPublished track-level rooms: {rooms}." if rooms else ""
-                suffix += "\nExact day, time, and session are not yet published."
-                answer += suffix
+                answer += "\n\nThese contributions are not listed in a timed session."
             return AskResponse(
                 answer=answer,
                 sources=sorted(sources),
@@ -647,8 +700,8 @@ class ConferenceKnowledge:
         if not chunks:
             return AskResponse(
                 answer=(
-                    "I do not have a specific answer for that in the ACSOS 2026 data yet. "
-                    f"Please check {self.data['website']} for updates."
+                    "I could not find that in the ACSOS 2026 data. "
+                    f"Please check {self.data['website']}."
                 ),
                 sources=[self.data["website"]],
                 mode="deterministic",
@@ -699,7 +752,9 @@ class ConferenceKnowledge:
     def _build_chunks(self) -> list[Chunk]:
         chunks = [
             Chunk(
-                title="Conference overview",
+                # Names ACSOS so it wins "what is ACSOS", and reads as content if the model
+                # echoes it back as a heading.
+                title="ACSOS 2026 conference overview",
                 text=(
                     f"{self.data['name']} takes place {self.data['dates']} in "
                     f"{self.data['location']}. {self.data['description']}"
@@ -713,17 +768,16 @@ class ConferenceKnowledge:
             ),
         ]
         for page in self.data["infoPages"]:
-            chunks.append(Chunk(page["title"], page["body"], page["url"]))
-        program = self.data.get("program", {})
-        for day in program.get("days", []):
-            entries = "; ".join(program_entry_summary(entry) for entry in day.get("entries", []))
-            chunks.append(
-                Chunk(
-                    f"Tentative program for {day.get('day', '')}, {day.get('date', '')}",
-                    f"{program.get('status', '')} {entries}".strip(),
-                    program.get("url", self.data["website"]),
-                ),
-            )
+            # Document expansion: the page titles use the site's nouns ("Registration", "Venue")
+            # while questions use verbs and synonyms ("where do I register", "how much does it
+            # cost"). Tokens are not stemmed, so "register" never matches "Registration" on its
+            # own; these aliases give each page the vocabulary people actually type.
+            aliases = INFO_PAGE_SEARCH_ALIASES.get(page["id"], "")
+            title = f"{page['title']} ({aliases})" if aliases else page["title"]
+            chunks.append(Chunk(title, page["body"], page["url"]))
+        # The Program at a Glance grid is deliberately NOT indexed: it names blocks
+        # ("Main-track session", "Coffee break") that the real sessions below name properly,
+        # and retrieving the vaguer copy made answers worse.
         for track in self.data["tracks"]:
             chunks.append(Chunk(track["name"], f"{track['summary']} {track['status']}", track["url"]))
             for paper in track["acceptedPapers"]:
@@ -733,8 +787,7 @@ class ConferenceKnowledge:
                     room_info = f" (Room: {session['room']})" if session.get("room") else ""
                     session_info = f" Scheduled:{time_info} in session '{session['title']}'{room_info}."
                 else:
-                    rooms = self.published_rooms_for_track(track)
-                    session_info = f" Published track-level rooms: {', '.join(rooms)}." if rooms else ""
+                    session_info = ""
                 chunks.append(
                     Chunk(
                         paper["title"],
@@ -750,8 +803,21 @@ class ConferenceKnowledge:
                     self.data["website"],
                 ),
             )
+        keynote_speakers: dict[str, list[str]] = {}
         for keynote in self.data.get("keynotes", []):
-            chunks.append(Chunk(f"Keynote: {keynote['speaker']}", keynote_summary(keynote), keynote["url"]))
+            session = self.find_session_for_keynote(keynote)
+            schedule = ""
+            if session is not None:
+                room = f" in room {session['room']}" if session.get("room") else ""
+                schedule = f" Scheduled: {session.get('day', '')} at {session.get('time', '')}{room}."
+                keynote_speakers.setdefault(session_key(session), []).append(keynote["speaker"])
+            chunks.append(
+                Chunk(
+                    f"Keynote: {keynote['speaker']}",
+                    f"{keynote_summary(keynote)}{schedule}",
+                    keynote["url"],
+                ),
+            )
         for person in self.data.get("committees", []):
             chunks.append(
                 Chunk(
@@ -761,84 +827,136 @@ class ConferenceKnowledge:
                 ),
             )
         for session in self.data["sessions"]:
+            talks = "; ".join(
+                f"{talk.get('time', '')} {talk['title']}"
+                + (f" by {', '.join(talk['speakers'])}" if talk.get("speakers") else "")
+                for talk in session.get("talks", [])
+            )
+            papers = f" Papers: {', '.join(session['papers'])}." if session.get("papers") else ""
+            speakers = keynote_speakers.get(session_key(session), [])
+            speaker_text = f" Speaker: {', '.join(speakers)}." if speakers else ""
             chunks.append(
                 Chunk(
                     session["title"],
                     (
-                        f"{session['day']} {session['time']} {session['room']} "
-                        f"Papers: {', '.join(session['papers'])}"
+                        f"{session['day']} {session['time']} in room {session['room']}."
+                        f"{speaker_text}{papers}" + (f" Talks: {talks}" if talks else "")
                     ),
+                    self.data["website"],
+                ),
+            )
+        chunks.extend(self._build_extra_chunks())
+        return chunks
+
+    def _build_extra_chunks(self) -> list[Chunk]:
+        """Build chunks for the logistics data the deterministic answers do not always cover."""
+        chunks: list[Chunk] = []
+        venue = self.data.get("venue", {})
+        if venue:
+            chunks.append(
+                Chunk(
+                    "Venue address and rooms",
+                    (
+                        f"{venue.get('name', '')}, {venue.get('address', '')}. "
+                        f"Main room: {venue.get('mainRoom', '')}. "
+                        f"Rooms in use: {', '.join(venue.get('rooms', []))}."
+                    ),
+                    venue.get("url", self.data["website"]),
+                ),
+            )
+        deadlines = self.data.get("importantDates", [])
+        if deadlines:
+            rows = "; ".join(
+                f"{row.get('date', '')} - {row.get('track', '')}: {row.get('what', '')}"
+                for row in deadlines
+            )
+            chunks.append(
+                Chunk(
+                    "ACSOS 2026 important dates, deadlines and notifications",
+                    f"Submission and camera-ready deadlines per track: {rows}.",
+                    DATES_URL,
+                ),
+            )
+        for workshop in self.data.get("workshops", []):
+            chunks.append(
+                Chunk(
+                    (
+                        f"ACSOS 2026 Workshops - {workshop.get('acronym', '')}: "
+                        f"{workshop.get('name', '')} (workshop)"
+                    ),
+                    (
+                        f"{workshop.get('summary', '')} "
+                        f"Organizers: {', '.join(workshop.get('organizers', []))}. "
+                        f"Website: {workshop.get('site', '')}."
+                    ),
+                    workshop.get("url", self.data["website"]),
+                ),
+            )
+        for seminar in self.data.get("seminarSeries", []):
+            chunks.append(
+                Chunk(
+                    f"Seminar: {seminar.get('title', '')}",
+                    (
+                        f"{seminar.get('speaker', '')} ({seminar.get('affiliation', '')}) "
+                        f"on {seminar.get('whenText', '')}."
+                    ),
+                    seminar.get("url", self.data["website"]),
+                ),
+            )
+        for item in self.data.get("news", []):
+            chunks.append(
+                Chunk(
+                    f"News: {item.get('title', '')}",
+                    f"{item.get('date', '')}. {item.get('summary', '')}",
+                    item.get("url", self.data["website"]),
+                ),
+            )
+        if self.data.get("communityLinks"):
+            chunks.append(
+                Chunk(
+                    "ACSOS community links",
+                    "; ".join(f"{link['name']}: {link['url']}" for link in self.data["communityLinks"]),
                     self.data["website"],
                 ),
             )
         return chunks
 
 
-def program_category_for_query(query_terms: set[str]) -> str | None:
-    """Map explicit program vocabulary to the corresponding table category."""
-    category_terms = (
-        ("main", {"main", "paper", "papers"}),
-        ("keynote", {"keynote", "keynotes"}),
-        ("workshop", {"workshop", "workshops"}),
-        ("tutorial", {"tutorial", "tutorials"}),
-        ("poster", {"demo", "demos", "poster", "posters"}),
-        ("phd", {"doctoral", "phd"}),
-        ("panel", {"panel", "panels"}),
+def stems(terms: set[str]) -> set[str]:
+    """Reduce terms to a crude singular stem, so "swarms" and "swarm" compare equal."""
+    reduced = set()
+    for term in terms:
+        if len(term) > 4 and term.endswith(("ies",)):
+            reduced.add(f"{term[:-3]}y")
+        elif len(term) > 4 and term.endswith(("es", "s")) and not term.endswith("ss"):
+            reduced.add(term.rstrip("s").removesuffix("e"))
+        else:
+            reduced.add(term)
+    return reduced
+
+
+def session_key(session: dict[str, Any]) -> str:
+    """Stable identity for one scheduled session."""
+    return f"{session.get('date', '')}|{session.get('time', '')}|{session.get('title', '')}"
+
+
+def session_schedule_line(session: dict[str, Any]) -> str:
+    """Format one scheduled session for answers and retrieval chunks."""
+    room = f" — {session['room']}" if session.get("room") else ""
+    return f"**{session.get('time', '')}** {session.get('title', '')}{room}".strip()
+
+
+def program_track_for_query(query_terms: set[str]) -> str | None:
+    """Map explicit program vocabulary to the corresponding track id."""
+    track_terms = (
+        ("main", {"main", "plenary"}),
+        ("workshops", {"workshop", "workshops"}),
+        ("tutorials", {"tutorial", "tutorials"}),
+        ("posters", {"demo", "demos", "poster", "posters"}),
+        ("doctoral", {"doctoral", "phd"}),
+        ("artifacts", {"artifact", "artifacts"}),
+        ("inpractice", {"practice", "industry"}),
     )
-    return next((category for category, terms in category_terms if query_terms & terms), None)
+    return next((track_id for track_id, terms in track_terms if query_terms & terms), None)
 
 
-def program_category_name(category: str | None) -> str:
-    """Return a reader-facing name for a program category."""
-    return {
-        "main": "Main Track",
-        "keynote": "keynote",
-        "workshop": "workshop",
-        "tutorial": "tutorial",
-        "poster": "poster/demo",
-        "phd": "Doctoral Symposium",
-        "panel": "panel",
-    }.get(category, "")
-
-
-def program_entry_summary(entry: dict[str, Any]) -> str:
-    """Format one program-at-a-glance entry for answers and retrieval chunks."""
-    details = f" ({entry['details']})" if entry.get("details") else ""
-    room = f" — Room: {entry['room']}" if entry.get("room") else ""
-    return f"{entry.get('time', '')}: {entry.get('title', '')}{details}{room}".strip()
-
-
-def program_entry_matches_track(entry: dict[str, Any], track_id: str) -> bool:
-    """Match a program entry to the track whose room information it carries."""
-    category = entry.get("category", "")
-    searchable = normalize(f"{entry.get('title', '')} {entry.get('details', '')}")
-    if track_id == "main":
-        return category == "main" and "main track session" in searchable
-    if track_id == "doctoral":
-        return category == "phd" or "doctoral symposium" in searchable
-    if track_id == "posters":
-        return category == "poster" or "poster" in searchable
-    if track_id == "tutorials":
-        return category == "tutorial"
-    if track_id == "workshops":
-        return category == "workshop"
-    return False
-
-
-def program_rooms_for_track(room_text: str, track_id: str) -> list[str]:
-    """Select a track's room from compound labels such as ``DS: 2.3 / 2.4``."""
-    if not room_text:
-        return []
-    aliases = {
-        "doctoral": {"doctoral symposium", "ds"},
-        "posters": {"poster", "posters"},
-    }.get(track_id, set())
-    unlabeled = []
-    matched = []
-    for part in re.split(r"\s*·\s*", room_text):
-        label, separator, value = part.partition(":")
-        if not separator:
-            unlabeled.append(part.strip())
-        elif normalize(label) in aliases:
-            matched.append(value.strip())
-    return matched or unlabeled or [room_text.strip()]

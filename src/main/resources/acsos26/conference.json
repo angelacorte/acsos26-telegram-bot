@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The conference data includes 57 accepted papers and 80 timed sessions.",
+    "programStatus": "The ACSOS 2026 program is published: 80 scheduled sessions with rooms, 106 scheduled talks, and 97 accepted contributions.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -36,35 +36,35 @@
       },
       {
         "command": "/program",
-        "description": "Show program status, or use /program main for one track."
+        "description": "Show today's program; /program all or /program wed for another day."
       },
       {
         "command": "/sessions",
-        "description": "Show timed sessions when the schedule is available."
+        "description": "Same as /program."
       },
       {
         "command": "/maintrack",
-        "description": "Show Main Track status and accepted papers."
+        "description": "Show Main Track status and sessions."
       },
       {
         "command": "/artifacts",
-        "description": "Show Artifact track information."
+        "description": "Show Artifacts track status and sessions."
       },
       {
         "command": "/doctoral",
-        "description": "Show Doctoral Symposium information."
+        "description": "Show Doctoral Symposium status and sessions."
       },
       {
         "command": "/posters",
-        "description": "Show Posters and Demos information."
+        "description": "Show Posters and Demos status and sessions."
       },
       {
         "command": "/tutorials",
-        "description": "Show Tutorials information."
+        "description": "Show Tutorials status and sessions."
       },
       {
         "command": "/workshops",
-        "description": "Show Workshops information."
+        "description": "Show Workshops status and sessions."
       },
       {
         "command": "/venue",
@@ -76,11 +76,19 @@
       },
       {
         "command": "/social",
-        "description": "Show social event details when available."
+        "description": "Show the social events and their fees."
+      },
+      {
+        "command": "/inpractice",
+        "description": "Show the ACSOS In Practice track."
+      },
+      {
+        "command": "/socialprogram",
+        "description": "Show the Social Program track."
       },
       {
         "command": "/ask",
-        "description": "Ask the optional LLM conference assistant."
+        "description": "Ask anything about ACSOS 2026 - rooms, papers, speakers, deadlines."
       }
     ],
     "tracks": [
@@ -89,16 +97,59 @@
         "command": "artifacts",
         "name": "Artifacts",
         "url": "https://2026.acsos.org/track/acsos-2026-artifacts",
-        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "status": "Artifacts: 5 accepted contributions; 1 scheduled session in Aula Magna \"Carmen Tura\"; 6 scheduled talks.",
         "summary": "Artifact evaluation information for ACSOS 2026.",
-        "acceptedPapers": []
+        "acceptedPapers": [
+          {
+            "title": "A Maneuver-Indexed Testbed for Context-Aware Adaptive Wildlife Drones",
+            "authors": [
+              "Jenna Kline"
+            ]
+          },
+          {
+            "title": "Argonaut: Interactive Visual Exploration for Distributed Optimization",
+            "authors": [
+              "Srijoni Majumdar",
+              "Chuhao Qin",
+              "Evangelos Pournaras"
+            ]
+          },
+          {
+            "title": "BedreFlyt Artifact: A Self-Adaptive Digital Twin Software System for Hospital Resource Allocation",
+            "authors": [
+              "Riccardo Sieve",
+              "Nelly Bencomo",
+              "Silvia Lizeth Tapia Tarifa",
+              "Einar Broch Johnsen"
+            ]
+          },
+          {
+            "title": "MARGIN-SAS: A Tool-Supported Framework for Non-Inferiority-Based Evaluation of QoS Trade-offs in Self-Adaptive Systems",
+            "authors": [
+              "Tasbir Rahaman",
+              "Huma Samin",
+              "Nelly Bencomo",
+              "Anik\u00f3 Ek\u00e1rt"
+            ]
+          },
+          {
+            "title": "Wildlife Protection Game: An Artifact for Evaluation of Antifragility for Autonomy in Adversarial Environments",
+            "authors": [
+              "Gabriel A. Moreno",
+              "Mark Klein",
+              "Jason M. Popowski",
+              "David Miller",
+              "Mrinank Panda"
+            ]
+          }
+        ]
       },
       {
         "id": "doctoral",
         "command": "doctoral",
         "name": "Doctoral Symposium",
         "url": "https://2026.acsos.org/track/acsos-2026-doctoral-symposium",
-        "status": "18 accepted papers are published for Doctoral Symposium. Tentative session blocks and room information are published in the program at a glance; individual paper-to-session assignments are not available yet.",
+        "status": "Doctoral Symposium: 18 accepted contributions; 6 scheduled sessions in 2.3, 2.4, Aula Magna \"Carmen Tura\"; 18 scheduled talks.",
         "summary": "Doctoral Symposium information for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -216,7 +267,7 @@
         "command": "maintrack",
         "name": "Main Track",
         "url": "https://2026.acsos.org/track/acsos-2026-papers",
-        "status": "39 accepted papers are published for Main Track. Tentative session blocks and room information are published in the program at a glance; individual paper-to-session assignments are not available yet.",
+        "status": "Main Track: 38 accepted contributions; 19 scheduled sessions in Aula Magna \"Carmen Tura\", Off-site; 48 scheduled talks.",
         "summary": "Research, experience, short, and vision papers for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -452,10 +503,6 @@
             ]
           },
           {
-            "title": "Q&A and Panel Discussion",
-            "authors": []
-          },
-          {
             "title": "Runtime Stability-Aware Adaptation for Self-Adaptive Systems using Symbiotic Simulation: A Cloud Architecture Evaluation",
             "authors": [
               "Maria Salama",
@@ -573,26 +620,353 @@
         "command": "posters",
         "name": "Posters and Demos",
         "url": "https://2026.acsos.org/track/acsos-2026-posters-and-demos",
-        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "status": "Posters and Demos: 2 accepted contributions; 1 scheduled session in Aula Magna \"Carmen Tura\".",
         "summary": "Posters and demos information for ACSOS 2026.",
-        "acceptedPapers": []
+        "acceptedPapers": [
+          {
+            "title": "Decentralized Information Integration in Slime Mold Networks Using Experimental and Agent-Based Approaches",
+            "authors": [
+              "Kristina Wogatai",
+              "Fabian Schober",
+              "Wilfried Elmenreich Elmenreich"
+            ]
+          },
+          {
+            "title": "Symbiotic Simulation for Runtime Adaptation Decisions in Self-Adaptive Cloud Systems",
+            "authors": [
+              "Maria Salama",
+              "Rami Bahsoon",
+              "Rajkumar Buyya"
+            ]
+          }
+        ]
       },
       {
         "id": "tutorials",
         "command": "tutorials",
         "name": "Tutorials",
         "url": "https://2026.acsos.org/track/acsos-2026-tutorials",
-        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "status": "Tutorials: 4 accepted contributions; 4 scheduled sessions in 2.3, 2.4; 4 scheduled talks.",
         "summary": "Tutorial information for ACSOS 2026.",
-        "acceptedPapers": []
+        "acceptedPapers": [
+          {
+            "title": "Causal Foundations and Methods for Autonomic Systems: A Tutorial",
+            "authors": [
+              "Christian Medeiros Adriano"
+            ]
+          },
+          {
+            "title": "Complex systems, self-organisation, and simulation",
+            "authors": [
+              "Simon Dobson"
+            ]
+          },
+          {
+            "title": "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum",
+            "authors": [
+              "Danilo Ardagna",
+              "Federica Filippini"
+            ]
+          },
+          {
+            "title": "Simulating Runtime Decisions for Cloud Self-Adaptive Systems: A Tutorial",
+            "authors": [
+              "Maria Salama",
+              "Rami Bahsoon",
+              "Rajkumar Buyya"
+            ]
+          }
+        ]
       },
       {
         "id": "workshops",
         "command": "workshops",
         "name": "Workshops",
         "url": "https://2026.acsos.org/track/acsos-2026-workshops",
-        "status": "Track page is available. Program timing is not published in this data file yet.",
+        "status": "Workshops: 30 accepted contributions; 27 scheduled sessions in 2.10, 2.3, 2.4; 30 scheduled talks.",
         "summary": "Workshop information for ACSOS 2026.",
+        "acceptedPapers": [
+          {
+            "title": "3NLM: A Normative Logic Framework for Expectation-Driven Self-Adaptive Explanations",
+            "authors": [
+              "Zahra Atf",
+              "Nathan Lloyd",
+              "Peter Lewis"
+            ]
+          },
+          {
+            "title": "Adaptive Incremental Learning for Anomaly Detection under Domain Shift: An Additive Manufacturing Case Study",
+            "authors": [
+              "Akram Zarchini",
+              "Denis Dowling",
+              "Fatemeh Golpayegani"
+            ]
+          },
+          {
+            "title": "Agency-oriented Layering of Models in Self-Integrating",
+            "authors": [
+              "Markus Stumptner",
+              "Matt Selway",
+              "Rebecca Morgan",
+              "Georg Grossmann"
+            ]
+          },
+          {
+            "title": "A Vision of System-level Adaptation in Digital Twin Networks",
+            "authors": [
+              "Prasad Talasila",
+              "Riccardo Sieve",
+              "Roberto Casadei",
+              "Samuele Burattini",
+              "Lukas Esterle"
+            ]
+          },
+          {
+            "title": "Cloud-Native Smart Grids: Threat Modeling and Impact Analysis for TSO Services",
+            "authors": [
+              "Annachiara Fortuna",
+              "Domenico Siracusa"
+            ]
+          },
+          {
+            "title": "Controller Architecture Variants for Robust Self-Organizing Energy Systems",
+            "authors": [
+              "Emilie Frost",
+              "Astrid Nie\u00dfe"
+            ]
+          },
+          {
+            "title": "Decision Interpretability for Evolutionary Rule",
+            "authors": [
+              "Connor Sch\u00f6nberner",
+              "Sven Tomforde",
+              "Michael Heider"
+            ]
+          },
+          {
+            "title": "Discovering Collaboration from Novelty: Random Network Distillation for Clustered Federated Learning",
+            "authors": [
+              "Davide Domini",
+              "Gianluca Aguzzi",
+              "Ivana Dusparic",
+              "Danilo Pianini",
+              "Mirko Viroli"
+            ]
+          },
+          {
+            "title": "Distributed Online Allocation of Robot Teams for Flexible Manufacturing",
+            "authors": [
+              "Christian Lehner",
+              "Oliver Kosak",
+              "Hella Ponsar",
+              "Liliane Knof",
+              "Wolfgang Reif"
+            ]
+          },
+          {
+            "title": "Emergent Multi-Behavior Strategies in Swarm Agents from Foraging-Predator Pressures",
+            "authors": [
+              "David King",
+              "Gilbert Peterson"
+            ]
+          },
+          {
+            "title": "Human-Centred Organic Computing Systems",
+            "authors": [
+              "Michael Heider",
+              "Anthony Stein",
+              "Gregor Schiele",
+              "Christian Krupitzer",
+              "Stefan Wildermann",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Hybrid Clumping: a self-integration basis for complex structures and collective dynamics",
+            "authors": [
+              "Ada Diaconescu",
+              "Kirstie Bellman",
+              "Christopher Landauer",
+              "Phyllis Nelson",
+              "David King"
+            ]
+          },
+          {
+            "title": "Interventions Matter: the Role of Sampling Distributions in Detecting Causal Emergence",
+            "authors": [
+              "Samuel Reyd",
+              "Ada Diaconescu",
+              "Jean-Louis Dessalles"
+            ]
+          },
+          {
+            "title": "Learning-enabled hybrid multi-agent coordination for resilient self-integrating systems",
+            "authors": [
+              "Elsy Kaddoum",
+              "Ghassan Al-Falouji",
+              "Martina Baiardi",
+              "Danilo Pianini",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Macro-to-micro behavioral mappings in distributed systems: a characterization on event structures",
+            "authors": [
+              "Roberto Casadei",
+              "Paolo Baldini",
+              "Niccol\u00f2 Castronuovo"
+            ]
+          },
+          {
+            "title": "Perception Risk for Path Planning in Autonomous Rover Navigation",
+            "authors": [
+              "Christian Medeiros Adriano",
+              "Mostafa Wael Aboalfotoh",
+              "Sona Ghahremani",
+              "Holger Giese"
+            ]
+          },
+          {
+            "title": "Perspective-Driven Anomaly Detection in Self-Organising Systems: Central, Regional, Decentral?",
+            "authors": [
+              "Svea Wisy",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Popperian Expectations for One-Shot Adaptation in Dynamic Environments",
+            "authors": [
+              "John Mills",
+              "Peter Lewis"
+            ]
+          },
+          {
+            "title": "Progressive MAPE-K with Simulation-in-the-Loop RL Retraining for Autonomous Robots",
+            "authors": [
+              "Sahar Nasimi Nezhad",
+              "Claudio Gomes",
+              "Thomas Wright",
+              "Lukas Esterle",
+              "Bert Van Acker",
+              "Paul De Meulenaere"
+            ]
+          },
+          {
+            "title": "Real-World Adaptation of a Swarm Algorithm for Different Following Formations using ROS2-based Crazyflie Drones",
+            "authors": [
+              "Oliver Kosak",
+              "Philipp Kastenm\u00fcller",
+              "Felix Nebel",
+              "Vinzenz Malke",
+              "Wolfgang Reif"
+            ]
+          },
+          {
+            "title": "Rule-Based Self-Governance for Green-Claim Control in AI Retail Recommendations",
+            "authors": [
+              "Zahra Atf",
+              "Peter Lewis"
+            ]
+          },
+          {
+            "title": "S3Eval: A Three-Layer Pipeline for Automated Evaluation of PDDL-Encoded Attack Paths",
+            "authors": [
+              "Lin Cui",
+              "Vincenzo Scotti",
+              "Raffaela Mirandola"
+            ]
+          },
+          {
+            "title": "School-Meal Menu Planning: A Self-Organised, Sustainable and Scalable Approach",
+            "authors": [
+              "Savannah Dysard",
+              "Samrat Singh",
+              "Lesley Drake",
+              "Matthew Scott",
+              "Ella Bettison",
+              "Jeremy Pitt"
+            ]
+          },
+          {
+            "title": "Security Assurance Cases as a Runtime Compliance Check on LLM Adaptation Planning",
+            "authors": [
+              "Logan Quirk",
+              "Rose Gamble"
+            ]
+          },
+          {
+            "title": "Self-Adaptive Information Sharing in Heterogeneous Vehicular Multi-Agent Systems",
+            "authors": [
+              "Martina Baiardi",
+              "Danilo Pianini",
+              "Elsy Kaddoum",
+              "Val\u00e9rie Camps"
+            ]
+          },
+          {
+            "title": "Self-Fulfilling Expectations: Evolutionary Game Theory with Endogenous Social Fields",
+            "authors": [
+              "Nathan Lloyd",
+              "Peter Lewis"
+            ]
+          },
+          {
+            "title": "Theory of Mind-inspired Reflective AI for Sustainable Small Language Model Orchestration",
+            "authors": [
+              "Sofia Baxter",
+              "Huma Samin"
+            ]
+          },
+          {
+            "title": "Towards a Digital-Twin Cyber Range for MTD against ML Traffic Fingerprinting in Smart Grid",
+            "authors": [
+              "Tommaso Caiazzi",
+              "Simone Albero",
+              "Stefano Iannucci",
+              "Riccardo Torlone",
+              "Giovanna Adinolfi",
+              "Maria Valenti",
+              "Massimo Celino"
+            ]
+          },
+          {
+            "title": "Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms",
+            "authors": [
+              "Angela Cortecchia",
+              "Alessandro Vittorio Papadopoulos",
+              "Danilo Pianini"
+            ]
+          },
+          {
+            "title": "Towards Autonomous Surface Vessels: A World-Model-Centric Approach",
+            "authors": [
+              "Raphael Schwinger",
+              "Nils Bischoff",
+              "Mats Kurz",
+              "Lukas Nolte",
+              "Tim Nolte",
+              "Bahne Thiel-Peters",
+              "Sven Tomforde"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "inpractice",
+        "command": "inpractice",
+        "name": "ACSOS In Practice",
+        "url": "https://2026.acsos.org/track/acsos-2026-acsos-in-practice",
+        "summary": "Industry practitioners and applied researchers on autonomic systems in production.",
+        "status": "ACSOS In Practice: 1 scheduled session in Aula Magna \"Carmen Tura\".",
+        "acceptedPapers": []
+      },
+      {
+        "id": "social",
+        "command": "socialprogram",
+        "name": "Social Program",
+        "url": "https://2026.acsos.org/track/acsos-2026-social-program",
+        "summary": "Receptions, banquet, and excursions scheduled during ACSOS 2026.",
+        "status": "Social Program: 6 scheduled sessions in Off-site.",
         "acceptedPapers": []
       }
     ],
@@ -601,19 +975,55 @@
         "id": "venue",
         "title": "Venue: University of Bologna, Cesena Campus",
         "url": "https://2026.acsos.org/venue/acsos-2026-venue",
-        "body": "The Cesena Campus is part of the University of Bologna (UniBo), the oldest continuously operating university in the Western world. Founded in 1088, UniBo now ranks among the top 200 universities globally and serves approximately 85,000 students across five campuses in Emilia-Romagna. The Cesena Campus was established in the 1980s as part of the university's territorial expansion strategy. Since then, it has evolved into a specialized hub for engineering, computer science, and technological disciplines, hosting around 5,000 students. Conference Rooms: Aula Magna The Aula Magna \"Carmen Tura\" (Room 3.4) is located on the first floor of the university building (level 3). Upon entering the building, you can find it to the left of the main entrance. Finally, to reach the campus, please take a look to the map below Location Via dell'Universit\u00e0, 50 47521 Cesena Italy Rooms 2.10"
+        "body": "The Cesena Campus is part of the University of Bologna (UniBo), the oldest continuously operating university in the Western world. Founded in 1088, UniBo now ranks among the top 200 universities globally and serves approximately 85,000 students across five campuses in Emilia-Romagna. The Cesena Campus was established in the 1980s as part of the university's territorial expansion strategy. Since then, it has evolved into a specialized hub for engineering, computer science, and technological disciplines, hosting around 5,000 students. Conference Rooms: Aula Magna The Aula Magna \"Carmen Tura\" (Room 3.4) is located on the first floor of the university building (level 3). Upon entering the building, you can find it to the left of the main entrance. Finally, to reach the campus, please take a look to the map below Location Via dell'Universit\u00e0, 50 47521 Cesena Italy Rooms 2.10 2.13 2.3 2.4 Aula Magna \"Carmen Tura\" Off-site Sala Polivalente"
       },
       {
         "id": "registration",
         "title": "Registration",
         "url": "https://2026.acsos.org/attending/Registration",
-        "body": "Registration for the 7th IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS 2026) is open. Please read the registration information carefully before beginning the online registration. You can register for ACSOS 2026 via the following link: https://cvent.me/RyXPon All fees are quoted in US dollars ($USD) and include all taxes. Please email ieeecs-reg+ACSOS@computer.org if you need any registration assistance. For questions regarding author submissions, please contact Danilo Pianini at danilo.pianini@unibo.it and Ivana Dusparic at ivana.dusparic@tcd.ie . For questions regarding visas , please contact Mirko D'Angelo at"
+        "body": "Registration for the 7th IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS 2026) is open. Please read the registration information carefully before beginning the online registration. You can register for ACSOS 2026 via the following link: https://cvent.me/RyXPon All fees are quoted in US dollars ($USD) and include all taxes. Please email ieeecs-reg+ACSOS@computer.org if you need any registration assistance. For questions regarding author submissions, please contact Danilo Pianini at danilo.pianini@unibo.it and Ivana Dusparic at ivana.dusparic@tcd.ie . For questions regarding visas , please contact Mirko D'Angelo at mirko.dangelo@ericsson.com . Author Registration All accepted papers must be covered by the Author registration option (Conference/Workshop Registration - Author) by at least one co-author for the main conference or workshop they are appearing in, as appropriate. IEEE ACSOS is an in-person event and papers are expected to be presented in-person. If any co-author of a work is attending in-person, they will need to present the paper. The author registration deadline is 20 July, 2026."
       },
       {
         "id": "mainSocialEvent",
         "title": "Main Social Event",
         "url": "https://2026.acsos.org/attending/main-social-event",
         "body": "The IEEE ACSOS 2026 conference reception will take place at Teatro Verdi, a historic theatre in the centre of Cesena that has been transformed into a distinctive venue for contemporary events. The theatre retains the character and elegance of its original architecture. Its combination of theatrical atmosphere, modern event facilities, and in-house catering will provide an informal and memorable setting for participants to meet, continue discussions, and connect with colleagues. Located in the heart of Cesena, Teatro Verdi also offers an opportunity to experience one of the city\u2019s most characteristic venues during the conference. The Dinner venue is located ~25 minutes by walking, or ~10 - 15 minutes by bus or car."
+      },
+      {
+        "id": "travel",
+        "title": "Travel Information",
+        "url": "https://2026.acsos.org/attending/travel-information",
+        "body": "By Plane Cesena can be reached from several international airports, all located approximately 1 to 2 hours away by car or public transportation. These airports provide convenient access for international and European travelers attending ACSOS 2026. Bologna Guglielmo Marconi International Airport (BLQ) is located approximately 90 km (about 1 hour) north of Cesena. It is the most convenient option for international participants, being one of Italy\u2019s main air transport hubs and offering more than 80 destinations, including daily direct connections to major European cities such as Frankfurt, London, Paris, Madrid, Amsterdam, and Rome, with onward intercontinental links. Connections from BLQ to Cesena There are multiple transportation options from Bologna Airport to Cesena: Direct Shuttle Bus: A direct shuttle service connects the airport to Cesena. The service stops at Piazzale dell'Accoglienza , which is located outside the historic city center. More information: https://www.shuttleitalyairport.it/en/cesena/ From there: Bus Line 1 or 11 can be used to reach Cesena Railway Station (approximately 12 minutes). Walking: From Piazzale dell'Accoglienza to the city center takes approximately 50 minutes and may not be convenient with luggage. Marconi Express + Train: Take the Marconi Express monorail"
+      },
+      {
+        "id": "accommodation",
+        "title": "Accommodation",
+        "url": "https://2026.acsos.org/attending/accommodation",
+        "body": "Here is a list of suggested hotels in Cesena, all conveniently located for access to both the conference venue, Cesena Campus, and the city center. We have contacted each hotel to provide the most straightforward booking options. For each hotel, we also include the available rates. Hotel Casali Hotel Casali offers special discounted rates for ACSOS 2026 participants. Discounted rates DUS Superior room: \u20ac119 per night DUS Standard room: \u20ac106 per night Important booking information The discount is available only for bookings made by email . The discount does not apply to bookings made through the hotel website. The discount code applies to the entire reservation. The discount code does not have an expiration date. Booking Please make your reservation by sending an email to"
+      },
+      {
+        "id": "visa",
+        "title": "Visa Information",
+        "url": "https://2026.acsos.org/attending/visa-information",
+        "body": "A letter of invitation will automatically be sent to the registrant upon completing registration with full payment, including the registrant's name and organization. Requests for letters containing additional information, such as the date of birth, passport information, or the title of the paper, may be e-mailed to: mirko.dangelo@ericsson.com ."
+      },
+      {
+        "id": "codeOfConduct",
+        "title": "Code of Conduct",
+        "url": "https://2026.acsos.org/attending/code-of-conduct",
+        "body": "We strive to make ACSOS a safe, enjoyable and educational place for all participants. You should feel welcome in the community and be able to express yourself, no matter where you're from, which gender you are, which color your skin is, or which religion you observe. We also want you to feel included no matter your career stage --- all contributions are welcome, those from seniors and Ph.D. students alike. If you feel that we do not live up to these standards, please be in touch with us. Rules All participants must follow the terms of service for the technical infrastructure and platforms ACSOS is using to provide you with a virtual conference experience. Please use your full name as your alias on all communication platforms. This ensures that you are recognisable by other members of the community and that people can find you and interact with you. We strongly suggest you add a picture of yourself to your Slack profile in order to make it easier for people to identify you who might have run into you someplace but don't necessarily remember your name. A comic or similar won't help with that much. Everything you post on the public channels on Slack or to the \"Everybody\" channel in Zoom will be available to all conference participants and to the conference We are going to record the sessions and share the recordings among the participants. If you choose to join the sessions and speak up, you will implicitly consent to be a part of these recordings. Do not distribute conference material -- only upload your own material (i.e., your own presentation) to your YouTube channel or others. Personal recordings of the sessions and distribution of any recordings are not permissible! Anti-harrassment Policy This anti-harassment policy is based on the example policy from the Geek Feminism wiki , created by the Ada Initiative and other volunteers. ACSOS is dedicated to providing a harassment-free conference experience for everyone, regardless of gender, gender identity and expression, sexual orientation, disability, physical appearance, body size, race, age or religion. We do not tolerate harassment of conference participants in any form. Sexual language and imagery is not appropriate for any conference venue, including talks. Conference participants violating these rules may be sanctioned or expelled from the conference without a refund at the discretion of the conference organizers. Harassment includes, but is not limited to: Verbal comments that reinforce social structures of domination related to gender, gender identity and expression, sexual orientation, disability, physical appearance, body size, race, age, religion. Sexual images in public spaces Deliberate intimidation, stalking, or following Harassing photography or recording Sustained disruption of talks or other events Inappropriate physical contact"
+      },
+      {
+        "id": "visitCesena",
+        "title": "Visit Cesena",
+        "url": "https://2026.acsos.org/attending/visit-cesena",
+        "body": "Cesena, placed in Italy's Emilia-Romagna region between the Adriatic coast and the Apennine hills, offers visitors a rich blend of medieval history, cultural treasures, and access to some of Italy's most fascinating nearby destinations. This ancient city provides an authentic Italian experience away from crowded tourist routes while serving as an ideal base for exploring UNESCO World Heritage sites, coastal resorts, and mountain villages. Main Attractions in Cesena Biblioteca Malatestiana The Biblioteca Malatestiana stands as a UNESCO World Heritage Site and Europe's first public library, founded in 1454. The original reading room (Aula del Nuti) from 1447 remains pristine and visitable with its original desks, creating a time-machine experience that transports visitors back to the humanistic era. The library houses approximately 380,000 volumes, including ancient manuscripts, incunabula, and remarkably, the smallest book in the world readable with the naked eye. Visits last approximately 40 minutes and operate Tuesday through Sunday from 10 AM to 4 PM (last entry at 3 PM), though the Aula del Nuti can only be visited during natural daylight hours due to the absence of artificial lighting. Rocca Malatestiana Cesena offers an impressive medieval fortress was built in the 14th century by the powerful Malatesta family and dominates Cesena's skyline. The fortress offers panoramic views of the city and surrounding countryside, houses a museum with historical artifacts and exhibitions, and features beautiful gardens and walking paths perfect for leisurely exploration. Teatro Alessandro Bonci The Teatro Alessandro Bonci , inaugurated in 1846, is a beautiful 18th-century opera house with 1,000 seats and acoustics considered among the best in the world. This neoclassical jewel represents Cesena's rich cultural heritage and continues to host performances today. Abbazia di Santa Maria del Monte Founded in 1001, this Romanesque abbey sits atop Monte Giove overlooking Cesena. The location provides panoramic views of the city and surrounding area while maintaining a peaceful and spiritual atmosphere that invites contemplation and appreciation of the region's medieval religious heritage. Piazza del Popolo The central square of Cesena, Piazza del Popolo, serves as the heart of city life, surrounded by historic buildings, cafes, and shops. The square features the beautiful Fontana Masini, an intricately carved white marble fountain imported from Istria that serves as the symbol of the city and a popular meeting spot. Throughout the year, the piazza hosts various events and markets, with a large outdoor market every other Saturday offering a lively glimpse into local culture. Nearby Destinations Ravenna"
+      },
+      {
+        "id": "welcomeReception",
+        "title": "Welcome Reception",
+        "url": "https://2026.acsos.org/attending/welcome-reception",
+        "body": "The Welcome Reception will take place on Monday at the Rocca Malatestiana , the historic fortress overlooking the centre of Cesena. Surrounded by the greenery of the Parco della Rimembranza, the Rocca offers a distinctive setting in which participants can meet, reconnect with colleagues, and begin the conference in an informal atmosphere. The large courtyard, historic walls, and views over the city make the fortress one of Cesena\u2019s most characteristic venues. The reception will provide an opportunity to enjoy this setting while meeting other conference participants before the start of the technical programme. The Rocca is located close to Cesena\u2019s historic centre. Participants may reach the venue independently, and a transport service will also be available from the conference campus for those who prefer to travel directly to the Rocca. In case of rain: the Welcome Reception will be moved to Jazzamore . Any necessary updates will be communicated to participants. View directions from the conference campus"
       }
     ],
     "socialEvents": [
@@ -653,38 +1063,47 @@
         "title": "Registration",
         "trackId": "main",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "09:00-09:20",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SaSSO4 - Opening",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "09:20-09:30",
         "room": "2.10",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "AI4AS - Opening",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "09:20-09:30",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "SASSO4 - Keynote Keynote speech by Prof. Evangelos Pournaras Title: Democratic Innovations in the Era of AI: Reimagining Fair Decisions Abstract: Democracy has never been so vulnerable before. Longstanding challenges with poor participation and representation of citizens often result in illegitimate decision outcomes. The advent of generative artificial intelligence (AI) comes with remarkable opportunities to scale up democratic innovations, but not without unprecedented risks for the integrity of democratic processes. This talk will shed light on these opportunities and risks by providing hands-on experience from recent democratic innovations in real-world. I will show the transformative impact of adopting fairer voting methods in a participatory budgeting process the city of Aarau in Switzerland and follow up evidence of this across the world. I will also discuss what it means in the era of generative AI this profound shift of moving from majoritarian methods to collective decision making that promotes a more proportional representation of citizens. Can fairer voting methods play the role of a safeguard against biases and inconsistencies when engaging large language models in deliberation and decision making processes? Facing such tough and inevitable questions is necessary if we are to reinvent a more resilient democracy in the era of AI.&nbsp;",
+        "title": "SASSO4 - Keynote",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "09:30-10:30",
         "room": "2.10",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "AI4AS - Paper Session 1",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "09:30-11:00",
         "room": "2.4",
         "papers": [
@@ -692,191 +1111,410 @@
           "Discovering Collaboration from Novelty: Random Network Distillation for Clustered Federated Learning",
           "3NLM: A Normative Logic Framework for Expectation-Driven Self-Adaptive Explanations",
           "S3Eval: A Three-Layer Pipeline for Automated Evaluation of PDDL-Encoded Attack Paths"
+        ],
+        "talks": [
+          {
+            "title": "Adaptive Incremental Learning for Anomaly Detection under Domain Shift: An Additive Manufacturing Case Study",
+            "time": "09:30",
+            "duration": "20m",
+            "kind": "Paper",
+            "speakers": [
+              "Akram Zarchini",
+              "Denis Dowling",
+              "Fatemeh Golpayegani"
+            ]
+          },
+          {
+            "title": "Discovering Collaboration from Novelty: Random Network Distillation for Clustered Federated Learning",
+            "time": "09:50",
+            "duration": "20m",
+            "kind": "Paper",
+            "speakers": [
+              "Davide Domini",
+              "Gianluca Aguzzi",
+              "Ivana Dusparic",
+              "Danilo Pianini",
+              "Mirko Viroli"
+            ]
+          },
+          {
+            "title": "3NLM: A Normative Logic Framework for Expectation-Driven Self-Adaptive Explanations",
+            "time": "10:10",
+            "duration": "20m",
+            "kind": "Paper",
+            "speakers": [
+              "Zahra Atf",
+              "Nathan Lloyd",
+              "Peter Lewis"
+            ]
+          },
+          {
+            "title": "S3Eval: A Three-Layer Pipeline for Automated Evaluation of PDDL-Encoded Attack Paths",
+            "time": "10:30",
+            "duration": "20m",
+            "kind": "Paper",
+            "speakers": [
+              "Lin Cui",
+              "Vincenzo Scotti",
+              "Raffaela Mirandola"
+            ]
+          }
         ]
       },
       {
         "title": "SaSSO4 - Paper Session 1",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "10:30-11:00",
         "room": "2.10",
         "papers": [
           "Theory of Mind-inspired Reflective AI for Sustainable Small Language Model Orchestration"
+        ],
+        "talks": [
+          {
+            "title": "Theory of Mind-inspired Reflective AI for Sustainable Small Language Model Orchestration",
+            "time": "10:30",
+            "duration": "30m",
+            "kind": "Paper",
+            "speakers": [
+              "Sofia Baxter",
+              "Huma Samin",
+              "Aishwaryaprajna"
+            ]
+          }
         ]
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "11:00-11:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "AI4AS - Keynote",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "11:15-12:15",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SaSSO4 - Paper Session 2",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "11:30-13:00",
         "room": "2.10",
         "papers": [
           "Self-Fulfilling Expectations: Evolutionary Game Theory with Endogenous Social Fields",
           "School-Meal Menu Planning: A Self-Organised, Sustainable and Scalable Approach",
           "Rule-Based Self-Governance for Green-Claim Control in AI Retail Recommendations"
+        ],
+        "talks": [
+          {
+            "title": "Self-Fulfilling Expectations: Evolutionary Game Theory with Endogenous Social Fields",
+            "time": "11:30",
+            "duration": "30m",
+            "kind": "Paper",
+            "speakers": [
+              "Nathan Lloyd",
+              "Peter Lewis"
+            ]
+          },
+          {
+            "title": "School-Meal Menu Planning: A Self-Organised, Sustainable and Scalable Approach",
+            "time": "12:00",
+            "duration": "30m",
+            "kind": "Paper",
+            "speakers": [
+              "Savannah Dysard",
+              "Samrat Singh",
+              "Lesley Drake",
+              "Matthew Scott",
+              "Ella Bettison",
+              "Jeremy Pitt"
+            ]
+          },
+          {
+            "title": "Rule-Based Self-Governance for Green-Claim Control in AI Retail Recommendations",
+            "time": "12:30",
+            "duration": "30m",
+            "kind": "Paper",
+            "speakers": [
+              "Zahra Atf",
+              "Peter Lewis"
+            ]
+          }
         ]
       },
       {
         "title": "AI4AS - Paper Session 2",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "12:15-12:55",
         "room": "2.4",
         "papers": [
           "Towards Autonomous Surface Vessels: A World-Model-Centric Approach",
           "Perception Risk for Path Planning in Autonomous Rover Navigation"
+        ],
+        "talks": [
+          {
+            "title": "Towards Autonomous Surface Vessels: A World-Model-Centric Approach",
+            "time": "12:15",
+            "duration": "20m",
+            "kind": "Paper",
+            "speakers": [
+              "Raphael Schwinger",
+              "Nils Bischoff",
+              "Mats Kurz",
+              "Lukas Nolte",
+              "Tim Nolte",
+              "Bahne Thiel-Peters",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Perception Risk for Path Planning in Autonomous Rover Navigation",
+            "time": "12:35",
+            "duration": "20m",
+            "kind": "Paper",
+            "speakers": [
+              "Christian Medeiros Adriano",
+              "Mostafa Wael Aboalfotoh",
+              "Sona Ghahremani",
+              "Holger Giese"
+            ]
+          }
         ]
       },
       {
         "title": "AI4AS - Closing",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "12:55-13:00",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Lunch",
         "trackId": "catering",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "13:00-14:00",
         "room": "Sala Polivalente",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SaSSO4 - Paper Session 3",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "14:00-14:30",
         "room": "2.10",
         "papers": [
           "Macro-to-micro behavioral mappings in distributed systems: a characterization on event structures"
+        ],
+        "talks": [
+          {
+            "title": "Macro-to-micro behavioral mappings in distributed systems: a characterization on event structures",
+            "time": "14:00",
+            "duration": "30m",
+            "kind": "Paper",
+            "speakers": [
+              "Roberto Casadei",
+              "Paolo Baldini",
+              "Niccol\u00f2 Castronuovo"
+            ]
+          }
         ]
       },
       {
         "title": "Causal Foundations and Methods for Autonomic Systems",
         "trackId": "tutorials",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "14:00-15:30",
         "room": "2.3",
         "papers": [
           "Causal Foundations and Methods for Autonomic Systems: A Tutorial"
+        ],
+        "talks": [
+          {
+            "title": "Causal Foundations and Methods for Autonomic Systems: A Tutorial",
+            "time": "14:00",
+            "duration": "90m",
+            "kind": "Tutorial",
+            "speakers": [
+              "Christian Medeiros Adriano"
+            ]
+          }
         ]
       },
       {
         "title": "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum",
         "trackId": "tutorials",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "14:00-15:30",
         "room": "2.4",
         "papers": [
           "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum"
+        ],
+        "talks": [
+          {
+            "title": "Reinforcement Learning for Intelligent Resource Management Across the Computing Continuum",
+            "time": "14:00",
+            "duration": "90m",
+            "kind": "Tutorial",
+            "speakers": [
+              "Danilo Ardagna",
+              "Federica Filippini"
+            ]
+          }
         ]
       },
       {
-        "title": "SaSSO4 - Discussion Live Q&A with all speakers.",
+        "title": "SaSSO4 - Discussion",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "14:30-15:30",
         "room": "2.10",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "15:30-16:00",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "SaSSO4 - Breakout Groups Future Research Directions & Collaboration Opportunities 16:00\u201316:45: Breakout groups 16:45\u201317:15: Plenary report from breakout groups & discussion",
+        "title": "SaSSO4 - Breakout Groups",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "16:00-17:15",
         "room": "2.10",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Complex systems, self-organisation, and simulation",
         "trackId": "tutorials",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "16:00-17:30",
         "room": "2.3",
         "papers": [
           "Complex systems, self-organisation, and simulation"
+        ],
+        "talks": [
+          {
+            "title": "Complex systems, self-organisation, and simulation",
+            "time": "16:00",
+            "duration": "90m",
+            "kind": "Tutorial",
+            "speakers": [
+              "Simon Dobson"
+            ]
+          }
         ]
       },
       {
         "title": "Simulating Runtime Decisions for Cloud Self-Adaptive Systems",
         "trackId": "tutorials",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "16:30-17:30",
         "room": "2.4",
         "papers": [
           "Simulating Runtime Decisions for Cloud Self-Adaptive Systems: A Tutorial"
+        ],
+        "talks": [
+          {
+            "title": "Simulating Runtime Decisions for Cloud Self-Adaptive Systems: A Tutorial",
+            "time": "16:30",
+            "duration": "60m",
+            "kind": "Tutorial",
+            "speakers": [
+              "Maria Salama",
+              "Rami Bahsoon",
+              "Rajkumar Buyya"
+            ]
+          }
         ]
       },
       {
-        "title": "SaSSO4 - Closing Closing Remarks.",
+        "title": "SaSSO4 - Closing",
         "trackId": "workshops",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "17:15-17:30",
         "room": "2.10",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Welcome Reception https://2026.acsos.org/attending/welcome-reception",
+        "title": "Welcome Reception",
         "trackId": "main",
         "day": "Monday, 7 September",
+        "date": "2026-09-07",
         "time": "18:00-21:00",
         "room": "Off-site",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Registration",
         "trackId": "main",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "08:30-09:00",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Conference Opening",
         "trackId": "main",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "09:00-09:10",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Keynote: Valeria Cardellini",
         "trackId": "main",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "09:10-10:00",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "LLMs and Agentic Self-Adaptation Chair(s): Marin Litoiu York University, Canada",
+        "title": "LLMs and Agentic Self-Adaptation",
         "trackId": "main",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "10:00-11:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -884,20 +1522,75 @@
           "HASKI: Hallucination-Aware Agentic Self-Adaptive Knowledge Injection via Reinforcement Learning in Large Language Models",
           "OPA - Observe, Preprocess, and Act: A Multi-Agent Framework for Data Preprocessing and Predictive Intelligence",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "Large Language Models for Self-Adaptive Systems: Feedback-Loop Integration and Agentic Adaptation",
+            "time": "10:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Kerem Kara",
+              "Balint Mate",
+              "Vincenzo Scotti",
+              "Diego P\u00e9rez",
+              "Raffaela Mirandola"
+            ]
+          },
+          {
+            "title": "HASKI: Hallucination-Aware Agentic Self-Adaptive Knowledge Injection via Reinforcement Learning in Large Language Models",
+            "time": "10:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Chen Yao",
+              "Farhoud Jafari Kaleibar",
+              "Marin Litoiu"
+            ]
+          },
+          {
+            "title": "OPA - Observe, Preprocess, and Act: A Multi-Agent Framework for Data Preprocessing and Predictive Intelligence",
+            "time": "10:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Lucas Astore",
+              "Gabriel de Souza Gomes",
+              "Thiago Lucas de Oliveira",
+              "Luisa Marques Laboissiere",
+              "Ester de Lima Pontes Andrade",
+              "Hellena Almeida Canuto",
+              "Thalia Barbosa Marques de Almeida",
+              "Patr\u00edcia de Oliveira E Lucas",
+              "Adriano Veloso",
+              "Frederico Gadelha Guimar\u00e3es",
+              "Antonio Alfredo Ferreira Loureiro"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "10:45",
+            "duration": "15m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "11:00-11:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Assurance, Safety and Resilience Chair(s): Houssam Hajj Hassan Orange Innovation",
+        "title": "Assurance, Safety and Resilience",
         "trackId": "main",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "11:30-13:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -907,52 +1600,134 @@
           "Extending Decision Maps for Sustainable Safety and Security in Self-Adaptive Systems",
           "Approved Too Late: Verdict Staleness in LLM-Guarded Self-Adaptive Systems",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "Self-adaptive Distributed Runtime Monitoring for Autonomous Systems",
+            "time": "11:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Thomas Wright",
+              "Morten Haahr Kristensen",
+              "Mirgita Frasheri",
+              "Peter Larsen",
+              "Lukas Esterle",
+              "Claudio Gomes"
+            ]
+          },
+          {
+            "title": "Who Is Responsible? Self-Adaptation Under Multiple Concurrent Failures With Unknown Faults in Complex Robotic Systems",
+            "time": "11:45",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Andreas Wiedholz",
+              "Rafael Paintner",
+              "Alwin Hoffmann",
+              "Tobias Huber"
+            ]
+          },
+          {
+            "title": "When Should a Robot Stop Learning and Start Reasoning?",
+            "time": "12:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Mahsa Nikmard",
+              "Patrizio Pelliccione",
+              "Gianlorenzo D'Angelo"
+            ]
+          },
+          {
+            "title": "Extending Decision Maps for Sustainable Safety and Security in Self-Adaptive Systems",
+            "time": "12:15",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Marco Stadler",
+              "Wesley K.G. Assun\u00e7\u00e3o",
+              "Michael Vierhauser",
+              "Iris Groher",
+              "Michael Riegler",
+              "Johannes Sametinger"
+            ]
+          },
+          {
+            "title": "Approved Too Late: Verdict Staleness in LLM-Guarded Self-Adaptive Systems",
+            "time": "12:25",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Ilai Shraga",
+              "Roei Eshel",
+              "Lior Gorelik"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "12:35",
+            "duration": "25m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Lunch",
         "trackId": "catering",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "13:00-14:00",
         "room": "Sala Polivalente",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Doctoral Symposium Keynote: Being a researcher \u2014 in turbulent times",
         "trackId": "doctoral",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "14:00-15:00",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "PhD flash talks",
         "trackId": "doctoral",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "15:00-15:30",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Poster flash talks",
         "trackId": "posters",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "15:30-16:00",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "16:00-16:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Edge-Cloud-Space Continuum and Resource Management Chair(s): Timothy Wood George Washington University",
+        "title": "Edge-Cloud-Space Continuum and Resource Management",
         "trackId": "main",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "16:30-18:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -962,28 +1737,100 @@
           "Hero: Hybrid Edge Routing for In-Browser Small Language Models",
           "Survival of the Cheapest: Cost-Aware Hardware Adaptation for Adversarial Robustness",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "LoftNN: Distributed Training of Deep Learning Models in the Edge-Cloud-Space Continuum",
+            "time": "16:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Maximilian Maresch",
+              "Andrija Stanisic",
+              "Stefan Nastic"
+            ]
+          },
+          {
+            "title": "Autonomic GNN-Based Shortest-Path Routing in LEO Networks via Imitation and Transfer Learning",
+            "time": "16:45",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Federica Filippini",
+              "Michele Ciavotta",
+              "Marco Savi",
+              "Fabio Villa"
+            ]
+          },
+          {
+            "title": "Dynamic, Distributed, and Optimized: Orchestrating Live Migrating Computations in the Continuum",
+            "time": "17:00",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Edoardo Tinto",
+              "Alessandro Vittorio Papadopoulos",
+              "Tullio Vardanega"
+            ]
+          },
+          {
+            "title": "Hero: Hybrid Edge Routing for In-Browser Small Language Models",
+            "time": "17:10",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Philip Kehl",
+              "Fabian H\u00fcni",
+              "Basile Lewandowski",
+              "Lydia Chen"
+            ]
+          },
+          {
+            "title": "Survival of the Cheapest: Cost-Aware Hardware Adaptation for Adversarial Robustness",
+            "time": "17:20",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Charles Meyers",
+              "Mohammad Reza Saleh Sedghpour",
+              "Erik Elmroth",
+              "Tommy L\u00f6fstedt"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "17:30",
+            "duration": "30m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
-        "title": "Wine Tasting & Dinner (Registration Required) https://2026.acsos.org/attending/social-events#wine-views-and-dinner-on-romagnas-balcony Register at: https://serinarpayments.it/acsos-2026/",
+        "title": "Wine Tasting & Dinner (Registration Required)",
         "trackId": "social",
         "day": "Tuesday, 8 September",
+        "date": "2026-09-08",
         "time": "18:00-21:00",
         "room": "Off-site",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Keynote: Bridging Centralized and Decentralized Control in Robot Swarms through Self-Organizing Hierarchies",
         "trackId": "main",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "09:00-10:00",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Collaborative Perception and Autonomous Navigation Chair(s): Nathan Lloyd Ontario Tech University",
+        "title": "Collaborative Perception and Autonomous Navigation",
         "trackId": "main",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "10:00-11:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -991,20 +1838,66 @@
           "Collaborative Perception for Decentralised Navigation in Heterogeneous Maritime Fleets",
           "CoAdapt: An LLM-based Framework for Adaptive Collaborative Perception in IIoT Robotic Swarms",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "A Multi-Agent LLM Architecture for Robust Self-Explainability in Autonomous Ferry Navigation",
+            "time": "10:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Tom Beyer",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Collaborative Perception for Decentralised Navigation in Heterogeneous Maritime Fleets",
+            "time": "10:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Ghassan Al-Falouji",
+              "Martina Baiardi",
+              "Elsy Kaddoum",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "CoAdapt: An LLM-based Framework for Adaptive Collaborative Perception in IIoT Robotic Swarms",
+            "time": "10:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Houssam Hajj Hassan",
+              "Antonia Maria Masucci",
+              "Lynda Zitoune",
+              "Salah Eddine Elayoubi"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "10:45",
+            "duration": "15m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "11:00-11:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Uncertainty, Learning and Runtime Decision-Making Chair(s): Nelly Bencomo Durham University",
+        "title": "Uncertainty, Learning and Runtime Decision-Making",
         "trackId": "main",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "11:30-13:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -1014,32 +1907,132 @@
           "The Many Facets of Uncertainty Reduction",
           "Calibrating Quadruped Startup Variance for Reliable Anomaly Detection and Self-Adaptation",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "Information-Driven Adaptation and Entropy-Regularised Planning under Non-Stationarity",
+            "time": "11:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Joshua Thompson",
+              "Dylan Walton",
+              "Nelly Bencomo"
+            ]
+          },
+          {
+            "title": "Stacking-Based Meta-Learning for Runtime Model Selection in Self-Adaptive Systems",
+            "time": "11:45",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Ehsan Elahi",
+              "Ruiqi Gao",
+              "Matteo Camilli",
+              "Raffaela Mirandola"
+            ]
+          },
+          {
+            "title": "Runtime Stability-Aware Adaptation for Self-Adaptive Systems using Symbiotic Simulation: A Cloud Architecture Evaluation",
+            "time": "12:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Maria Salama",
+              "Rami Bahsoon",
+              "Rajkumar Buyya"
+            ]
+          },
+          {
+            "title": "The Many Facets of Uncertainty Reduction",
+            "time": "12:15",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Raquel S\u00e1nchez Salas",
+              "Radu Calinescu",
+              "Javier Troya",
+              "Javier Camara"
+            ]
+          },
+          {
+            "title": "Calibrating Quadruped Startup Variance for Reliable Anomaly Detection and Self-Adaptation",
+            "time": "12:25",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Logan Quirk",
+              "Eric Iniguez",
+              "Rose Gamble"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "12:35",
+            "duration": "25m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Lunch",
         "trackId": "catering",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "13:00-14:00",
         "room": "Sala Polivalente",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Self-Awareness, Cognition and Explainability Chair(s): Astrid Nie\u00dfe Universit\u00e4t Oldenburg",
+        "title": "Self-Awareness, Cognition and Explainability",
         "trackId": "main",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "14:00-14:45",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
           "Self-Adaptation Using Emotional Conditioning",
           "In search of \u201cnormality\u201d: producing relevant counterfactual explanations for complex behaviors",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "Self-Adaptation Using Emotional Conditioning",
+            "time": "14:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Pandelis Kriadis",
+              "Simos Gerasimou"
+            ]
+          },
+          {
+            "title": "In search of \u201cnormality\u201d: producing relevant counterfactual explanations for complex behaviors",
+            "time": "14:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Samuel Reyd",
+              "Ada Diaconescu",
+              "Jean-Louis Dessalles"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "14:30",
+            "duration": "15m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
-        "title": "Vision Papers Chair(s): Mirko Viroli Alma Mater Studiorum - Universit\u00e0 di Bologna",
+        "title": "Vision Papers",
         "trackId": "main",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "14:45-16:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -1049,20 +2042,101 @@
           "Mitigating Uncertainty Interactions in GenAI-based Adaptive Systems: Vision, Challenges and Preliminary Guidelines",
           "What the Sheep Can Teach the Shepherd: A Vision for Self-Organizing Drone Swarms Informed by Collective Animal Behavior",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "Decentralized Multi-agent Reinforcement Learning for Resilient Critical Infrastructures",
+            "time": "14:45",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Minghui Ding",
+              "Evangelos Pournaras"
+            ]
+          },
+          {
+            "title": "Self-Aware Scientific Workflow Orchestration based on a Blackboard Architecture",
+            "time": "14:55",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Samuel Kounev",
+              "David Linke",
+              "David Dingel",
+              "Nicola Ferger",
+              "Lorenz Gruber",
+              "Nikolas Herbst",
+              "Maximilian Schwinger",
+              "Kyle Chard",
+              "Ian Foster"
+            ]
+          },
+          {
+            "title": "A Vision for Semantic Resource Elasticity in Autonomic Cyber-Physical Edge Systems",
+            "time": "15:05",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Deng Pan",
+              "Alekya Kowta",
+              "Enoch Nemili",
+              "Timothy Wood",
+              "Samer Hamdar"
+            ]
+          },
+          {
+            "title": "Mitigating Uncertainty Interactions in GenAI-based Adaptive Systems: Vision, Challenges and Preliminary Guidelines",
+            "time": "15:15",
+            "duration": "10m",
+            "kind": "Talk",
+            "speakers": [
+              "Karthik Vaidhyanathan",
+              "Norha M. Villegas",
+              "Raffaela Mirandola",
+              "Nicol\u00e1s Cardozo",
+              "Ivana Dusparic",
+              "Marin Litoiu",
+              "Ralf Reussner",
+              "Gabriel Tamura"
+            ]
+          },
+          {
+            "title": "What the Sheep Can Teach the Shepherd: A Vision for Self-Organizing Drone Swarms Informed by Collective Animal Behavior",
+            "time": "15:25",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Jenna Kline",
+              "Samuel Stevens",
+              "Daniel I. Rubenstein",
+              "Tanya Berger-Wolf",
+              "Christopher Stewart"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "15:35",
+            "duration": "25m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "16:00-16:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Doctoral Symposium breakouts 1",
         "trackId": "doctoral",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "16:30-17:30",
         "room": "2.3",
         "papers": [
@@ -1071,12 +2145,60 @@
           "Self-Organizing Federated Learning in Collective Adaptive Systems",
           "Toward Practical and Adaptive Machine Learning for Sustainable In-Situ Monitoring in LPBF",
           "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front"
+        ],
+        "talks": [
+          {
+            "title": "Contrastive Explanations for Multi-objective Policies in Reinforcement Learning",
+            "time": "16:30",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Juan C. Rosero"
+            ]
+          },
+          {
+            "title": "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
+            "time": "16:42",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Lucas Astore"
+            ]
+          },
+          {
+            "title": "Self-Organizing Federated Learning in Collective Adaptive Systems",
+            "time": "16:54",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Davide Domini"
+            ]
+          },
+          {
+            "title": "Toward Practical and Adaptive Machine Learning for Sustainable In-Situ Monitoring in LPBF",
+            "time": "17:06",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Akram Zarchini"
+            ]
+          },
+          {
+            "title": "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front",
+            "time": "17:18",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Paulo Jorge Silva Ferreira"
+            ]
+          }
         ]
       },
       {
         "title": "Doctoral Symposium breakouts 2",
         "trackId": "doctoral",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "16:30-17:30",
         "room": "2.4",
         "papers": [
@@ -1085,52 +2207,110 @@
           "Enabling Flexible Assembly in Self-Organizing Manufacturing Systems",
           "Enabling Industrial Autonomy: Digital Transformation of Automation Systems into Autonomous Cyber-Physical Systems",
           "Time-Limited Adaptation Loops for Electrical Flexibility in Data Centers"
+        ],
+        "talks": [
+          {
+            "title": "Autonomic and Decentralized Infrastructure Management Framework for the Continuum",
+            "time": "16:30",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Simon Artus"
+            ]
+          },
+          {
+            "title": "Co-Simulating Regional Energy and EV ChargingFutures under Deep Uncertainty",
+            "time": "16:42",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Fabian Schober"
+            ]
+          },
+          {
+            "title": "Enabling Flexible Assembly in Self-Organizing Manufacturing Systems",
+            "time": "16:54",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Christian Lehner"
+            ]
+          },
+          {
+            "title": "Enabling Industrial Autonomy: Digital Transformation of Automation Systems into Autonomous Cyber-Physical Systems",
+            "time": "17:06",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Inga Miadowicz"
+            ]
+          },
+          {
+            "title": "Time-Limited Adaptation Loops for Electrical Flexibility in Data Centers",
+            "time": "17:18",
+            "duration": "12m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Nathan Rabier"
+            ]
+          }
         ]
       },
       {
-        "title": "When Systems Decide: Can We Trust Autonomy in Production? As technical systems increasingly observe, decide, adapt, and act with minimal human oversight, the question of trust becomes critical. This panel brings together practitioners to explore what autonomy truly means in real-world production environments, going beyond conceptual models. Through concrete system examples, panelists will examine the gap between theory and practice, discuss where to draw the line between automation and human control, and share evidence-based approaches for verifying correct behavior. They will also candidly address failure modes, uncomfortable trade-offs, and hard-earned lessons that the ACSOS research community should not overlook. Join us for an honest conversation about what makes autonomous systems worthy of our trust\u2014and what keeps practitioners up at night.",
-        "trackId": "main",
+        "title": "When Systems Decide: Can We Trust Autonomy in Production?",
+        "trackId": "inpractice",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "16:30-17:30",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Malatestiana Library Visit - Part 1",
         "trackId": "social",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "18:00-19:00",
         "room": "Off-site",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Malatestiana Library Visit - Part 2",
         "trackId": "social",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "19:00-20:00",
         "room": "Off-site",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Conference Banquet https://2026.acsos.org/attending/main-social-event",
+        "title": "Conference Banquet",
         "trackId": "social",
         "day": "Wednesday, 9 September",
+        "date": "2026-09-09",
         "time": "19:00-23:00",
         "room": "Off-site",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Keynote: Bridging Classical and Quantum Computing: Lessons, Challenges, and Opportunities",
         "trackId": "main",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "09:00-10:00",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Decentralised Coordination and Collective Learning Chair(s): Lukas Esterle Aarhus University",
+        "title": "Decentralised Coordination and Collective Learning",
         "trackId": "main",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "10:00-11:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -1138,55 +2318,208 @@
           "The Optimisation Trilemma: Efficiency, Comfort and Fairness in Decentralised Multi-agent Coordination",
           "Multi-Target Tracking via Field-Based Distributed Particle Filtering",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "C\u00b2FL: Clustered Continual Federated Learning under Spatial and Temporal Drift",
+            "time": "10:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Davide Domini",
+              "Gianluca Aguzzi",
+              "Lorenzo Pellegrini",
+              "Mirko Viroli",
+              "Lukas Esterle"
+            ]
+          },
+          {
+            "title": "The Optimisation Trilemma: Efficiency, Comfort and Fairness in Decentralised Multi-agent Coordination",
+            "time": "10:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Jovan Nikolic",
+              "Maciej Zuziak",
+              "Evangelos Pournaras"
+            ]
+          },
+          {
+            "title": "Multi-Target Tracking via Field-Based Distributed Particle Filtering",
+            "time": "10:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Angela Cortecchia",
+              "Davide Domini",
+              "Giovanni Ciatto",
+              "Roberto Casadei",
+              "Mirko Viroli"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "10:45",
+            "duration": "15m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "11:00-11:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Swarms and Emergent Collective Behaviour Chair(s): Roberto Casadei University of Bologna, Italy",
+        "title": "Swarms and Emergent Collective Behaviour",
         "trackId": "main",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "11:30-13:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
+          "NorMAL: Self-Adaptive Norm Learning and Objective Optimization in Decentralized Multi-Agent Systems",
           "Conditional Autoencoder-based Meta-Agents for Trajectory Prediction of Boid Systems",
           "When the Swarm Changes Its Mind: Learning-Based Anomaly Detection in Decentralized AUV Missions",
           "Elliptical patterns in swarmalator systems",
           "How Does Your Swarm Scale? Finite-Size Scaling Diagnostics for Self-Organizing System",
-          "NorMAL: Self-Adaptive Norm Learning and Objective Optimization in Decentralized Multi-Agent Systems",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "NorMAL: Self-Adaptive Norm Learning and Objective Optimization in Decentralized Multi-Agent Systems",
+            "time": "11:30",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Louise O'Sullivan",
+              "Maha Riad",
+              "Fatemeh Golpayegani"
+            ]
+          },
+          {
+            "title": "Conditional Autoencoder-based Meta-Agents for Trajectory Prediction of Boid Systems",
+            "time": "11:40",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Tobias Buhl",
+              "Sebastian von Mammen"
+            ]
+          },
+          {
+            "title": "When the Swarm Changes Its Mind: Learning-Based Anomaly Detection in Decentralized AUV Missions",
+            "time": "11:55",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Wiebke Frenkel",
+              "Tim Nolte",
+              "Sven Tomforde",
+              "Bernd-Christian Renner"
+            ]
+          },
+          {
+            "title": "Elliptical patterns in swarmalator systems",
+            "time": "12:10",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Udo Schilcher",
+              "Kevin O'Keeffe",
+              "Christian Bettstetter"
+            ]
+          },
+          {
+            "title": "How Does Your Swarm Scale? Finite-Size Scaling Diagnostics for Self-Organizing System",
+            "time": "12:20",
+            "duration": "10m",
+            "kind": "Short-paper",
+            "speakers": [
+              "Alexander Chepizhko",
+              "Melanie Schranz",
+              "P\u00e9ter Forg\u00e1cs"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "12:30",
+            "duration": "30m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Lunch",
         "trackId": "catering",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "13:00-14:00",
         "room": "Sala Polivalente",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Self-Organisation in Real-World Systems Chair(s): Phyllis Nelson California State Polytechnic University Pomona",
+        "title": "Self-Organisation in Real-World Systems",
         "trackId": "main",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "14:00-14:45",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
           "Automated Orchestration in a Real-World Self-Organizing Manufacturing Cell",
           "A Multi-Objective Swarm-Inspired Approach for Intelligent Electric Vehicle Charging",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "Automated Orchestration in a Real-World Self-Organizing Manufacturing Cell",
+            "time": "14:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Oliver Kosak",
+              "Manuel Hartwig",
+              "Christian Lehner",
+              "Marco M\u00fcller",
+              "Hella Ponsar",
+              "Wolfgang Reif"
+            ]
+          },
+          {
+            "title": "A Multi-Objective Swarm-Inspired Approach for Intelligent Electric Vehicle Charging",
+            "time": "14:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Khalil Alrahman Youssefi Darmian",
+              "Mika Auer",
+              "Walter Stefanutti",
+              "Fabian Schober",
+              "Melanie Schranz"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "14:30",
+            "duration": "15m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
-        "title": "Artifacts Chair(s): Gianluca Aguzzi Alma Mater Studiorum - Universit\u00e0 di Bologna Q&A: 15:35\u201316:00",
+        "title": "Artifacts",
         "trackId": "artifacts",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "14:45-16:00",
         "room": "Aula Magna \"Carmen Tura\"",
         "papers": [
@@ -1196,20 +2529,89 @@
           "MARGIN-SAS: A Tool-Supported Framework for Non-Inferiority-Based Evaluation of QoS Trade-offs in Self-Adaptive Systems",
           "Wildlife Protection Game: An Artifact for Evaluation of Antifragility for Autonomy in Adversarial Environments",
           "Q&A and Panel Discussion"
+        ],
+        "talks": [
+          {
+            "title": "A Maneuver-Indexed Testbed for Context-Aware Adaptive Wildlife Drones",
+            "time": "14:45",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Jenna Kline"
+            ]
+          },
+          {
+            "title": "Argonaut: Interactive Visual Exploration for Distributed Optimization",
+            "time": "14:55",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Srijoni Majumdar",
+              "Chuhao Qin",
+              "Evangelos Pournaras"
+            ]
+          },
+          {
+            "title": "BedreFlyt Artifact: A Self-Adaptive Digital Twin Software System for Hospital Resource Allocation",
+            "time": "15:05",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Riccardo Sieve",
+              "Nelly Bencomo",
+              "Silvia Lizeth Tapia Tarifa",
+              "Einar Broch Johnsen"
+            ]
+          },
+          {
+            "title": "MARGIN-SAS: A Tool-Supported Framework for Non-Inferiority-Based Evaluation of QoS Trade-offs in Self-Adaptive Systems",
+            "time": "15:15",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Tasbir Rahaman",
+              "Huma Samin",
+              "Nelly Bencomo",
+              "Anik\u00f3 Ek\u00e1rt"
+            ]
+          },
+          {
+            "title": "Wildlife Protection Game: An Artifact for Evaluation of Antifragility for Autonomy in Adversarial Environments",
+            "time": "15:25",
+            "duration": "10m",
+            "kind": "Paper",
+            "speakers": [
+              "Gabriel A. Moreno",
+              "Mark Klein",
+              "Jason M. Popowski",
+              "David Miller",
+              "Mrinank Panda"
+            ]
+          },
+          {
+            "title": "Q&A and Panel Discussion",
+            "time": "15:35",
+            "duration": "25m",
+            "kind": "Live Q&A",
+            "speakers": []
+          }
         ]
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "16:00-16:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Doctoral Symposium breakouts 3",
         "trackId": "doctoral",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "16:30-17:30",
         "room": "2.3",
         "papers": [
@@ -1217,12 +2619,51 @@
           "Extending Rule-Based Approaches Towards Unanticipated Failures for Self-Healing Robots",
           "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations",
           "Towards Collective Robotic Operating Systems through Aggregate Computing"
+        ],
+        "talks": [
+          {
+            "title": "Engineering Trustworthiness into Self-Adaptive Robotic Systems",
+            "time": "16:30",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Sahar Nasimi Nezhad"
+            ]
+          },
+          {
+            "title": "Extending Rule-Based Approaches Towards Unanticipated Failures for Self-Healing Robots",
+            "time": "16:45",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Andreas Wiedholz"
+            ]
+          },
+          {
+            "title": "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations",
+            "time": "17:00",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Tim Lumpp"
+            ]
+          },
+          {
+            "title": "Towards Collective Robotic Operating Systems through Aggregate Computing",
+            "time": "17:15",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Angela Cortecchia"
+            ]
+          }
         ]
       },
       {
         "title": "Doctoral Symposium breakouts 4",
         "trackId": "doctoral",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "16:30-17:30",
         "room": "2.4",
         "papers": [
@@ -1230,44 +2671,91 @@
           "Can LLM-Based Agents Have Self-Knowledge? A Dialogue Between Philosophy and Artificial Intelligence",
           "Decentralized Propagation for Heterogeneous Multi-Agent Systems Situational Awareness",
           "Self-Adaptive Coordination for Heterogeneous Multi- objective Multi-Agent Systems in an Uncertain Dynamic Environment"
+        ],
+        "talks": [
+          {
+            "title": "A Self-Adaptive Coordination Framework for Multi-Agent Transportation Systems in Sustainable Industrial Symbiosis Networks",
+            "time": "16:30",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Dorsa Samiee"
+            ]
+          },
+          {
+            "title": "Can LLM-Based Agents Have Self-Knowledge? A Dialogue Between Philosophy and Artificial Intelligence",
+            "time": "16:45",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Kees Greven"
+            ]
+          },
+          {
+            "title": "Decentralized Propagation for Heterogeneous Multi-Agent Systems Situational Awareness",
+            "time": "17:00",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Martina Baiardi"
+            ]
+          },
+          {
+            "title": "Self-Adaptive Coordination for Heterogeneous Multi- objective Multi-Agent Systems in an Uncertain Dynamic Environment",
+            "time": "17:15",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Lobna Elboghdady"
+            ]
+          }
         ]
       },
       {
         "title": "Expert Panel",
         "trackId": "main",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "16:30-17:30",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Closing Session",
         "trackId": "main",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "17:30-18:00",
         "room": "Aula Magna \"Carmen Tura\"",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Kart Race & Dinner https://2026.acsos.org/attending/social-events#acsos-gp-on-the-riviera-racing-dinner Register at: https://serinarpayments.it/acsos-2026/",
+        "title": "Kart Race & Dinner",
         "trackId": "social",
         "day": "Thursday, 10 September",
+        "date": "2026-09-10",
         "time": "18:00-21:00",
         "room": "Off-site",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SISSY - Opening",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "09:00-09:10",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SISSY - Self-Integration & Coordination Architectures",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "09:10-10:10",
         "room": "2.4",
         "papers": [
@@ -1275,56 +2763,159 @@
           "Agency-oriented Layering of Models in Self-Integrating",
           "Learning-enabled hybrid multi-agent coordination for resilient self-integrating systems",
           "Human-Centred Organic Computing Systems"
+        ],
+        "talks": [
+          {
+            "title": "Hybrid Clumping: a self-integration basis for complex structures and collective dynamics",
+            "time": "09:10",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Ada Diaconescu",
+              "Kirstie Bellman",
+              "Christopher Landauer",
+              "Phyllis Nelson",
+              "David King"
+            ]
+          },
+          {
+            "title": "Agency-oriented Layering of Models in Self-Integrating",
+            "time": "09:25",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Markus Stumptner",
+              "Matt Selway",
+              "Rebecca Morgan",
+              "Georg Grossmann",
+              "wolfgang mayer"
+            ]
+          },
+          {
+            "title": "Learning-enabled hybrid multi-agent coordination for resilient self-integrating systems",
+            "time": "09:40",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Elsy Kaddoum",
+              "Ghassan Al-Falouji",
+              "Martina Baiardi",
+              "Danilo Pianini",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Human-Centred Organic Computing Systems",
+            "time": "09:55",
+            "duration": "15m",
+            "kind": "Talk",
+            "speakers": [
+              "Sebastian von Mammen",
+              "Michael Heider",
+              "Anthony Stein",
+              "Gregor Schiele",
+              "Christian Krupitzer",
+              "Stefan Wildermann",
+              "Sven Tomforde"
+            ]
+          }
         ]
       },
       {
         "title": "AICR-ACS - Opening",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "09:45-10:00",
         "room": "2.3",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "AICR-ACS - Keynote Keynote speech by Prof. Emiliano Casalicchio Title : Advances in self-protecting cyber-physical systems Abstract : Modern Cyber-Physical Systems (CPS)\u2014spanning industrial control, smart energy, autonomous transportation, telecommunications, and edge-cloud infrastructures\u2014are increasingly deployed in dynamic, high-threat environments. Recent cyber offensive campaigns have targeted these critical platforms to disrupt essential civil and military operations, underscoring severe vulnerabilities in static defense paradigms. This talk explores how self-protecting systems theory and practice can be leveraged to engineer secure, self-healing, and resilient CPS. We will examine key architectural paradigms and research advances that enable systems to autonomously sense, reason about, and mitigate emerging threats in real time. Finally, the session presents practical applications and real-world case studies demonstrating how autonomous resilience can be realized in complex operational environments.",
+        "title": "AICR-ACS - Keynote",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "10:00-11:00",
         "room": "2.3",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SISSY - Discussion Panel: Self-Integration & Coordination Architectures",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "10:10-11:00",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "11:00-11:30",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "AICR-ACS - Paper Session",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "11:30-12:45",
         "room": "2.3",
         "papers": [
           "Towards a Digital-Twin Cyber Range for MTD against ML Traffic Fingerprinting in Smart Grid",
           "Cloud-Native Smart Grids: Threat Modeling and Impact Analysis for TSO Services",
           "Security Assurance Cases as a Runtime Compliance Check on LLM Adaptation Planning"
+        ],
+        "talks": [
+          {
+            "title": "Towards a Digital-Twin Cyber Range for MTD against ML Traffic Fingerprinting in Smart Grid",
+            "time": "11:30",
+            "duration": "25m",
+            "kind": "Paper",
+            "speakers": [
+              "Tommaso Caiazzi",
+              "Simone Albero",
+              "Stefano Iannucci",
+              "Riccardo Torlone",
+              "Giovanna Adinolfi",
+              "Maria Valenti",
+              "Massimo Celino"
+            ]
+          },
+          {
+            "title": "Cloud-Native Smart Grids: Threat Modeling and Impact Analysis for TSO Services",
+            "time": "11:55",
+            "duration": "25m",
+            "kind": "Paper",
+            "speakers": [
+              "Annachiara Fortuna",
+              "Domenico Siracusa"
+            ]
+          },
+          {
+            "title": "Security Assurance Cases as a Runtime Compliance Check on LLM Adaptation Planning",
+            "time": "12:20",
+            "duration": "25m",
+            "kind": "Paper",
+            "speakers": [
+              "Logan Quirk",
+              "Rose Gamble"
+            ]
+          }
         ]
       },
       {
         "title": "SISSY - Architectures",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "11:30-12:30",
         "room": "2.4",
         "papers": [
@@ -1332,36 +2923,94 @@
           "Self-Adaptive Information Sharing in Heterogeneous Vehicular Multi-Agent Systems",
           "Controller Architecture Variants for Robust Self-Organizing Energy Systems",
           "Progressive MAPE-K with Simulation-in-the-Loop RL Retraining for Autonomous Robots"
+        ],
+        "talks": [
+          {
+            "title": "A Vision of System-level Adaptation in Digital Twin Networks",
+            "time": "11:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Prasad Talasila",
+              "Riccardo Sieve",
+              "Roberto Casadei",
+              "Samuele Burattini",
+              "Lukas Esterle"
+            ]
+          },
+          {
+            "title": "Self-Adaptive Information Sharing in Heterogeneous Vehicular Multi-Agent Systems",
+            "time": "11:45",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Martina Baiardi",
+              "Danilo Pianini",
+              "Elsy Kaddoum",
+              "Val\u00e9rie Camps"
+            ]
+          },
+          {
+            "title": "Controller Architecture Variants for Robust Self-Organizing Energy Systems",
+            "time": "12:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Emilie Frost",
+              "Astrid Nie\u00dfe"
+            ]
+          },
+          {
+            "title": "Progressive MAPE-K with Simulation-in-the-Loop RL Retraining for Autonomous Robots",
+            "time": "12:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Sahar Nasimi Nezhad",
+              "Claudio Gomes",
+              "Thomas Wright",
+              "Lukas Esterle",
+              "Bert Van Acker",
+              "Paul De Meulenaere"
+            ]
+          }
         ]
       },
       {
         "title": "SISSY - Discussion Panel: Architectures",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "12:30-13:00",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "AICR-ACS - Closing Final Discussion & Closing.",
+        "title": "AICR-ACS - Closing",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "12:45-13:00",
         "room": "2.3",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Lunch",
         "trackId": "catering",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "13:00-14:00",
         "room": "Sala Polivalente",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SISSY - Interpretability, Anomaly Detection & Causal Analysis",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "14:00-15:00",
         "room": "2.4",
         "papers": [
@@ -1369,28 +3018,77 @@
           "Perspective-Driven Anomaly Detection in Self-Organising Systems: Central, Regional, Decentral?",
           "Interventions Matter: the Role of Sampling Distributions in Detecting Causal Emergence",
           "Popperian Expectations for One-Shot Adaptation in Dynamic Environments"
+        ],
+        "talks": [
+          {
+            "title": "Decision Interpretability for Evolutionary Rule",
+            "time": "14:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Connor Sch\u00f6nberner",
+              "Sven Tomforde",
+              "Michael Heider"
+            ]
+          },
+          {
+            "title": "Perspective-Driven Anomaly Detection in Self-Organising Systems: Central, Regional, Decentral?",
+            "time": "14:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Svea Wisy",
+              "Sven Tomforde"
+            ]
+          },
+          {
+            "title": "Interventions Matter: the Role of Sampling Distributions in Detecting Causal Emergence",
+            "time": "14:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Samuel Reyd",
+              "Ada Diaconescu",
+              "Jean-Louis Dessalles"
+            ]
+          },
+          {
+            "title": "Popperian Expectations for One-Shot Adaptation in Dynamic Environments",
+            "time": "14:45",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "John Mills",
+              "Peter Lewis"
+            ]
+          }
         ]
       },
       {
         "title": "SISSY - Discussion Panel: Interpretability, Anomaly Detection & Causal Analysis",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "15:00-15:30",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "Coffee Break",
         "trackId": "catering",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "15:30-16:00",
         "room": "2.13",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SISSY - Swarm Robotics & Multi-Robot Coordination",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "16:00-17:00",
         "room": "2.4",
         "papers": [
@@ -1398,31 +3096,86 @@
           "Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms",
           "Real-World Adaptation of a Swarm Algorithm for Different Following Formations using ROS2-based Crazyflie Drones",
           "Distributed Online Allocation of Robot Teams for Flexible Manufacturing"
+        ],
+        "talks": [
+          {
+            "title": "Emergent Multi-Behavior Strategies in Swarm Agents from Foraging-Predator Pressures",
+            "time": "16:00",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "David King",
+              "Gilbert Peterson"
+            ]
+          },
+          {
+            "title": "Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms",
+            "time": "16:15",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Angela Cortecchia",
+              "Alessandro Vittorio Papadopoulos",
+              "Danilo Pianini"
+            ]
+          },
+          {
+            "title": "Real-World Adaptation of a Swarm Algorithm for Different Following Formations using ROS2-based Crazyflie Drones",
+            "time": "16:30",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Oliver Kosak",
+              "Philipp Kastenm\u00fcller",
+              "Felix Nebel",
+              "Vinzenz Malke",
+              "Wolfgang Reif"
+            ]
+          },
+          {
+            "title": "Distributed Online Allocation of Robot Teams for Flexible Manufacturing",
+            "time": "16:45",
+            "duration": "15m",
+            "kind": "Paper",
+            "speakers": [
+              "Christian Lehner",
+              "Oliver Kosak",
+              "Hella Ponsar",
+              "Liliane Knof",
+              "Wolfgang Reif"
+            ]
+          }
         ]
       },
       {
         "title": "SISSY - Discussion Panel: Swarm Robotics & Multi-Robot Coordination",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "17:00-17:50",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
         "title": "SISSY - Closing",
         "trackId": "workshops",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "17:50-18:00",
         "room": "2.4",
-        "papers": []
+        "papers": [],
+        "talks": []
       },
       {
-        "title": "Visit to Cesenatico & Fish Dinner https://2026.acsos.org/attending/social-events#along-leonardos-canal-cesenatico-and-fish-dinner Register at: https://serinarpayments.it/acsos-2026/",
+        "title": "Visit to Cesenatico & Fish Dinner",
         "trackId": "social",
         "day": "Friday, 11 September",
+        "date": "2026-09-11",
         "time": "18:00-21:00",
         "room": "Off-site",
-        "papers": []
+        "papers": [],
+        "talks": []
       }
     ],
     "keynotes": [
@@ -1432,6 +3185,7 @@
         "title": "Bridging Centralized and Decentralized Control in Robot Swarms through Self-Organizing Hierarchies",
         "kind": "Main keynote",
         "abstract": "Robot swarms promise scalable and resilient solutions for applications such as environmental monitoring, search and rescue, and logistics, yet their adoption remains limited by poor controllability. Fully self-organizing swarms achieve robustness and scalability through decentralized coordination and simple local interactions, but this comes at the cost of limited observability and difficulty in shaping global behavior. Conversely, centralized approaches offer ease of control but suffer from scalability issues and single points of failure. In this talk, I present the Self-Organizing Nervous System for Robot Swarms (SoNS), a middleware framework that enables robots to dynamically form adaptive hierarchical structures. SoNS bridges centralized and decentralized paradigms by supporting functionally centralized coordination of sensing, actuation, and decision-making, while preserving the scalability, flexibility, and fault tolerance of self-organizing systems.",
+        "biosketch": "Marco Dorigo received the Ph.D. degree in electronic engineering in 1992 from Politecnico di Milano, Milan, Italy. From 1992 to 1993, he was a Research Fellow at the International Computer Science Institute, Berkeley, CA. In 1993, he was a NATO-CNR Fellow, and from 1994 to 1996, a Marie Curie Fellow. Since 1996, he has been a tenured Researcher of the FNRS, the Belgian National Funds for Scientific Research, and co-director of IRIDIA, the artificial intelligence laboratory of the ULB. His current research interests include swarm intelligence, swarm robotics, and metaheuristics for discrete optimization. He is the Founding Editor of Swarm Intelligence, and an Associate Editor or member of the Editorial Boards of many journals on computational intelligence and adaptive systems. Dr. Dorigo is a Fellow of the AAAI, ACM, EurAI, and IEEE. He was awarded numerous international prizes among which the Marie Curie Excellence Award in 2003, delivered by Philippe Busquin, European Commissioner for Research, Science and Innovation; the five-year scientific prize du F.R.S.-FNRS in 2005, delivered by Albert II, King of Belgium; the Cajastur International Prize for Soft Computing \u201cMamdani Prize\u201d i",
         "url": "https://2026.acsos.org/info/keynotes"
       },
       {
@@ -1440,6 +3194,7 @@
         "title": "Bridging Classical and Quantum Computing: Lessons, Challenges, and Opportunities",
         "kind": "Main keynote",
         "abstract": "Quantum computing promises computational capabilities that extend beyond the representational and computational limits of classical systems. It is widely regarded as a candidate technology for addressing scalability and tractability challenges in domains such as molecular simulation, optimization, and artificial intelligence. However, classical high-performance computing (HPC) systems continue to play a crucial role in the quantum computing ecosystem. Classical computers are essential for tasks such as quantum device calibration, quantum state preparation, error mitigation, and data pre- and post-processing. In this talk, we critically examine the role of classical computing in conjunction with quantum systems. We revisit early misconceptions about quantum advantage, discuss key lessons learned from the first generation of hybrid quantum\u2013classical systems, and highlight current research directions. Particular attention is given to state-of-the-art hybrid algorithms, including the Quantum Approximate Optimization Algorithm (QAOA) and the Variational Quantum Algorithms (VQA), as well as emerging concepts for tighter integration between classical and quantum infrastructures. We conclude by exploring novel interaction paradigms, such as digital shadows and their practical implementations, which may shape the next generation of hybrid computing systems.",
+        "biosketch": "Ivona Brandic is a Full Professor for High Performance Computing Systems at the Institute of Computer Engineering, TU Wien, Vienna, Austria, where she leads the Research Unit for Computational Sustainability, her current research focuses on cloud computing, edge intelligence, and hybrid quantum-classical systems, with key contributions to sustainable and adaptive resource management as well as green AI.",
         "url": "https://2026.acsos.org/info/keynotes"
       },
       {
@@ -1448,6 +3203,7 @@
         "title": "Adaptive Serverless Computing Across the Cloud-Edge Continuum",
         "kind": "Main keynote",
         "abstract": "Serverless computing, particularly the Function-as-a-Service (FaaS) model, has transformed application deployment through event-driven execution and automatic scaling. As workloads increasingly span the heterogeneous Cloud-Edge continuum, however, traditional cloud-centric platforms struggle to cope with dynamic node availability, fluctuating network conditions, data locality constraints, and energy budgets. This keynote explores the paradigm of adaptive serverless computing, where function scheduling, execution offloading, and resource management continuously adapt to changes in infrastructure, workload, and user requirements. We discuss how context-aware orchestration make decentralized runtime decisions that balance performance, cost, and sustainability across heterogeneous cloud and edge resources. As a case study, we present Serverledge, a decentralized, open-source FaaS platform for distributed continuum environments, showing how adaptive execution enables efficient, resilient, and low-latency serverless performance without centralized control. Finally, we highlight emerging research challenges and outline a vision for autonomous serverless platforms that leverage self-adaptation and self-organization to orchestrate next-generation workloads across future continuum systems.",
+        "biosketch": "Valeria Cardellini is a Full Professor of Computer Science and Engineering at the University of Rome Tor Vergata, Italy, where she earned her PhD in Computer Science in 2001. Her research focuses on distributed software systems, including cloud and edge computing systems and services, their resource management and self-adaptation, and quality assurance. She has co-authored more than 140 publications in international journals and conferences. She serves on the editorial boards of IEEE Transactions on Parallel and Distributed Systems and Elsevier Journal of Parallel and Distributed Computing. She also regularly serves on the technical program committees of leading systems and performance conferences and is actively involved in the organization of major international conferences in these areas, including Euro-Par 2026, IPDPS 2026, UCC/BDCAT 2026, CCGrid 2027, and ICPE 2027.",
         "url": "https://2026.acsos.org/info/keynotes"
       },
       {
@@ -1456,6 +3212,7 @@
         "title": "Being a researcher \u2014 in turbulent times",
         "kind": "Doctoral Symposium keynote",
         "abstract": "In 2020 I wrote a book titled \u201c Being a Researcher\u2014 An Informatics Perspective \u201d, in which I tried to share what I learned in my long journey through research, targeting especially young scientists and telling them what I wish I knew when I embarked on the journey. This talk reflects on what happened since. After less than a decade, the research landscape is undergoing a paradigm change, in the Kuhnian sense, mainly due to the advances in our own discipline, and in particular, the AI revolution. This has generated radical changes in the way research is performed, in all fields. But technological disruption is not only a methodological challenge; it is above all an ethical and institutional one. The way society and individuals are affected by our research, and the responsibilities we have as researchers have in fact scaled up to unprecedented levels. Academic institutions need to rethink their role in the new world we are building. The talk reflects on our role and responsibility as researchers and educators in the new world\u2014 and on whether our institutions are ready for it.",
+        "biosketch": "Carlo Ghezzi is an Emeritus Professor at Politecnico di Milano, Italy, where he has been active for more than 50 years as a researcher, faculty member, and educator. Among other roles, he has been founding Chair of Software Engineering, Department Chair, Member of the Academic Senate, Vice-Rector for Research, Chair of the Ethical Committee. He holds an Honorary Doctor Degree from the Technical University of Vienna. He is an ACM Fellow, IEEE Fellow, member of Academia Europaea, member of the Italian academy Istituto Lombardo Accademia di Scienze e Lettere. He has been awarded the ACM SIGSOFT Outstanding Research Award, the ACM SIGSOFT Distinguished Service Award, the IEEE TCSE Distinguished Education Award, the Leloir Prize by the Government of Argentina for International Cooperation in Science, Technology and Innovation. He has been on the advisory board of several international research programs and institutions in Europe, China, Japan, and the USA. He has been President of Informatics Europe, the association of computer science departments and research laboratories in Europe. Carlo Ghezzi has been Program Co-Chair and General chair of several prestigious conferences (including t",
         "url": "https://2026.acsos.org/info/keynotes"
       }
     ],
@@ -1680,7 +3437,7 @@
     "program": {
       "title": "Program at a Glance",
       "url": "https://2026.acsos.org/info/program-at-a-glance",
-      "status": "Tentative schedule, subject to change.",
+      "status": "Five-day overview of the ACSOS 2026 program.",
       "notes": [
         "NOTE: Additional social events (Tuesday, Thursday, and Friday evening) are not included in the conference registration. Participants who wish to attend may purchase them separately"
       ],
@@ -2066,6 +3823,264 @@
           ]
         }
       ]
+    },
+    "workshops": [
+      {
+        "name": "13th Workshop on Self-Improving Systems Integration",
+        "acronym": "SISSY",
+        "summary": "Information and communication technology (ICT) pervades every aspect of our daily lives. This changes our communities and all of our human interactions. It also presents a significant set of challenges in correctly designing and integrating our resulting technical systems. For instance, the embedding of ICT functionality in more and more devices (such as household appliances or thermostats) leads to novel interconnections and a changing structure of the overall system. Not only are technical systems increasingly coupled, but also numerous previously isolated natural and human systems have merged into a kind of overall system-of-systems \u2013 an interwoven system structure. This change of structu",
+        "organizers": [
+          "Kirstie Bellman",
+          "Ada Diaconescu",
+          "Lukas Esterle",
+          "Sven Tomforde"
+        ],
+        "site": "https://sissy-workshop.github.io/",
+        "url": "https://2026.acsos.org/track/acsos-2026-workshops"
+      },
+      {
+        "name": "4th International Workshop on Sustainable and Scalable Self-Organisation",
+        "acronym": "SaSSO-4",
+        "summary": "The fourth SaSSO workshop explores inter-organizational self-organization to address sustainability and scalability challenges. Domains like healthcare, transportation, and food systems are all examples of complex, interdependent systems requiring multi-stakeholder coordination. This highlights a pressing need to re-consider, integrate and re-vitalise concepts of self-organisation, self-governance, sustainability, and multi-scale systems thinking in order to meet the challenges involved in shaping real-world complex systems. The goal of this inter-disciplinary workshop is to address two contrasting pairs of inter-related research questions: Sustainability of self-organisation : considering p",
+        "organizers": [
+          "Simon T. Powers",
+          "Stefan Sarkadi",
+          "Tobias Buhl"
+        ],
+        "site": "https://cosocials.org/sasso-2026",
+        "url": "https://2026.acsos.org/track/acsos-2026-workshops"
+      },
+      {
+        "name": "4th International Workshop on Artificial Intelligence for Autonomous computing Systems",
+        "acronym": "AI4AS",
+        "summary": "Modern computing systems are increasingly heterogeneous and operate at unprecedented scale across the cloud\u2013edge continuum. Their structural and operational complexity often exceeds what can be effectively managed through manual configuration or static control logic. The rapid evolution of Artificial Intelligence (AI) and Machine Learning (ML) techniques \u2013 including generative AI, agentic AI, edge intelligence, as well as collaborative and federated learning \u2013 has opened new avenues for engineering more robust, sustainable, and secure computing infrastructures. However, there are still several challenges to face regarding the applicability of AI and ML techniques across diverse domains, espe",
+        "organizers": [
+          "Valeria Cardellini",
+          "Davide Domini",
+          "Lukas Esterle",
+          "Stefano Iannucci",
+          "Gabriele Russo Russo"
+        ],
+        "site": "https://ai4as.github.io/",
+        "url": "https://2026.acsos.org/track/acsos-2026-workshops"
+      },
+      {
+        "name": "1st International Workshop on AI-Driven Cyber-Resilience for Autonomous Cyber-Physical Systems",
+        "acronym": "AICR-ACS",
+        "summary": "Autonomous cyber-physical systems (CPS) increasingly operate in adversarial and highly dynamic environments, including industrial control systems, smart energy infrastructures, transportation systems, and distributed edge-cloud platforms. As these systems integrate AI components and autonomic control mechanisms, cybersecurity must evolve from static protection toward runtime autonomous defense. Unlike traditional cybersecurity research, which often focuses on detection algorithms or cryptographic protocols in isolation, AICR-ACS emphasizes security as an autonomic capability: the integration of threat detection, decision-making, and mitigation within self-adaptive control loops (e.g., MAPE-K",
+        "organizers": [
+          "Stefano Iannucci",
+          "Riccardo Torlone",
+          "Massimo Celino"
+        ],
+        "site": "https://aicr-acs.github.io/",
+        "url": "https://2026.acsos.org/track/acsos-2026-workshops"
+      }
+    ],
+    "importantDates": [
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Doctoral Symposium",
+        "what": "Camera ready deadline"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Workshops",
+        "what": "Camera Ready submission deadline"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Posters and Demos",
+        "what": "Poster/Demo Camera-Ready Deadline"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Artifacts",
+        "what": "Camera Ready Deadline"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Tutorials",
+        "what": "Camera Ready Deadline Papers"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Main Track",
+        "what": "Deadline for camera-ready submissions for main track"
+      },
+      {
+        "date": "Wed 15 Jul 2026",
+        "track": "Tutorials",
+        "what": "Notification for Extended Abstracts"
+      },
+      {
+        "date": "Wed 15 Jul 2026",
+        "track": "Posters and Demos",
+        "what": "Poster/Demo Notification to Authors"
+      },
+      {
+        "date": "Mon 13 Jul 2026",
+        "track": "Doctoral Symposium",
+        "what": "Notification to author"
+      },
+      {
+        "date": "Mon 13 Jul 2026",
+        "track": "Artifacts",
+        "what": "Notification to Authors"
+      },
+      {
+        "date": "Sun 5 Jul 2026",
+        "track": "Doctoral Symposium",
+        "what": "Submission deadline"
+      },
+      {
+        "date": "Sun 5 Jul 2026",
+        "track": "Tutorials",
+        "what": "Submission Deadline for Extended Abstracts"
+      },
+      {
+        "date": "Sun 5 Jul 2026",
+        "track": "Doctoral Symposium",
+        "what": "Abstract submission deadline"
+      },
+      {
+        "date": "Mon 29 Jun 2026",
+        "track": "Artifacts",
+        "what": "Artifact Submission Deadline"
+      },
+      {
+        "date": "Mon 29 Jun 2026",
+        "track": "Posters and Demos",
+        "what": "Poster/Demo Submission Deadline"
+      },
+      {
+        "date": "Mon 15 Jun 2026",
+        "track": "Tutorials",
+        "what": "Notification for Proposals"
+      },
+      {
+        "date": "Mon 15 Jun 2026",
+        "track": "Main Track",
+        "what": "Author Notification For Main Track Papers"
+      },
+      {
+        "date": "Fri 5 Jun 2026",
+        "track": "Tutorials",
+        "what": "Submission Deadline for Proposals"
+      },
+      {
+        "date": "Fri 1 May 2026",
+        "track": "Main Track",
+        "what": "Deadline for submissions"
+      },
+      {
+        "date": "Fri 24 Apr 2026",
+        "track": "Main Track",
+        "what": "Deadline for abstract registration"
+      },
+      {
+        "date": "Tue 31 Mar 2026",
+        "track": "Workshops",
+        "what": "Workshop call for papers Deadline"
+      },
+      {
+        "date": "Tue 10 Mar 2026",
+        "track": "Workshops",
+        "what": "Workshop acceptance notification"
+      },
+      {
+        "date": "Fri 27 Feb 2026",
+        "track": "Workshops",
+        "what": "Workshop proposal submission deadline"
+      }
+    ],
+    "news": [
+      {
+        "title": "3rd Newsletter is out!",
+        "date": "Wed 22 Jul 2026",
+        "summary": "Dear ACSOS Community, We are happy to announce and share the third edition of the ACSOS Community Newsletter. This newsletter is dedicated to regularly sharing news, updates on the upcoming conference, ideas, challenges, and collaboration opportunities in the ACSOS community. You can find the link to the new edition of our newsletter here .",
+        "url": "https://2026.acsos.org/news"
+      },
+      {
+        "title": "2nd Newsletter is out!",
+        "date": "Thu 2 Jul 2026",
+        "summary": "Dear ACSOS Community, We are happy to announce and share the second edition of the ACSOS Community Newsletter. This newsletter is dedicated to regularly sharing news, updates on the upcoming conference, ideas, challenges, and collaboration opportunities in the ACSOS community. You can find the link to the new edition of our newsletter here .",
+        "url": "https://2026.acsos.org/news"
+      },
+      {
+        "title": "1st Newsletter is out!",
+        "date": "Mon 8 Dec 2025",
+        "summary": "Dear ACSOS Community, We are happy to announce and share the first edition of the ACSOS Community Newsletter. This newsletter is dedicated to regularly sharing news, updates on the upcoming conference, ideas, challenges, and collaboration opportunities in the ACSOS community. You can find the link to our newsletter here .",
+        "url": "https://2026.acsos.org/news"
+      }
+    ],
+    "seminarSeries": [
+      {
+        "speaker": "Christopher Stewart",
+        "affiliation": "Ohio State University",
+        "title": "Making Engineered Intelligence Affordable: The Case for Timely Systems Research",
+        "whenText": "August 7, 2026 \u00b7 10:00\u201311:00 AM (ET)/2:00\u20133:00 PM (GMT)",
+        "url": "https://2026.acsos.org/info/seminar-series"
+      },
+      {
+        "speaker": "Alessandro Vittorio Papadopoulos",
+        "affiliation": "M\u00e4lardalen University",
+        "title": "On the Edge of the Cloud: Making Smart Systems Predictable When Time Matters",
+        "whenText": "May 27, 2026 \u00b7 5:30\u20137:00 PM (CET)",
+        "url": "https://2026.acsos.org/info/seminar-series"
+      },
+      {
+        "speaker": "Peter Lewis",
+        "affiliation": "Ontario Tech University",
+        "title": "Reflective Social Intelligence for Autonomous Agents",
+        "whenText": "April 2, 2026 \u00b7 10:00\u201311:00 AM (ET)/3:00-4:00 PM (GMT)",
+        "url": "https://2026.acsos.org/info/seminar-series"
+      }
+    ],
+    "communityLinks": [
+      {
+        "name": "Linktree",
+        "url": "https://linktr.ee/acsosconf"
+      },
+      {
+        "name": "GitHub",
+        "url": "https://github.com/acsos"
+      },
+      {
+        "name": "X (Twitter)",
+        "url": "https://twitter.com/ACSOSconf"
+      },
+      {
+        "name": "LinkedIn",
+        "url": "https://www.linkedin.com/company/acsos"
+      },
+      {
+        "name": "Instagram",
+        "url": "https://www.instagram.com/acsos.conf/"
+      },
+      {
+        "name": "YouTube",
+        "url": "https://www.youtube.com/@acsosconf"
+      },
+      {
+        "name": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61587017693843"
+      }
+    ],
+    "venue": {
+      "name": "University of Bologna, Cesena Campus",
+      "address": "Via dell'Universit\u00e0, 50, 47521, Cesena, Italy",
+      "mainRoom": "Aula Magna \"Carmen Tura\" (Room 3.4), first floor",
+      "rooms": [
+        "2.10",
+        "2.13",
+        "2.3",
+        "2.4",
+        "Aula Magna \"Carmen Tura\"",
+        "Off-site",
+        "Sala Polivalente"
+      ],
+      "url": "https://2026.acsos.org/venue/acsos-2026-venue"
     }
   }
 }
