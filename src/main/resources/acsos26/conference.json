@@ -2142,7 +2142,7 @@
         "papers": [
           "Contrastive Explanations for Multi-objective Policies in Reinforcement Learning",
           "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
-          "Self-Organizing Federated Learning in Collective Adaptive Systems",
+          "Towards Collective Robotic Operating Systems through Aggregate Computing",
           "Toward Practical and Adaptive Machine Learning for Sustainable In-Situ Monitoring in LPBF",
           "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front"
         ],
@@ -2166,12 +2166,12 @@
             ]
           },
           {
-            "title": "Self-Organizing Federated Learning in Collective Adaptive Systems",
+            "title": "Towards Collective Robotic Operating Systems through Aggregate Computing",
             "time": "16:54",
             "duration": "12m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Davide Domini"
+              "Angela Cortecchia"
             ]
           },
           {
@@ -2618,7 +2618,7 @@
           "Engineering Trustworthiness into Self-Adaptive Robotic Systems",
           "Extending Rule-Based Approaches Towards Unanticipated Failures for Self-Healing Robots",
           "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations",
-          "Towards Collective Robotic Operating Systems through Aggregate Computing"
+          "Self-Organizing Federated Learning in Collective Adaptive Systems"
         ],
         "talks": [
           {
@@ -2649,12 +2649,12 @@
             ]
           },
           {
-            "title": "Towards Collective Robotic Operating Systems through Aggregate Computing",
+            "title": "Self-Organizing Federated Learning in Collective Adaptive Systems",
             "time": "17:15",
             "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Angela Cortecchia"
+              "Davide Domini"
             ]
           }
         ]
