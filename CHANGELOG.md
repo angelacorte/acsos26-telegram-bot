@@ -1,3 +1,22 @@
+## [1.5.0](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.4.1...1.5.0) (2026-09-08)
+
+### Features
+
+* new version with better replies ([73ebac4](https://github.com/angelacorte/acsos26-telegram-bot/commit/73ebac495d9f230439577deae7c98f3651d5f7e2))
+
+### Bug Fixes
+
+* minor issue in kotlin script ([d615b59](https://github.com/angelacorte/acsos26-telegram-bot/commit/d615b5944ff217491610089a3a8f21d65533ae57))
+
+### General maintenance
+
+* refresh conference data ([79853ee](https://github.com/angelacorte/acsos26-telegram-bot/commit/79853ee4c8c78414629c1dc52a994c3fa4da7f34))
+* refresh conference data ([1cbb1e6](https://github.com/angelacorte/acsos26-telegram-bot/commit/1cbb1e67fd596bb031afc201a3d76d136a8fd39c))
+* refresh conference data ([e0359af](https://github.com/angelacorte/acsos26-telegram-bot/commit/e0359afd693c2663ec6329410c5dd2846c70f9a4))
+* refresh conference data ([6dfb878](https://github.com/angelacorte/acsos26-telegram-bot/commit/6dfb878f5d3034f288db6954e703b7b55e8b7afb))
+* refresh conference data ([32da349](https://github.com/angelacorte/acsos26-telegram-bot/commit/32da3497f362ce8ce82561958d430b7cf5618733))
+* refresh conference data ([b077af5](https://github.com/angelacorte/acsos26-telegram-bot/commit/b077af587031681aa9f5a82b05ab8bb7494f3b00))
+
 ## [1.4.1](https://github.com/angelacorte/acsos26-telegram-bot/compare/1.4.0...1.4.1) (2026-09-01)
 
 ### Bug Fixes
