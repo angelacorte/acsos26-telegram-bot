@@ -250,8 +250,8 @@ internal class CommandRouter(
         token: String,
     ): String? {
         if (token.length < 3) return null
-        scheduled.firstOrNull { it.date == token }?.let { return it.date }
-        return scheduled.firstOrNull { it.day.lowercase().startsWith(token) }?.date
+        return scheduled.firstOrNull { it.date == token }?.date
+            ?: scheduled.firstOrNull { it.day.lowercase().startsWith(token) }?.date
     }
 
     private fun askHint(example: String): String = "Details, rooms and papers: /ask $example"
