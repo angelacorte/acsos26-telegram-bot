@@ -7,7 +7,7 @@
     "timezone": "Europe/Rome",
     "website": "https://2026.acsos.org/",
     "botUsername": "acsos_26_bot",
-    "programStatus": "The ACSOS 2026 program is published: 80 scheduled sessions with rooms, 106 scheduled talks, and 97 accepted contributions.",
+    "programStatus": "The ACSOS 2026 program is published: 80 scheduled sessions with rooms, 104 scheduled talks, and 97 accepted contributions.",
     "description": "The IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS) is the leading forum to share the latest research results, ideas and experiences in autonomic computing, self-adaptation and self-organization. Now in its 7th edition, ACSOS was founded in 2020 as a merger of the IEEE International Conference on Autonomic Computing (ICAC) and the IEEE International Conference on Self-Adaptive and Self-Organizing Systems (SASO).",
     "commands": [
       {
@@ -149,7 +149,7 @@
         "command": "doctoral",
         "name": "Doctoral Symposium",
         "url": "https://2026.acsos.org/track/acsos-2026-doctoral-symposium",
-        "status": "Doctoral Symposium: 18 accepted contributions; 6 scheduled sessions in 2.3, 2.4, Aula Magna \"Carmen Tura\"; 18 scheduled talks.",
+        "status": "Doctoral Symposium: 18 accepted contributions; 6 scheduled sessions in 2.3, 2.4, Aula Magna \"Carmen Tura\"; 16 scheduled talks.",
         "summary": "Doctoral Symposium information for ACSOS 2026.",
         "acceptedPapers": [
           {
@@ -2133,95 +2133,84 @@
         "talks": []
       },
       {
-        "title": "Doctoral Symposium breakouts 1",
+        "title": "Doctoral Symposium Breakout 1",
         "trackId": "doctoral",
         "day": "Wednesday, 9 September",
         "date": "2026-09-09",
         "time": "16:30-17:30",
         "room": "2.3",
         "papers": [
-          "Contrastive Explanations for Multi-objective Policies in Reinforcement Learning",
-          "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
+          "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front",
           "Towards Collective Robotic Operating Systems through Aggregate Computing",
-          "Toward Practical and Adaptive Machine Learning for Sustainable In-Situ Monitoring in LPBF",
-          "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front"
+          "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
+          "Contrastive Explanations for Multi-objective Policies in Reinforcement Learning"
         ],
         "talks": [
           {
-            "title": "Contrastive Explanations for Multi-objective Policies in Reinforcement Learning",
+            "title": "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front",
             "time": "16:30",
-            "duration": "12m",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Juan C. Rosero"
-            ]
-          },
-          {
-            "title": "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
-            "time": "16:42",
-            "duration": "12m",
-            "kind": "Doctoral symposium paper",
-            "speakers": [
-              "Lucas Astore"
+              "Paulo Jorge Silva Ferreira"
             ]
           },
           {
             "title": "Towards Collective Robotic Operating Systems through Aggregate Computing",
-            "time": "16:54",
-            "duration": "12m",
+            "time": "16:45",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
               "Angela Cortecchia"
             ]
           },
           {
-            "title": "Toward Practical and Adaptive Machine Learning for Sustainable In-Situ Monitoring in LPBF",
-            "time": "17:06",
-            "duration": "12m",
+            "title": "Modular Graph Neural Cellular Automata for Spatiotemporal Forecasting",
+            "time": "17:00",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Akram Zarchini"
+              "Lucas Astore"
             ]
           },
           {
-            "title": "Towards Energy-Aware Self-Adaptation for Human Activity Recognition Using a Pareto-Front",
-            "time": "17:18",
-            "duration": "12m",
+            "title": "Contrastive Explanations for Multi-objective Policies in Reinforcement Learning",
+            "time": "17:15",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Paulo Jorge Silva Ferreira"
+              "Juan C. Rosero"
             ]
           }
         ]
       },
       {
-        "title": "Doctoral Symposium breakouts 2",
+        "title": "Doctoral Symposium Breakout 2",
         "trackId": "doctoral",
         "day": "Wednesday, 9 September",
         "date": "2026-09-09",
         "time": "16:30-17:30",
         "room": "2.4",
         "papers": [
-          "Autonomic and Decentralized Infrastructure Management Framework for the Continuum",
+          "Enabling Industrial Autonomy: Digital Transformation of Automation Systems into Autonomous Cyber-Physical Systems",
           "Co-Simulating Regional Energy and EV ChargingFutures under Deep Uncertainty",
           "Enabling Flexible Assembly in Self-Organizing Manufacturing Systems",
-          "Enabling Industrial Autonomy: Digital Transformation of Automation Systems into Autonomous Cyber-Physical Systems",
-          "Time-Limited Adaptation Loops for Electrical Flexibility in Data Centers"
+          "Autonomic and Decentralized Infrastructure Management Framework for the Continuum"
         ],
         "talks": [
           {
-            "title": "Autonomic and Decentralized Infrastructure Management Framework for the Continuum",
+            "title": "Enabling Industrial Autonomy: Digital Transformation of Automation Systems into Autonomous Cyber-Physical Systems",
             "time": "16:30",
-            "duration": "12m",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Simon Artus"
+              "Inga Miadowicz"
             ]
           },
           {
             "title": "Co-Simulating Regional Energy and EV ChargingFutures under Deep Uncertainty",
-            "time": "16:42",
-            "duration": "12m",
+            "time": "16:45",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
               "Fabian Schober"
@@ -2229,29 +2218,20 @@
           },
           {
             "title": "Enabling Flexible Assembly in Self-Organizing Manufacturing Systems",
-            "time": "16:54",
-            "duration": "12m",
+            "time": "17:00",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
               "Christian Lehner"
             ]
           },
           {
-            "title": "Enabling Industrial Autonomy: Digital Transformation of Automation Systems into Autonomous Cyber-Physical Systems",
-            "time": "17:06",
-            "duration": "12m",
+            "title": "Autonomic and Decentralized Infrastructure Management Framework for the Continuum",
+            "time": "17:15",
+            "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Inga Miadowicz"
-            ]
-          },
-          {
-            "title": "Time-Limited Adaptation Loops for Electrical Flexibility in Data Centers",
-            "time": "17:18",
-            "duration": "12m",
-            "kind": "Doctoral symposium paper",
-            "speakers": [
-              "Nathan Rabier"
+              "Simon Artus"
             ]
           }
         ]
@@ -2608,31 +2588,22 @@
         "talks": []
       },
       {
-        "title": "Doctoral Symposium breakouts 3",
+        "title": "Doctoral Symposium Breakout 3",
         "trackId": "doctoral",
         "day": "Thursday, 10 September",
         "date": "2026-09-10",
         "time": "16:30-17:30",
         "room": "2.3",
         "papers": [
-          "Engineering Trustworthiness into Self-Adaptive Robotic Systems",
           "Extending Rule-Based Approaches Towards Unanticipated Failures for Self-Healing Robots",
-          "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations",
-          "Self-Organizing Federated Learning in Collective Adaptive Systems"
+          "Engineering Trustworthiness into Self-Adaptive Robotic Systems",
+          "Self-Organizing Federated Learning in Collective Adaptive Systems",
+          "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations"
         ],
         "talks": [
           {
-            "title": "Engineering Trustworthiness into Self-Adaptive Robotic Systems",
-            "time": "16:30",
-            "duration": "15m",
-            "kind": "Doctoral symposium paper",
-            "speakers": [
-              "Sahar Nasimi Nezhad"
-            ]
-          },
-          {
             "title": "Extending Rule-Based Approaches Towards Unanticipated Failures for Self-Healing Robots",
-            "time": "16:45",
+            "time": "16:30",
             "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
@@ -2640,60 +2611,60 @@
             ]
           },
           {
-            "title": "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations",
-            "time": "17:00",
+            "title": "Engineering Trustworthiness into Self-Adaptive Robotic Systems",
+            "time": "16:45",
             "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Tim Lumpp"
+              "Sahar Nasimi Nezhad"
             ]
           },
           {
             "title": "Self-Organizing Federated Learning in Collective Adaptive Systems",
-            "time": "17:15",
+            "time": "17:00",
             "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
               "Davide Domini"
             ]
+          },
+          {
+            "title": "Self-Organizing Agricultural Robot Swarms under Human Supervision: An Observer/Controller Architecture for Decentralized Field Operations",
+            "time": "17:15",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Tim Lumpp"
+            ]
           }
         ]
       },
       {
-        "title": "Doctoral Symposium breakouts 4",
+        "title": "Doctoral Symposium Breakout 4",
         "trackId": "doctoral",
         "day": "Thursday, 10 September",
         "date": "2026-09-10",
         "time": "16:30-17:30",
         "room": "2.4",
         "papers": [
-          "A Self-Adaptive Coordination Framework for Multi-Agent Transportation Systems in Sustainable Industrial Symbiosis Networks",
-          "Can LLM-Based Agents Have Self-Knowledge? A Dialogue Between Philosophy and Artificial Intelligence",
+          "Self-Adaptive Coordination for Heterogeneous Multi- objective Multi-Agent Systems in an Uncertain Dynamic Environment",
           "Decentralized Propagation for Heterogeneous Multi-Agent Systems Situational Awareness",
-          "Self-Adaptive Coordination for Heterogeneous Multi- objective Multi-Agent Systems in an Uncertain Dynamic Environment"
+          "Time-Limited Adaptation Loops for Electrical Flexibility in Data Centers",
+          "Can LLM-Based Agents Have Self-Knowledge? A Dialogue Between Philosophy and Artificial Intelligence"
         ],
         "talks": [
           {
-            "title": "A Self-Adaptive Coordination Framework for Multi-Agent Transportation Systems in Sustainable Industrial Symbiosis Networks",
+            "title": "Self-Adaptive Coordination for Heterogeneous Multi- objective Multi-Agent Systems in an Uncertain Dynamic Environment",
             "time": "16:30",
             "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Dorsa Samiee"
-            ]
-          },
-          {
-            "title": "Can LLM-Based Agents Have Self-Knowledge? A Dialogue Between Philosophy and Artificial Intelligence",
-            "time": "16:45",
-            "duration": "15m",
-            "kind": "Doctoral symposium paper",
-            "speakers": [
-              "Kees Greven"
+              "Lobna Elboghdady"
             ]
           },
           {
             "title": "Decentralized Propagation for Heterogeneous Multi-Agent Systems Situational Awareness",
-            "time": "17:00",
+            "time": "16:45",
             "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
@@ -2701,12 +2672,21 @@
             ]
           },
           {
-            "title": "Self-Adaptive Coordination for Heterogeneous Multi- objective Multi-Agent Systems in an Uncertain Dynamic Environment",
+            "title": "Time-Limited Adaptation Loops for Electrical Flexibility in Data Centers",
+            "time": "17:00",
+            "duration": "15m",
+            "kind": "Doctoral symposium paper",
+            "speakers": [
+              "Nathan Rabier"
+            ]
+          },
+          {
+            "title": "Can LLM-Based Agents Have Self-Knowledge? A Dialogue Between Philosophy and Artificial Intelligence",
             "time": "17:15",
             "duration": "15m",
             "kind": "Doctoral symposium paper",
             "speakers": [
-              "Lobna Elboghdady"
+              "Kees Greven"
             ]
           }
         ]
