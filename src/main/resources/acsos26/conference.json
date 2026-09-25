@@ -3861,23 +3861,8 @@
     "importantDates": [
       {
         "date": "Mon 20 Jul 2026",
-        "track": "Doctoral Symposium",
-        "what": "Camera ready deadline"
-      },
-      {
-        "date": "Mon 20 Jul 2026",
-        "track": "Workshops",
-        "what": "Camera Ready submission deadline"
-      },
-      {
-        "date": "Mon 20 Jul 2026",
         "track": "Posters and Demos",
         "what": "Poster/Demo Camera-Ready Deadline"
-      },
-      {
-        "date": "Mon 20 Jul 2026",
-        "track": "Artifacts",
-        "what": "Camera Ready Deadline"
       },
       {
         "date": "Mon 20 Jul 2026",
@@ -3886,18 +3871,33 @@
       },
       {
         "date": "Mon 20 Jul 2026",
+        "track": "Doctoral Symposium",
+        "what": "Camera ready deadline"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Artifacts",
+        "what": "Camera Ready Deadline"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
+        "track": "Workshops",
+        "what": "Camera Ready submission deadline"
+      },
+      {
+        "date": "Mon 20 Jul 2026",
         "track": "Main Track",
         "what": "Deadline for camera-ready submissions for main track"
       },
       {
         "date": "Wed 15 Jul 2026",
-        "track": "Tutorials",
-        "what": "Notification for Extended Abstracts"
+        "track": "Posters and Demos",
+        "what": "Poster/Demo Notification to Authors"
       },
       {
         "date": "Wed 15 Jul 2026",
-        "track": "Posters and Demos",
-        "what": "Poster/Demo Notification to Authors"
+        "track": "Tutorials",
+        "what": "Notification for Extended Abstracts"
       },
       {
         "date": "Mon 13 Jul 2026",
@@ -3911,13 +3911,13 @@
       },
       {
         "date": "Sun 5 Jul 2026",
-        "track": "Doctoral Symposium",
-        "what": "Submission deadline"
+        "track": "Tutorials",
+        "what": "Submission Deadline for Extended Abstracts"
       },
       {
         "date": "Sun 5 Jul 2026",
-        "track": "Tutorials",
-        "what": "Submission Deadline for Extended Abstracts"
+        "track": "Doctoral Symposium",
+        "what": "Submission deadline"
       },
       {
         "date": "Sun 5 Jul 2026",
