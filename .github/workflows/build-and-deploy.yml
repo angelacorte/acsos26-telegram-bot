@@ -47,7 +47,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
       - name: Build ${{ matrix.name }} container
         run: >-
           docker build
@@ -74,7 +74,7 @@ jobs:
       )
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
         with:
           token: ${{ github.token }}
           fetch-depth: 0
@@ -142,7 +142,7 @@ jobs:
             image: angelacortecchia/acsos26-telegram-bot-llm
     steps:
       - name: Checkout release ${{ needs.release.outputs.version }}
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
         with:
           ref: ${{ needs.release.outputs.version }}
       - name: Login to Docker Hub
