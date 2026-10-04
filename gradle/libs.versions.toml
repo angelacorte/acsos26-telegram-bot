@@ -1,5 +1,5 @@
 [versions]
-jackson = "2.19.4"
+jackson = "2.21.7"
 kotest = "6.2.5"
 kotlin = "2.4.20"
 mockito = "5.23.0"
