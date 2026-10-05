@@ -32,7 +32,7 @@ jobs:
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: false
   containerize:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
         include:
@@ -130,7 +130,7 @@ jobs:
     needs:
       - release
     if: needs.release.outputs.version != ''
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
         include:
@@ -164,7 +164,7 @@ jobs:
           docker push "$IMAGE:$RELEASE_VERSION"
           docker push "$IMAGE:latest"
   success:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs:
       - release
       - publish-images
